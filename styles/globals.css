@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* Light theme tokens */
+:root {
+  /* Base surface + text */
+  --background: #ffffff;
+  --foreground: #0f172a; /* slate-900 */
+  --muted: #6b7280; /* gray-500 */
+  --surface: #f8fafc; /* slate-50 */
+
+  /* Rounded corners (8px–12px preference) */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Soft shadows */
+  --shadow-xs: 0 1px 2px 0 rgb(2 6 23 / 0.05);
+  --shadow-sm: 0 2px 6px 0 rgb(2 6 23 / 0.06);
+  --shadow-md: 0 6px 18px -2px rgb(2 6 23 / 0.08);
+  --shadow-lg: 0 12px 30px -6px rgb(2 6 23 / 0.12);
+}
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+
+  /* Premium Blue palette */
+  --color-primary-50: #f2f7ff;
+  --color-primary-100: #e6effe;
+  --color-primary-200: #cfe0fd;
+  --color-primary-300: #b3cdfb;
+  --color-primary-400: #89b2f7;
+  --color-primary-500: #5e97f2;
+  --color-primary-600: #377eea; /* default */
+  --color-primary-700: #2b66c6;
+  --color-primary-800: #224fa0;
+  --color-primary-900: #1d3f80;
+
+  /* Neutrals (soft grays) */
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
+
+  /* Typography */
+  --font-sans: var(--font-geist-sans);
+  --font-heading: var(--font-heading-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Radius map for Tailwind rounded-* utilities */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  /* Shadow map for Tailwind shadow-* utilities */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+}
+
+/* Base styles */
+html { color-scheme: light; }
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth transitions for interactive elements */
+* {
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+/* Focus ring */
+:where(button, a, input, textarea, select, [role="button"]) {
+  outline: none;
+}
+
+:where(button, a, input, textarea, select, [role="button"]):focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary-600) 35%, transparent);
+}
+
+/* Card surface helper */
+.surface {
+  background-color: var(--color-surface);
+}
+
+/* Animations */
+.animate-in { animation-duration: 300ms; animation-fill-mode: both; }
+.fade-in { animation-name: fade-in; }
+.slide-in-from-bottom-2 { animation-name: slide-in-from-bottom-2; }
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slide-in-from-bottom-2 { from { transform: translateY(8px); } to { transform: translateY(0); } }
+
+/* Animated gradient text helper */
+.gradient-text {
+  background-image: linear-gradient(90deg, var(--color-primary-600), #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 100%;
+  animation: gradient-x 6s ease infinite;
+}
+
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Elegant scrollbars (scoped to modal content) */
+.scroll-elegant {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neutral-300) transparent;
+}
+.scroll-elegant::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+.scroll-elegant::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-elegant::-webkit-scrollbar-thumb {
+  background-color: var(--color-neutral-300);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.scroll-elegant::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-neutral-400);
+}
