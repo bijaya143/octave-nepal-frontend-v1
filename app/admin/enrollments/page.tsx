@@ -133,16 +133,16 @@ export default function AdminEnrollmentsPage() {
           statusFilter === "All"
             ? undefined
             : statusFilter === "Active"
-            ? EnrollmentStatus.ACTIVE
-            : statusFilter === "Completed"
-            ? EnrollmentStatus.COMPLETED
-            : EnrollmentStatus.CANCELLED,
+              ? EnrollmentStatus.ACTIVE
+              : statusFilter === "Completed"
+                ? EnrollmentStatus.COMPLETED
+                : EnrollmentStatus.CANCELLED,
         creationMethod:
           enrolledByFilter === "All"
             ? undefined
             : enrolledByFilter === "Self"
-            ? CreationMethod.AUTOMATIC
-            : CreationMethod.MANUAL,
+              ? CreationMethod.AUTOMATIC
+              : CreationMethod.MANUAL,
         startDate: enrolledFrom || undefined,
         endDate: enrolledTo || undefined,
         courseId: courseFilter !== "all" ? courseFilter : undefined,
@@ -159,7 +159,9 @@ export default function AdminEnrollmentsPage() {
             id: e.id,
             studentId: e.student?.id || "",
             studentName: e.student
-              ? `${e.student.firstName} ${e.student.lastName}`
+              ? `${e.student.firstName || ""} ${e.student.lastName || ""}`.trim() ||
+                e.student?.email ||
+                "N/A"
               : "N/A",
             studentEmail: e.student?.email || "N/A",
             studentAvatarUrl: e.student?.profilePictureKey
@@ -179,11 +181,11 @@ export default function AdminEnrollmentsPage() {
               e.status === "ACTIVE"
                 ? "Active"
                 : e.status === "COMPLETED"
-                ? "Completed"
-                : "Cancelled",
+                  ? "Completed"
+                  : "Cancelled",
             progress: e.progressPercentage || 0,
             amount: e.amount || 0,
-          })
+          }),
         );
         setEnrollments(mappedData);
         setPagination(response.data.meta);
@@ -191,7 +193,7 @@ export default function AdminEnrollmentsPage() {
     } catch (error) {
       console.error("Failed to fetch enrollments", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to fetch enrollments"
+        error instanceof Error ? error.message : "Failed to fetch enrollments",
       );
     } finally {
       setIsLoading(false);
@@ -239,10 +241,10 @@ export default function AdminEnrollmentsPage() {
                     title: c.title,
                     category: { name: c.category.name },
                   })),
-                ]
+                ],
           );
           const totalPages = Math.ceil(
-            resp.data.meta.total / resp.data.meta.limit
+            resp.data.meta.total / resp.data.meta.limit,
           );
           setHasMoreCourses(resp.data.meta.page < totalPages);
         }
@@ -252,7 +254,7 @@ export default function AdminEnrollmentsPage() {
         setIsLoadingCourses(false);
       }
     },
-    [FILTER_PAGE_SIZE]
+    [FILTER_PAGE_SIZE],
   );
 
   // Fetch students for filter with pagination
@@ -270,20 +272,26 @@ export default function AdminEnrollmentsPage() {
             reset
               ? resp.data.data.map((s) => ({
                   id: s.id,
-                  name: `${s.firstName} ${s.lastName}`,
+                  name:
+                    `${s.firstName || ""} ${s.lastName || ""}`.trim() ||
+                    s.email ||
+                    "N/A",
                   email: s.email,
                 }))
               : [
                   ...prev,
                   ...resp.data.data.map((s) => ({
                     id: s.id,
-                    name: `${s.firstName} ${s.lastName}`,
+                    name:
+                      `${s.firstName || ""} ${s.lastName || ""}`.trim() ||
+                      s.email ||
+                      "N/A",
                     email: s.email,
                   })),
-                ]
+                ],
           );
           const totalPages = Math.ceil(
-            resp.data.meta.total / resp.data.meta.limit
+            resp.data.meta.total / resp.data.meta.limit,
           );
           setHasMoreStudents(resp.data.meta.page < totalPages);
         }
@@ -293,7 +301,7 @@ export default function AdminEnrollmentsPage() {
         setIsLoadingStudents(false);
       }
     },
-    [FILTER_PAGE_SIZE]
+    [FILTER_PAGE_SIZE],
   );
 
   // Trigger course fetch when menu opens or search changes
@@ -387,7 +395,7 @@ export default function AdminEnrollmentsPage() {
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editing, setEditing] = React.useState<Enrollment | null>(null);
   const [pendingDelete, setPendingDelete] = React.useState<Enrollment | null>(
-    null
+    null,
   );
 
   const handleCreate = React.useCallback(
@@ -406,13 +414,15 @@ export default function AdminEnrollmentsPage() {
         }
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : "Failed to create enrollment"
+          error instanceof Error
+            ? error.message
+            : "Failed to create enrollment",
         );
       } finally {
         setIsSubmitting(false);
       }
     },
-    []
+    [],
   );
 
   const handleEdit = React.useCallback(
@@ -433,13 +443,15 @@ export default function AdminEnrollmentsPage() {
         }
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : "Failed to update enrollment"
+          error instanceof Error
+            ? error.message
+            : "Failed to update enrollment",
         );
       } finally {
         setIsSubmitting(false);
       }
     },
-    [editing]
+    [editing],
   );
 
   const handleDelete = React.useCallback((enrollment: Enrollment) => {
@@ -457,7 +469,7 @@ export default function AdminEnrollmentsPage() {
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to delete enrollment"
+        error instanceof Error ? error.message : "Failed to delete enrollment",
       );
     }
   }, [pendingDelete]);
@@ -1066,8 +1078,8 @@ export default function AdminEnrollmentsPage() {
                   editing.status === "Active"
                     ? "ACTIVE"
                     : editing.status === "Completed"
-                    ? "COMPLETED"
-                    : "CANCELLED",
+                      ? "COMPLETED"
+                      : "CANCELLED",
               }
             : undefined
         }

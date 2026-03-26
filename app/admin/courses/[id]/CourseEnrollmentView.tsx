@@ -89,7 +89,7 @@ export default function CourseEnrollmentView({
           const mapped: CourseEnrollmentRow[] = response.data.data.map((e) => ({
             id: e.id,
             studentName: e.student
-              ? `${e.student.firstName} ${e.student.lastName}`.trim() ||
+              ? `${e.student.firstName || ""} ${e.student.lastName || ""}`.trim() ||
                 e.student.email ||
                 "N/A"
               : "N/A",
