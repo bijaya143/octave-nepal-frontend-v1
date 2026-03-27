@@ -173,7 +173,9 @@ export default function PaymentFormModal({
               (enr.student
                 ? `${enr.student.firstName ?? ""} ${
                     enr.student.lastName ?? ""
-                  }`.trim()
+                  }`.trim() ||
+                  enr.student.email ||
+                  "N/A"
                 : "N/A"),
             amount: enr.amount,
           }));

@@ -60,7 +60,7 @@ export default function CourseReviewView({ courseId }: CourseReviewViewProps) {
           const mapped: CourseReviewRow[] = response.data.data.map((r) => ({
             id: r.id,
             studentName: r.student
-              ? `${r.student.firstName} ${r.student.lastName}`.trim() ||
+              ? `${r.student.firstName ?? ""} ${r.student.lastName ?? ""}`.trim() ||
                 r.student.email ||
                 "N/A"
               : "N/A",
