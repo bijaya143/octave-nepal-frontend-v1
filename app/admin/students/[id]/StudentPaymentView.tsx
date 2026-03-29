@@ -34,6 +34,14 @@ interface StudentPaymentViewProps {
   studentId: string;
 }
 
+function statusLabel(s?: PaymentStatus) {
+  if (s === PaymentStatus.PAID) return "Paid";
+  if (s === PaymentStatus.PENDING) return "Pending";
+  if (s === PaymentStatus.FAILED) return "Failed";
+  if (s === PaymentStatus.REFUNDED) return "Refunded";
+  return s ? String(s) : "N/A";
+}
+
 export default function StudentPaymentView({
   studentId,
 }: StudentPaymentViewProps) {
@@ -133,7 +141,7 @@ export default function StudentPaymentView({
             ) : (
               <RotateCcw size={14} />
             )}
-            {row.status ? row.status.charAt(0) + row.status.slice(1).toLowerCase() : "N/A"}
+            {statusLabel(row.status)}
           </span>
         </Badge>
       ),
@@ -149,9 +157,7 @@ export default function StudentPaymentView({
   const paymentStart =
     paymentTotal === 0
       ? 0
-      : (paymentCurrentPage - 1) *
-          (paymentMeta?.limit || paymentPageSize) +
-        1;
+      : (paymentCurrentPage - 1) * (paymentMeta?.limit || paymentPageSize) + 1;
   const paymentEnd = Math.min(
     paymentStart +
       (paymentMeta?.limit || paymentPageSize) -
@@ -163,9 +169,7 @@ export default function StudentPaymentView({
     <Card>
       <CardContent className="p-0">
         {paymentsError ? (
-          <div className="px-6 py-8 text-sm text-red-600">
-            {paymentsError}
-          </div>
+          <div className="px-6 py-8 text-sm text-red-600">{paymentsError}</div>
         ) : (
           <>
             <DataTable<PaymentRow>
@@ -182,10 +186,8 @@ export default function StudentPaymentView({
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4">
                 <p className="text-sm text-[color:var(--color-neutral-600)]">
                   Showing{" "}
-                  {paymentTotal === 0
-                    ? 0
-                    : `${paymentStart}-${paymentEnd}`}{" "}
-                  of {paymentTotal}
+                  {paymentTotal === 0 ? 0 : `${paymentStart}-${paymentEnd}`} of{" "}
+                  {paymentTotal}
                 </p>
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <Button
@@ -208,13 +210,10 @@ export default function StudentPaymentView({
                     size="sm"
                     className="w-full sm:w-auto"
                     disabled={
-                      paymentsLoading ||
-                      paymentCurrentPage === paymentPageCount
+                      paymentsLoading || paymentCurrentPage === paymentPageCount
                     }
                     onClick={() =>
-                      setPaymentPage((p) =>
-                        Math.min(p + 1, paymentPageCount),
-                      )
+                      setPaymentPage((p) => Math.min(p + 1, paymentPageCount))
                     }
                   >
                     Next
