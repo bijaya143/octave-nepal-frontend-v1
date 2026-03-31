@@ -365,7 +365,16 @@ export default function AdminReviewsPage() {
     {
       id: "courseTitle",
       header: "Course",
-      accessor: "courseTitle",
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <span
+            className="font-medium truncate max-w-[200px]"
+            title={row.courseTitle}
+          >
+            {row.courseTitle}
+          </span>
+        </div>
+      ),
       cellClassName: "whitespace-nowrap",
     },
     {
