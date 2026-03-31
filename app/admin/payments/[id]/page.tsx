@@ -190,11 +190,17 @@ export default function PaymentDetailPage() {
                       Enrollment ID: {payment.enrollment?.id || "N/A"}
                     </div>
                     <div className="text-[12px] text-[color:var(--color-neutral-600)]">
-                      Transaction: {payment.transactionId || "N/A"}
+                      Transaction ID: {payment.transactionId || "N/A"}
+                    </div>
+                    <div className="text-[12px] text-[color:var(--color-neutral-600)]">
+                      Payment ID: {payment.enrollmentPaymentId || "N/A"}
                     </div>
                     {payment.createdBy && (
                       <div className="text-[12px] text-[color:var(--color-neutral-600)]">
-                        Created By: {`${(payment.createdBy as any).firstName ?? ""} ${(payment.createdBy as any).lastName ?? ""}`.trim() || (payment.createdBy as any).email || "N/A"}
+                        Created By:{" "}
+                        {`${(payment.createdBy as any).firstName ?? ""} ${(payment.createdBy as any).lastName ?? ""}`.trim() ||
+                          (payment.createdBy as any).email ||
+                          "N/A"}
                       </div>
                     )}
                   </div>
@@ -301,7 +307,7 @@ export default function PaymentDetailPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {Object.entries(payment.details).map(([key, value]) => {
                       if (value === null || value === undefined) return null;
-                      
+
                       const formattedKey = key
                         .replace(/_/g, " ")
                         .replace(/([A-Z])/g, " $1")
@@ -314,7 +320,9 @@ export default function PaymentDetailPage() {
                             {formattedKey}
                           </span>
                           <span className="mt-0.5 text-sm font-medium text-[color:var(--color-neutral-900)] break-all">
-                            {typeof value === "object" ? JSON.stringify(value) : String(value)}
+                            {typeof value === "object"
+                              ? JSON.stringify(value)
+                              : String(value)}
                           </span>
                         </div>
                       );

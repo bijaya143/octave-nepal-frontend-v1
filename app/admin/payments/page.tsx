@@ -175,6 +175,31 @@ export default function AdminPaymentsPage() {
     }
   };
 
+  // Click outside and keyboard handlers
+  React.useEffect(() => {
+    function handleDocClick(e: MouseEvent) {
+      const target = e.target as Node;
+      if (
+        isStudentMenuOpen &&
+        studentMenuRef.current &&
+        !studentMenuRef.current.contains(target)
+      ) {
+        setIsStudentMenuOpen(false);
+      }
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsStudentMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleDocClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleDocClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [isStudentMenuOpen]);
+
   // helpers provided above for labels/classes
 
   const fetchPayments = React.useCallback(async () => {
@@ -383,7 +408,9 @@ export default function AdminPaymentsPage() {
         <div className="flex items-center gap-3">
           <div>
             <div className="font-medium">{row.studentName}</div>
-            {/* <div className="text-xs text-[color:var(--color-neutral-500)]">{row.studentEmail}</div> */}
+            <div className="text-xs text-[color:var(--color-neutral-500)]">
+              {row.studentEmail}
+            </div>
           </div>
         </div>
       ),
@@ -395,12 +422,12 @@ export default function AdminPaymentsPage() {
       accessor: "transactionId",
       cellClassName: "whitespace-nowrap font-mono text-sm",
     },
-    {
-      id: "paymentId",
-      header: "Payment ID",
-      accessor: "enrollmentPaymentId",
-      cellClassName: "whitespace-nowrap font-mono text-sm",
-    },
+    // {
+    //   id: "paymentId",
+    //   header: "Payment ID",
+    //   accessor: "enrollmentPaymentId",
+    //   cellClassName: "whitespace-nowrap font-mono text-sm",
+    // },
     {
       id: "amount",
       header: "Amount",
@@ -412,24 +439,6 @@ export default function AdminPaymentsPage() {
       ),
       cellClassName: "whitespace-nowrap",
     },
-    // {
-    //   id: "method",
-    //   header: "Method",
-    //   cell: (row) => (
-    //     <Badge variant="outline" className={methodBadgeClass(row.method)}>
-    //       <span className="inline-flex items-center gap-1">
-    //         {row.method === PaymentMethod.BANK_TRANSFER ||
-    //         row.method === PaymentMethod.CARD ? (
-    //           <CreditCard size={14} />
-    //         ) : (
-    //           <Smartphone size={14} />
-    //         )}
-    //         {methodLabel(row.method)}
-    //       </span>
-    //     </Badge>
-    //   ),
-    //   cellClassName: "whitespace-nowrap",
-    // },
     {
       id: "paidAt",
       header: "Paid At",
