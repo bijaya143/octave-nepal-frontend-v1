@@ -319,7 +319,12 @@ export default function AdminCoursesPage() {
       header: "Title",
       accessor: (row) => (
         <div className="flex flex-col">
-          <span className="font-medium">{row.title}</span>
+          <span
+            className="font-medium truncate max-w-[200px]"
+            title={row.title}
+          >
+            {row.title}
+          </span>
           <span className="text-xs text-[color:var(--color-neutral-500)]">
             {row.category.name}
           </span>

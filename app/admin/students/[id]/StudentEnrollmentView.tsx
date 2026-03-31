@@ -92,7 +92,8 @@ export default function StudentEnrollmentView({
       id: "courseTitle",
       header: "Course",
       accessor: (row) => row.courseTitle,
-      cellClassName: "font-medium",
+      cellClassName: "font-medium truncate max-w-[200px]",
+      title: (row) => row.courseTitle,
     },
     {
       id: "courseCategory",

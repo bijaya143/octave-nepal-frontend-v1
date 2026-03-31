@@ -511,7 +511,12 @@ export default function AdminEnrollmentsPage() {
       accessor: (row) => (
         <div className="flex items-center gap-3">
           <div>
-            <div className="font-medium">{row.courseTitle}</div>
+            <div
+              className="font-medium truncate max-w-[200px]"
+              title={row.courseTitle}
+            >
+              {row.courseTitle}
+            </div>
             <div className="text-xs text-[color:var(--color-neutral-500)]">
               {row.courseCategory}
             </div>
@@ -956,7 +961,12 @@ export default function AdminEnrollmentsPage() {
                                 setIsCourseMenuOpen(false);
                               }}
                             >
-                              <div>{course.title}</div>
+                              <div
+                                className="truncate max-w-[200px]"
+                                title={course.title}
+                              >
+                                {course.title}
+                              </div>
                               <div className="text-xs text-[color:var(--color-neutral-500)]">
                                 {course.category.name}
                               </div>

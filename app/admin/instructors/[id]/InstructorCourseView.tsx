@@ -97,7 +97,8 @@ export default function InstructorCourseView({
       id: "title",
       header: "Title",
       accessor: (row) => row.title,
-      cellClassName: "font-medium",
+      cellClassName: "font-medium truncate max-w-[200px]",
+      title: (row) => row.title,
     },
     {
       id: "students",

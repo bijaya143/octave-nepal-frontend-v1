@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import Card, { CardContent } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
-import { Calendar, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { Calendar, CheckCircle2, XCircle, AlertCircle, Lock } from "lucide-react";
 import { adminStudentService } from "@/lib/services/admin/student";
 import { Student } from "@/lib/services/student/types";
 import StudentEnrollmentView from "./StudentEnrollmentView";
@@ -134,26 +134,40 @@ export default function StudentDetailPage() {
         <div className="grid grid-cols-5 gap-1">
           {(
             [
-              { key: "overview", label: "Overview" },
-              { key: "enrollments", label: "Enrollments" },
-              { key: "payments", label: "Payments" },
-              { key: "certificates", label: "Certificates" },
-              { key: "activities", label: "Activities" },
-            ] as Array<{ key: TabKey; label: string }>
-          ).map((t) => (
-            <Link
-              key={t.key}
-              href={`/admin/students/${id}?tab=${t.key}`}
-              className={
-                (t.key === activeTab
-                  ? "px-3 py-1.5 rounded-md border border-[color:var(--color-primary-200)] text-[color:var(--color-primary-700)] bg-[color:var(--color-primary-50)]"
-                  : "px-3 py-1.5 rounded-md border border-[color:var(--color-neutral-200)] text-[color:var(--color-neutral-700)] hover:bg-[color:var(--color-neutral-50)]") +
-                " w-full text-center"
-              }
-            >
-              {t.label}
-            </Link>
-          ))}
+              { key: "overview", label: "Overview", disabled: false },
+              { key: "enrollments", label: "Enrollments", disabled: false },
+              { key: "payments", label: "Payments", disabled: false },
+              { key: "certificates", label: "Certificates", disabled: false },
+              { key: "activities", label: "Activities", disabled: true },
+            ] as Array<{ key: TabKey; label: string; disabled?: boolean }>
+          ).map((t) => {
+            if (t.disabled) {
+              return (
+                <div
+                  key={t.key}
+                  title="Coming soon"
+                  className="flex items-center justify-center gap-1.5 w-full text-center px-3 py-1.5 rounded-md border border-transparent text-[color:var(--color-neutral-400)] bg-[color:var(--color-neutral-50)] cursor-not-allowed select-none"
+                >
+                  <Lock size={12} className="opacity-70" />
+                  <span>{t.label}</span>
+                </div>
+              );
+            }
+            return (
+              <Link
+                key={t.key}
+                href={`/admin/students/${id}?tab=${t.key}`}
+                className={
+                  (t.key === activeTab
+                    ? "px-3 py-1.5 rounded-md border border-[color:var(--color-primary-200)] text-[color:var(--color-primary-700)] bg-[color:var(--color-primary-50)]"
+                    : "px-3 py-1.5 rounded-md border border-[color:var(--color-neutral-200)] text-[color:var(--color-neutral-700)] hover:bg-[color:var(--color-neutral-50)]") +
+                  " w-full text-center"
+                }
+              >
+                {t.label}
+              </Link>
+            );
+          })}
         </div>
       </div>
 

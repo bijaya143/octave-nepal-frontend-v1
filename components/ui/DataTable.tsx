@@ -9,6 +9,7 @@ export type DataTableColumn<T> = {
   align?: "left" | "right" | "center";
   headerClassName?: string;
   cellClassName?: string;
+  title?: (row: T) => string;
 };
 
 export type DataTableProps<T> = {
@@ -45,7 +46,7 @@ export default function DataTable<T>({
                 className={cn(
                   "py-3 px-2 font-semibold text-[color:var(--color-neutral-700)]",
                   getAlignClass(col.align),
-                  col.headerClassName
+                  col.headerClassName,
                 )}
               >
                 {col.header}
@@ -69,7 +70,8 @@ export default function DataTable<T>({
                 key={getRowKey ? getRowKey(row, rowIdx) : rowIdx}
                 className={cn(
                   "border-t border-[color:var(--color-neutral-200)]",
-                  onRowClick && "cursor-pointer hover:bg-[color:var(--color-neutral-50)]"
+                  onRowClick &&
+                    "cursor-pointer hover:bg-[color:var(--color-neutral-50)]",
                 )}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
               >
@@ -92,8 +94,9 @@ export default function DataTable<T>({
                       className={cn(
                         "py-3 px-2 text-[color:var(--color-neutral-700)] border-b border-[color:var(--color-neutral-200)]",
                         getAlignClass(col.align),
-                        col.cellClassName
+                        col.cellClassName,
                       )}
+                      title={col.title ? col.title(row) : undefined}
                     >
                       {content}
                     </td>

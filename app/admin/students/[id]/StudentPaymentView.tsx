@@ -110,7 +110,8 @@ export default function StudentPaymentView({
       id: "courseTitle",
       header: "Course",
       accessor: (row) => row.courseTitle,
-      cellClassName: "font-medium",
+      cellClassName: "font-medium truncate max-w-[200px]",
+      title: (row) => row.courseTitle,
     },
     {
       id: "amount",
