@@ -159,7 +159,7 @@ export default function StudentDashboardPage() {
             </h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {/* Assignments */}
-              <Card
+              {/* <Card
                 className="relative overflow-hidden group cursor-pointer"
                 onClick={() => handleOpen("assignments")}
               >
@@ -181,10 +181,10 @@ export default function StudentDashboardPage() {
                     <ChevronRight size={14} aria-hidden="true" />
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Upcoming Sessions */}
-              <Card
+              {/* <Card
                 className="relative overflow-hidden group cursor-pointer"
                 onClick={() => handleOpen("sessions")}
               >
@@ -206,7 +206,7 @@ export default function StudentDashboardPage() {
                     <ChevronRight size={14} aria-hidden="true" />
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Announcements */}
               <Card

@@ -82,6 +82,15 @@ export interface AdminResetPasswordInput {
 }
 
 /**
+ * Update password input
+ */
+export interface AdminUpdatePasswordInput {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+/**
  * Student list API response
  */
 export interface AdminStudentOutput {

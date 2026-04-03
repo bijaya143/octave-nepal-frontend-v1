@@ -13,6 +13,7 @@ import type {
   AdminLoginCredentials,
   AdminLoginResponseData,
   AdminResetPasswordInput,
+  AdminUpdatePasswordInput,
 } from "./types";
 
 /**
@@ -42,7 +43,7 @@ import type {
  * ```
  */
 export const login = async (
-  credentials: AdminLoginCredentials
+  credentials: AdminLoginCredentials,
 ): Promise<ApiResponse<AdminLoginResponseData>> => {
   return api.post<AdminLoginResponseData>("admin/auth/login", credentials);
 };
@@ -63,11 +64,11 @@ export const me = async (): Promise<ApiResponse<Admin>> => {
  * @returns Promise resolving to forgot password response
  */
 export const forgotPassword = async (
-  input: AdminForgotPasswordInput
+  input: AdminForgotPasswordInput,
 ): Promise<ApiResponse<AdminCommonResponseData>> => {
   return api.post<AdminCommonResponseData>(
     "/admin/auth/forgot-password",
-    input
+    input,
   );
 };
 
@@ -78,7 +79,7 @@ export const forgotPassword = async (
  * @returns Promise resolving to reset password response
  */
 export const resetPassword = async (
-  input: AdminResetPasswordInput
+  input: AdminResetPasswordInput,
 ): Promise<ApiResponse<AdminCommonResponseData>> => {
   return api.post<AdminCommonResponseData>("/admin/auth/reset-password", input);
 };
@@ -102,14 +103,31 @@ export const resetPassword = async (
  * ```
  */
 export const refreshToken = async (
-  refreshToken?: string
+  refreshToken?: string,
 ): Promise<ApiResponse<AdminLoginResponseData>> => {
   return api.post<AdminLoginResponseData>(
     "admin/auth/generate-access-token",
     refreshToken ? { refreshToken } : undefined,
     {
       useRefreshToken: true, // Use refresh token as Bearer token instead of access token
-    }
+    },
+  );
+};
+
+// Profile and Password Update
+
+/**
+ * Update password
+ *
+ * @param input - Password update input (oldPassword, newPassword, confirmNewPassword)
+ * @returns Promise resolving to password update response
+ */
+export const updatePassword = async (
+  input: AdminUpdatePasswordInput,
+): Promise<ApiResponse<AdminCommonResponseData>> => {
+  return api.patch<AdminCommonResponseData>(
+    "/admin/auth/update-password",
+    input,
   );
 };
 
@@ -122,4 +140,5 @@ export const adminAuthService = {
   forgotPassword,
   resetPassword,
   refreshToken,
+  updatePassword,
 };
