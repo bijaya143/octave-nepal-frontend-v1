@@ -2,7 +2,12 @@
  * Student service types
  */
 
-import { Admin, Enrollment, EnrollmentStatus } from "../admin";
+import {
+  Admin,
+  AdminEnrollmentCertificate,
+  Enrollment,
+  EnrollmentStatus,
+} from "../admin";
 import { PaginationInput, PaginationOutput } from "../common-types";
 
 /**
@@ -125,4 +130,12 @@ export interface StudentEnrollmentOutput {
  */
 export interface StudentEnrollmentFilterInput extends PaginationInput {
   status?: EnrollmentStatus;
+}
+
+/**
+ * Student enrollment certificate output
+ */
+export interface StudentEnrollmentCertificateOutput {
+  data: AdminEnrollmentCertificate[];
+  meta: PaginationOutput;
 }

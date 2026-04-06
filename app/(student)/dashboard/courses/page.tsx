@@ -9,6 +9,7 @@ import { BookOpen, Hammer, Award, CalendarClock } from "lucide-react";
 import Image from "next/image";
 import { studentEnrollmentService } from "@/lib/services/student/enrollment";
 import { Enrollment } from "@/lib/services/admin/types";
+import StudentCourseCertificateViewModal from "./StudentCourseCertificateViewModal";
 
 const getCourseLevelStyles = (level: string) => {
   switch (level?.toUpperCase()) {
@@ -97,6 +98,7 @@ const getNextSessionText = (course: any) => {
 export default function StudentCoursesPage() {
   const [enrollments, setEnrollments] = React.useState<Enrollment[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [certificateEnrollmentId, setCertificateEnrollmentId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const fetchEnrollments = async () => {
@@ -401,9 +403,12 @@ export default function StudentCoursesPage() {
 
                   <div className="mt-5 flex items-center justify-end gap-2">
                     <Button size="sm">Review</Button>
-                    <Button size="sm" variant="secondary">
-                      View certificate
-                    </Button>
+
+                    {c.isCertificateCreated && (
+                      <Button size="sm" variant="secondary" onClick={() => setCertificateEnrollmentId(c.id)}>
+                        View certificate
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -411,6 +416,12 @@ export default function StudentCoursesPage() {
           </div>
         </div>
       )}
+
+      {/* Certificate Modal */}
+      <StudentCourseCertificateViewModal
+        enrollmentId={certificateEnrollmentId}
+        onClose={() => setCertificateEnrollmentId(null)}
+      />
     </>
   );
 }
