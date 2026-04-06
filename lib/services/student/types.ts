@@ -2,7 +2,8 @@
  * Student service types
  */
 
-import { Admin } from "../admin";
+import { Admin, Enrollment, EnrollmentStatus } from "../admin";
+import { PaginationInput, PaginationOutput } from "../common-types";
 
 /**
  * Student information returned from authentication
@@ -109,4 +110,19 @@ export interface StudentResetPasswordInput {
   email: string;
   token: string;
   password: string;
+}
+
+/**
+ * Student enrollment output
+ */
+export interface StudentEnrollmentOutput {
+  data: Enrollment[];
+  meta: PaginationOutput;
+}
+
+/**
+ * Student enrollment filter input
+ */
+export interface StudentEnrollmentFilterInput extends PaginationInput {
+  status?: EnrollmentStatus;
 }

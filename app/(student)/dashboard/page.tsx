@@ -8,8 +8,6 @@ import {
   Award,
   Sparkles,
   Lock,
-  ClipboardList,
-  CalendarClock,
   Megaphone,
   ChevronRight,
 } from "lucide-react";
@@ -17,12 +15,129 @@ import Link from "next/link";
 import Modal from "../../../components/ui/Modal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { studentEnrollmentService } from "@/lib/services/student/enrollment";
+import { Enrollment } from "@/lib/services/admin/types";
+
+const getMeetingPlatformInfo = (platform?: string) => {
+  switch (platform) {
+    case "GOOGLE_MEET":
+      return { label: "Google Meet", icon: "/images/meeting/meet.png" };
+    case "ZOOM":
+      return { label: "Zoom", icon: "/images/meeting/zoom.png" };
+    case "MICROSOFT_TEAMS":
+      return { label: "Microsoft Teams", icon: "/images/meeting/teams.png" };
+    case "WEBEX":
+      return { label: "Webex", icon: "/images/meeting/video-call.png" };
+    default:
+      return { label: "Meeting", icon: "/images/meeting/video-call.png" };
+  }
+};
+
+const getNextSessionText = (course: any) => {
+  if (!course?.fromDay || !course?.startTime) return null;
+
+  const daysMap: Record<string, number> = {
+    SUNDAY: 0,
+    MONDAY: 1,
+    TUESDAY: 2,
+    WEDNESDAY: 3,
+    THURSDAY: 4,
+    FRIDAY: 5,
+    SATURDAY: 6,
+  };
+  const daysReverse = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const fromIdx = daysMap[course.fromDay];
+  const toIdx = course.toDay ? daysMap[course.toDay] : fromIdx;
+
+  const now = new Date();
+  const currentDayIdx = now.getDay();
+
+  let courseHour = parseInt(course.startTime.split(":")[0]) || 0;
+  const courseMinute = parseInt(course.startTime.split(":")[1]) || 0;
+  if (course.startTimeDesignator === "PM" && courseHour !== 12)
+    courseHour += 12;
+  if (course.startTimeDesignator === "AM" && courseHour === 12) courseHour = 0;
+
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+
+  let nextDayIdx = -1;
+
+  for (let i = 0; i < 7; i++) {
+    const testDay = (currentDayIdx + i) % 7;
+    let inRange = false;
+    if (fromIdx <= toIdx) {
+      inRange = testDay >= fromIdx && testDay <= toIdx;
+    } else {
+      inRange = testDay >= fromIdx || testDay <= toIdx;
+    }
+
+    if (inRange) {
+      if (i === 0) {
+        if (
+          currentHour < courseHour ||
+          (currentHour === courseHour && currentMinute < courseMinute)
+        ) {
+          nextDayIdx = testDay;
+          break;
+        }
+      } else {
+        nextDayIdx = testDay;
+        break;
+      }
+    }
+  }
+
+  if (nextDayIdx !== -1) {
+    let prefix = daysReverse[nextDayIdx];
+    if (nextDayIdx === currentDayIdx) prefix = "Today";
+    else if (nextDayIdx === (currentDayIdx + 1) % 7) prefix = "Tomorrow";
+
+    return `Next session: ${prefix} ${course.startTime} ${course.startTimeDesignator}`;
+  }
+
+  return null;
+};
 
 export default function StudentDashboardPage() {
   const [openModal, setOpenModal] = React.useState<
     null | "assignments" | "sessions" | "announcements" | "certificates"
   >(null);
   const router = useRouter();
+
+  const [enrollments, setEnrollments] = React.useState<Enrollment[]>([]);
+  const [loadingEnrollments, setLoadingEnrollments] =
+    React.useState<boolean>(true);
+  const [enrollmentError, setEnrollmentError] = React.useState<string | null>(
+    null,
+  );
+
+  React.useEffect(() => {
+    const fetchEnrollments = async () => {
+      try {
+        setLoadingEnrollments(true);
+        const res = await studentEnrollmentService.list({
+          status: "ACTIVE" as any,
+          page: 1,
+          limit: 4,
+        });
+        if (res.success) {
+          setEnrollments(res.data.data || []);
+        } else {
+          setEnrollmentError(
+            res.error?.message || "Failed to load enrollments.",
+          );
+        }
+      } catch (e: any) {
+        setEnrollmentError(e.message || "An error occurred.");
+      } finally {
+        setLoadingEnrollments(false);
+      }
+    };
+    fetchEnrollments();
+  }, []);
+
   const handleOpen = (key: NonNullable<typeof openModal>) => setOpenModal(key);
   const handleClose = () => setOpenModal(null);
   return (
@@ -120,32 +235,113 @@ export default function StudentDashboardPage() {
               </Link>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
-              {[1, 2].map((i) => (
-                <Card key={i}>
-                  <CardContent className="py-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="text-sm font-medium">Course {i}</div>
-                        <div className="text-xs text-[color:var(--color-neutral-600)]">
-                          Next session: Tue 10:00 AM
+              {loadingEnrollments ? (
+                <>
+                  {[1, 2].map((idx) => (
+                    <Card
+                      key={`skeleton-enrollment-${idx}`}
+                      className="animate-pulse"
+                    >
+                      <CardContent className="py-5">
+                        <div className="flex flex-col gap-3">
+                          <div>
+                            <div className="h-4 bg-[color:var(--color-neutral-200)] rounded w-full mb-1"></div>
+                            <div className="h-4 bg-[color:var(--color-neutral-200)] rounded w-2/3"></div>
+                            <div className="h-3 bg-[color:var(--color-neutral-100)] rounded w-1/2 mt-3"></div>
+                          </div>
+                          <div className="h-8 w-full bg-[color:var(--color-neutral-200)] rounded"></div>
                         </div>
-                      </div>
-                      <Button size="sm" variant="secondary">
-                        Join Zoom
-                      </Button>
-                    </div>
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between text-xs mb-1">
-                        <span>Progress</span>
-                        <span>45%</span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-[color:var(--color-neutral-200)] overflow-hidden">
-                        <div className="h-full w-[45%] rounded-full bg-[color:var(--color-primary-500)]" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                        <div className="mt-4">
+                          <div className="flex justify-between items-center mb-1">
+                            <div className="h-3 bg-[color:var(--color-neutral-200)] rounded w-12"></div>
+                            <div className="h-3 bg-[color:var(--color-neutral-200)] rounded w-8"></div>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-[color:var(--color-neutral-100)]"></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </>
+              ) : enrollmentError ? (
+                <div className="col-span-1 sm:col-span-2 text-sm text-red-500 py-4 text-center border border-red-100 bg-red-50 rounded-lg">
+                  {enrollmentError}
+                </div>
+              ) : enrollments.length === 0 ? (
+                <div className="col-span-1 sm:col-span-2 text-sm text-[color:var(--color-neutral-500)] py-8 text-center border border-dashed rounded-lg">
+                  No active enrollments found.
+                </div>
+              ) : (
+                enrollments.map((enrollment) => {
+                  const primaryMeetingLink =
+                    enrollment.course?.meetingLinks?.find((l) => l.isPrimary);
+                  const platformInfo = getMeetingPlatformInfo(
+                    primaryMeetingLink?.platform,
+                  );
+
+                  return (
+                    <Card key={enrollment.id}>
+                      <CardContent className="py-5">
+                        <div className="flex flex-col gap-3">
+                          <div>
+                            <div
+                              className="text-sm font-medium leading-relaxed line-clamp-2"
+                              title={
+                                enrollment.course?.title || "Unknown Course"
+                              }
+                            >
+                              {enrollment.course?.title || "Unknown Course"}
+                            </div>
+                            <div className="text-xs text-[color:var(--color-neutral-600)] mt-1.5">
+                              {getNextSessionText(enrollment.course) ||
+                                `Enrolled on ${new Date(enrollment.createdAt).toLocaleDateString()}`}
+                            </div>
+                          </div>
+                          {primaryMeetingLink && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="w-full flex items-center justify-center gap-1.5"
+                              onClick={() => {
+                                if (primaryMeetingLink.link) {
+                                  window.open(
+                                    primaryMeetingLink.link,
+                                    "_blank",
+                                    "noopener,noreferrer",
+                                  );
+                                }
+                              }}
+                            >
+                              <Image
+                                src={platformInfo.icon}
+                                alt={platformInfo.label}
+                                width={14}
+                                height={14}
+                                className="w-3.5 h-3.5 object-contain"
+                              />
+                              {`${platformInfo.label}`}
+                              {/* Join */}
+                            </Button>
+                          )}
+                        </div>
+                        <div className="mt-6">
+                          <div className="flex items-center justify-between text-[11px] mb-2 font-bold uppercase tracking-wider text-[color:var(--color-neutral-500)]">
+                            <span>Course Progress</span>
+                            <span className="text-[color:var(--color-primary-600)]">
+                              {enrollment.progressPercentage || 0}%
+                            </span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-[color:var(--color-neutral-100)] overflow-hidden shadow-inner flex items-center">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-[color:var(--color-primary-400)] to-[color:var(--color-primary-600)] transition-all duration-700 ease-out"
+                              style={{ width: `${enrollment.progressPercentage || 0}%` }}
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })
+              )}
             </div>
           </div>
 
