@@ -10,6 +10,7 @@ import Image from "next/image";
 import { studentEnrollmentService } from "@/lib/services/student/enrollment";
 import { Enrollment } from "@/lib/services/admin/types";
 import StudentCourseCertificateViewModal from "./StudentCourseCertificateViewModal";
+import StudentCourseReviewModal from "./StudentCourseReviewModal";
 
 const getCourseLevelStyles = (level: string) => {
   switch (level?.toUpperCase()) {
@@ -99,6 +100,7 @@ export default function StudentCoursesPage() {
   const [enrollments, setEnrollments] = React.useState<Enrollment[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [certificateEnrollmentId, setCertificateEnrollmentId] = React.useState<string | null>(null);
+  const [reviewEnrollmentId, setReviewEnrollmentId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const fetchEnrollments = async () => {
@@ -402,7 +404,9 @@ export default function StudentCoursesPage() {
                   </div>
 
                   <div className="mt-5 flex items-center justify-end gap-2">
-                    <Button size="sm">Review</Button>
+                    <Button size="sm" onClick={() => setReviewEnrollmentId(c.id)}>
+                      Review
+                    </Button>
 
                     {c.isCertificateCreated && (
                       <Button size="sm" variant="secondary" onClick={() => setCertificateEnrollmentId(c.id)}>
@@ -421,6 +425,12 @@ export default function StudentCoursesPage() {
       <StudentCourseCertificateViewModal
         enrollmentId={certificateEnrollmentId}
         onClose={() => setCertificateEnrollmentId(null)}
+      />
+
+      {/* Review Modal */}
+      <StudentCourseReviewModal
+        enrollmentId={reviewEnrollmentId}
+        onClose={() => setReviewEnrollmentId(null)}
       />
     </>
   );

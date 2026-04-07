@@ -100,7 +100,7 @@ export default function StudentCourseCertificateViewModal({
                 {/* Certificate File Preview */}
                 {certUrl && (
                   <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-4">
-                    <div className="mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="mb-3">
                       <h4 className="text-sm sm:text-base font-medium text-[color:var(--color-neutral-900)] leading-tight">
                         {cert.title}
                       </h4>
@@ -139,19 +139,24 @@ export default function StudentCourseCertificateViewModal({
                             className="object-contain"
                             unoptimized
                           />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <a
-                              href={certUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="bg-white text-[color:var(--color-neutral-900)] px-4 py-2 rounded-md font-medium shadow-lg flex items-center gap-2 hover:bg-[color:var(--color-neutral-50)] transition-colors"
-                            >
-                              <Download size={16} /> Download
-                            </a>
-                          </div>
                         </div>
                       )}
                     </div>
+                    {/* Native Download Action Below the Asset */}
+                    {!certIsPdf && (
+                      <div className="mt-4">
+                        <a
+                          href={certUrl}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex w-full items-center justify-center gap-2 rounded-lg bg-[color:var(--color-primary-50)] border border-[color:var(--color-primary-100)] px-4 py-2.5 text-sm font-medium text-[color:var(--color-primary-700)] transition-all hover:bg-[color:var(--color-primary-100)] active:bg-[color:var(--color-primary-200)]"
+                        >
+                          <Download size={16} />
+                          Download Certificate Image
+                        </a>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
