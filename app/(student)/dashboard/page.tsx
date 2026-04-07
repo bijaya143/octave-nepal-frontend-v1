@@ -17,6 +17,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { studentEnrollmentService } from "@/lib/services/student/enrollment";
 import { Enrollment } from "@/lib/services/admin/types";
+import StudentCertificateViewModal from "./StudentCertificateViewModal";
 
 const getMeetingPlatformInfo = (platform?: string) => {
   switch (platform) {
@@ -333,7 +334,9 @@ export default function StudentDashboardPage() {
                           <div className="h-1.5 w-full rounded-full bg-[color:var(--color-neutral-100)] overflow-hidden shadow-inner flex items-center">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-[color:var(--color-primary-400)] to-[color:var(--color-primary-600)] transition-all duration-700 ease-out"
-                              style={{ width: `${enrollment.progressPercentage || 0}%` }}
+                              style={{
+                                width: `${enrollment.progressPercentage || 0}%`,
+                              }}
                             />
                           </div>
                         </div>
@@ -628,46 +631,20 @@ export default function StudentDashboardPage() {
         onClose={handleClose}
         title="Announcements"
       >
-        <div className="space-y-3 text-sm">
-          {[
-            {
-              title: "Session rescheduled",
-              detail: "React 19 class moved to Wed 7PM",
-            },
-            {
-              title: "New resources",
-              detail: "TypeScript cheat‑sheet added to course",
-            },
-          ].map((n) => (
-            <div key={n.title}>
-              <div className="font-medium">{n.title}</div>
-              <div className="text-xs text-[color:var(--color-neutral-600)] mt-0.5">
-                {n.detail}
-              </div>
-            </div>
-          ))}
+        <div className="flex flex-col items-center justify-center p-8 text-center">
+          <p className="text-sm text-[color:var(--color-neutral-600)] font-medium">
+            No announcements found.
+          </p>
+          <p className="text-xs text-[color:var(--color-neutral-500)] mt-1">
+            You will be notified when there are new announcements.
+          </p>
         </div>
       </Modal>
 
-      <Modal
+      <StudentCertificateViewModal
         open={openModal === "certificates"}
         onClose={handleClose}
-        title="Certificates"
-      >
-        <div className="space-y-3 text-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium">Frontend Foundations</div>
-              <div className="text-xs text-[color:var(--color-neutral-600)]">
-                Issued Oct 2025
-              </div>
-            </div>
-            <Button size="sm" variant="secondary">
-              Download
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      />
     </>
   );
 }

@@ -130,9 +130,31 @@ export default function StudentCourseReviewModal({
       panelClassName="max-w-md"
     >
       {isFetching ? (
-        <div className="flex flex-col items-center justify-center p-10 h-64 text-[color:var(--color-neutral-500)]">
-          <Loader2 className="h-8 w-8 animate-spin mb-4 text-[color:var(--color-primary-600)]" />
-          <p>Loading review data...</p>
+        <div className="space-y-6">
+          {/* Rating Skeleton */}
+          <div className="flex flex-col items-center justify-center py-6">
+            <div className="h-4 w-56 bg-[color:var(--color-neutral-200)] rounded-md animate-pulse mb-6" />
+            <div className="flex items-center gap-2">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-10 w-10 bg-[color:var(--color-neutral-200)]/60 rounded-full animate-pulse" />
+              ))}
+            </div>
+          </div>
+
+          {/* Textarea Skeleton */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="h-4 w-32 bg-[color:var(--color-neutral-200)] rounded-md animate-pulse" />
+              <div className="h-3 w-10 bg-[color:var(--color-neutral-200)]/60 rounded-md animate-pulse" />
+            </div>
+            <div className="h-[120px] w-full bg-[color:var(--color-neutral-50)]/50 border border-[color:var(--color-neutral-200)] rounded-lg animate-pulse" />
+          </div>
+
+          {/* Buttons Skeleton */}
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[color:var(--color-neutral-200)] mt-6">
+            <div className="h-9 w-20 bg-[color:var(--color-neutral-200)] rounded-md animate-pulse" />
+            <div className="h-9 w-28 bg-[color:var(--color-neutral-300)] rounded-md animate-pulse" />
+          </div>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">

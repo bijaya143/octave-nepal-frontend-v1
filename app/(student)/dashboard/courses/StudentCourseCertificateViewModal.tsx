@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Modal from "@/components/ui/Modal";
-import { XCircle, Download, FileText, Loader2 } from "lucide-react";
+import { XCircle, Download, FileText } from "lucide-react";
 import Image from "next/image";
 import { studentEnrollmentCertificateService } from "@/lib/services/student";
 import { AdminEnrollmentCertificate } from "@/lib/services/admin/types";
@@ -72,9 +72,16 @@ export default function StudentCourseCertificateViewModal({
       panelClassName="max-w-2xl"
     >
       {loading ? (
-        <div className="flex flex-col items-center justify-center p-10 h-64 text-[color:var(--color-neutral-500)]">
-          <Loader2 className="h-8 w-8 animate-spin mb-4 text-[color:var(--color-primary-600)]" />
-          <p>Loading your certificate...</p>
+        <div className="space-y-10 pb-4">
+          <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-4">
+            <div className="mb-3">
+              <div className="h-5 w-48 bg-[color:var(--color-neutral-200)] rounded-md animate-pulse" />
+            </div>
+            <div className="relative aspect-[1.414/1] w-full bg-[color:var(--color-neutral-100)] rounded-lg animate-pulse" />
+            <div className="mt-4">
+              <div className="h-10 w-full bg-[color:var(--color-neutral-100)] border border-[color:var(--color-neutral-200)] rounded-lg animate-pulse" />
+            </div>
+          </div>
         </div>
       ) : error ? (
         <div className="flex flex-col items-center justify-center p-10 h-64 text-center">
