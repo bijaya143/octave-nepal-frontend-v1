@@ -16,7 +16,9 @@ import type {
   StudentResetPasswordInput,
   Student,
   StudentVerifyOtpInput,
+  StudentUpdatePasswordInput,
 } from "./types";
+import { UpdateStudentInput } from "../admin/student";
 
 /**
  * Login with email and password
@@ -45,7 +47,7 @@ import type {
  * ```
  */
 export const login = async (
-  credentials: StudentLoginCredentials
+  credentials: StudentLoginCredentials,
 ): Promise<ApiResponse<StudentLoginResponseData>> => {
   return api.post<StudentLoginResponseData>("student/auth/login", credentials);
 };
@@ -57,11 +59,11 @@ export const login = async (
  * @returns Promise resolving to register response token
  */
 export const register = async (
-  credentials: StudentRegisterCredentials
+  credentials: StudentRegisterCredentials,
 ): Promise<ApiResponse<StudentRegisterResponseData>> => {
   return api.post<StudentRegisterResponseData>(
     "student/auth/register",
-    credentials
+    credentials,
   );
 };
 
@@ -81,7 +83,7 @@ export const me = async (): Promise<ApiResponse<Student>> => {
  * @returns Promise resolving to verify OTP response
  */
 export const verifyOtp = async (
-  input: StudentVerifyOtpInput
+  input: StudentVerifyOtpInput,
 ): Promise<ApiResponse<StudentCommonResponseData>> => {
   return api.post<StudentCommonResponseData>("/student/auth/verify", input);
 };
@@ -94,7 +96,7 @@ export const resendVerificationOtp = async (): Promise<
   ApiResponse<StudentCommonResponseData>
 > => {
   return api.post<StudentCommonResponseData>(
-    "/student/auth/resent-verification-otp"
+    "/student/auth/resent-verification-otp",
   );
 };
 
@@ -104,11 +106,11 @@ export const resendVerificationOtp = async (): Promise<
  * @returns Promise resolving to forgot password response
  */
 export const forgotPassword = async (
-  input: StudentForgotPasswordInput
+  input: StudentForgotPasswordInput,
 ): Promise<ApiResponse<StudentCommonResponseData>> => {
   return api.post<StudentCommonResponseData>(
     "/student/auth/forgot-password",
-    input
+    input,
   );
 };
 
@@ -118,11 +120,11 @@ export const forgotPassword = async (
  * @returns Promise resolving to reset password response
  */
 export const resetPassword = async (
-  input: StudentResetPasswordInput
+  input: StudentResetPasswordInput,
 ): Promise<ApiResponse<StudentCommonResponseData>> => {
   return api.post<StudentCommonResponseData>(
     "/student/auth/reset-password",
-    input
+    input,
   );
 };
 
@@ -145,14 +147,107 @@ export const resetPassword = async (
  * ```
  */
 export const refreshToken = async (
-  refreshToken?: string
+  refreshToken?: string,
 ): Promise<ApiResponse<StudentLoginResponseData>> => {
   return api.post<StudentLoginResponseData>(
     "student/auth/generate-access-token",
     refreshToken ? { refreshToken } : undefined,
     {
       useRefreshToken: true, // Use refresh token as Bearer token instead of access token
+    },
+  );
+};
+
+// Profile and Password Update
+
+/**
+ * Update password
+ *
+ * @param input - Password update input (oldPassword, newPassword, confirmNewPassword)
+ * @returns Promise resolving to password update response
+ */
+export const updatePassword = async (
+  input: StudentUpdatePasswordInput,
+): Promise<ApiResponse<StudentCommonResponseData>> => {
+  return api.patch<StudentCommonResponseData>(
+    "/student/auth/update-password",
+    input,
+  );
+};
+
+/**
+ * Update profile
+ *
+ * @param input - Student update data
+ * @returns Promise resolving to updated student response
+ *
+ * @example
+ * ```ts
+ * try {
+ *   const formData = new FormData();
+ *   formData.append('firstName', 'John Updated');
+ *   // ... append other fields to update
+ *
+ *   const response = await adminStudentService.update({
+ *     firstName: 'John Updated',
+ *     // ... other fields
+ *   });
+ *
+ *   if (response.success) {
+ *     console.log('Student updated:', response.data);
+ *   }
+ * } catch (error) {
+ *   console.error('Failed to update student:', error);
+ * }
+ * ```
+ */
+export const updateProfile = async (
+  input: UpdateStudentInput,
+): Promise<ApiResponse<StudentCommonResponseData>> => {
+  const { id, ...updateData } = input;
+  const formData = new FormData();
+
+  // Append all fields to FormData
+  Object.entries(updateData).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      if (key === "address" && typeof value === "object") {
+        // Handle nested address object
+        Object.entries(value).forEach(([addrKey, addrValue]) => {
+          if (
+            addrValue !== undefined &&
+            addrValue !== null &&
+            addrValue !== ""
+          ) {
+            formData.append(`address[${addrKey}]`, addrValue.toString());
+          }
+        });
+      } else if (key === "billing" && typeof value === "object") {
+        // Handle nested billing object
+        Object.entries(value).forEach(([billKey, billValue]) => {
+          if (
+            billValue !== undefined &&
+            billValue !== null &&
+            billValue !== ""
+          ) {
+            formData.append(`billing[${billKey}]`, billValue.toString());
+          }
+        });
+      } else if (key === "profilePicture" && value instanceof File) {
+        // Handle file upload
+        formData.append(key, value);
+      } else if (typeof value === "boolean") {
+        // Handle boolean values
+        formData.append(key, value.toString());
+      } else {
+        // Handle string values
+        formData.append(key, value.toString());
+      }
     }
+  });
+
+  return api.patch<StudentCommonResponseData>(
+    `/student/auth/update-profile`,
+    formData,
   );
 };
 
@@ -168,4 +263,6 @@ export const studentAuthService = {
   forgotPassword,
   resetPassword,
   refreshToken,
+  updatePassword,
+  updateProfile,
 };

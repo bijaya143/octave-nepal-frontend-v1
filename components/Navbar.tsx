@@ -218,7 +218,7 @@ export default function Navbar() {
                         Dashboard
                       </Link>
                       <Link
-                        href="/profile"
+                        href="/account/edit-profile"
                         onClick={() => setAccountOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 hover:bg-[color:var(--color-neutral-50)]"
                         role="menuitem"
@@ -227,7 +227,7 @@ export default function Navbar() {
                         Edit profile
                       </Link>
                       <Link
-                        href="/change-password"
+                        href="/account/change-password"
                         onClick={() => setAccountOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 hover:bg-[color:var(--color-neutral-50)]"
                         role="menuitem"
@@ -315,7 +315,7 @@ export default function Navbar() {
                       Dashboard
                     </Link>
                     <Link
-                      href="/account/profile"
+                      href="/account/edit-profile"
                       className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)] flex items-center gap-2"
                       onClick={handleClose}
                     >

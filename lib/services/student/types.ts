@@ -118,6 +118,15 @@ export interface StudentResetPasswordInput {
 }
 
 /**
+ * Update password input
+ */
+export interface StudentUpdatePasswordInput {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+/**
  * Student enrollment output
  */
 export interface StudentEnrollmentOutput {
