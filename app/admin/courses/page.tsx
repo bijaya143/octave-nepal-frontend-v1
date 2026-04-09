@@ -340,26 +340,26 @@ export default function AdminCoursesPage() {
           <div className="h-8 w-8 overflow-hidden rounded-full bg-gray-100">
             <Avatar
               src={
-                row.instructor.profilePictureKey
-                  ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${row.instructor.profilePictureKey}`
+                row.instructor?.profilePictureKey
+                  ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${row.instructor?.profilePictureKey}`
                   : `https://ui-avatars.com/api/?name=${encodeURIComponent(
                       [
-                        row.instructor.firstName,
-                        row.instructor.middleName,
-                        row.instructor.lastName,
+                        row.instructor?.firstName,
+                        row.instructor?.middleName,
+                        row.instructor?.lastName,
                       ]
                         .filter(Boolean)
                         .join(" "),
                     )}&background=random`
               }
-              alt={row.instructor.firstName || ""}
+              alt={row.instructor?.firstName || ""}
               width={32}
               height={32}
               className="h-full w-full object-cover"
             />
           </div>
-          <span>{`${row.instructor.firstName || ""} ${
-            row.instructor.lastName || ""
+          <span>{`${row.instructor?.firstName || ""} ${
+            row.instructor?.lastName || ""
           }`}</span>
         </div>
       ),
