@@ -9,4 +9,5 @@ export { studentEnrollmentService } from "./enrollment";
 export { studentEnrollmentCertificateService } from "./enrollment-certificate";
 export { studentReviewService } from "./review";
 export { studentEnrollmentPaymentService } from "./enrollment-payment";
+export { studentDashboardService } from "./dashboard";
 export * from "./types";

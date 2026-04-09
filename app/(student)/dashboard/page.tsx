@@ -15,7 +15,11 @@ import Link from "next/link";
 import Modal from "../../../components/ui/Modal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { studentEnrollmentService } from "@/lib/services/student/enrollment";
+import {
+  studentEnrollmentService,
+  studentDashboardService,
+  StudentDashboardCountOutput,
+} from "@/lib/services/student";
 import { Enrollment } from "@/lib/services/admin/types";
 import StudentCertificateViewModal from "./StudentCertificateViewModal";
 
@@ -114,6 +118,29 @@ export default function StudentDashboardPage() {
     null,
   );
 
+  const [dashboardCounts, setDashboardCounts] =
+    React.useState<StudentDashboardCountOutput | null>(null);
+  const [loadingDashboardCounts, setLoadingDashboardCounts] =
+    React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    const fetchDashboardCounts = async () => {
+      try {
+        setLoadingDashboardCounts(true);
+        const res = await studentDashboardService.get();
+        if (res.success) {
+          setDashboardCounts(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dashboard counts:", err);
+      } finally {
+        setLoadingDashboardCounts(false);
+      }
+    };
+
+    fetchDashboardCounts();
+  }, []);
+
   React.useEffect(() => {
     const fetchEnrollments = async () => {
       try {
@@ -155,9 +182,24 @@ export default function StudentDashboardPage() {
           {/* Quick stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { label: "Enrolled", value: 3, Icon: BookOpen },
-              { label: "In Progress", value: 2, Icon: Hammer },
-              { label: "Certificates", value: 1, Icon: Award },
+              {
+                label: "Enrolled",
+                value: dashboardCounts?.enrollmentCount ?? 0,
+                Icon: BookOpen,
+                loading: loadingDashboardCounts,
+              },
+              {
+                label: "In Progress",
+                value: dashboardCounts?.activeEnrollmentCount ?? 0,
+                Icon: Hammer,
+                loading: loadingDashboardCounts,
+              },
+              {
+                label: "Certificates",
+                value: dashboardCounts?.enrollmentCertificateCount ?? 0,
+                Icon: Award,
+                loading: loadingDashboardCounts,
+              },
               {
                 label: "Octave Points",
                 value: 0,
@@ -200,7 +242,13 @@ export default function StudentDashboardPage() {
                         }`}
                         style={{ fontFamily: "var(--font-heading-sans)" }}
                       >
-                        {s.comingSoon ? "—" : s.value}
+                        {s.comingSoon ? (
+                          "—"
+                        ) : s.loading ? (
+                          <div className="h-6 w-8 bg-neutral-200 animate-pulse rounded" />
+                        ) : (
+                          s.value
+                        )}
                       </div>
                     </div>
                     <div
@@ -514,9 +562,10 @@ export default function StudentDashboardPage() {
             <CardContent className="py-5">
               <div className="text-sm font-medium">Billing</div>
               <div className="mt-3 space-y-2 text-sm">
-              <div className="mt-2.5 text-xs text-[color:var(--color-neutral-600)] leading-relaxed">
-                Review your payment history, download course invoices, and manage your billing profile.
-              </div>
+                <div className="mt-2.5 text-xs text-[color:var(--color-neutral-600)] leading-relaxed">
+                  Review your payment history, download course invoices, and
+                  manage your billing profile.
+                </div>
                 <div className="inline-flex items-center gap-1 text-xs text-[color:var(--color-primary-700)]">
                   <span>Manage</span>
                   <ChevronRight size={14} aria-hidden="true" />

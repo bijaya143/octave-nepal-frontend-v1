@@ -157,3 +157,12 @@ export interface StudentEnrollmentPaymentOutput {
   data: AdminEnrollmentPayment[];
   meta: PaginationOutput;
 }
+
+/**
+ * Student dashboard count output
+ */
+export interface StudentDashboardCountOutput {
+  enrollmentCount: number;
+  activeEnrollmentCount: number;
+  enrollmentCertificateCount: number;
+}
