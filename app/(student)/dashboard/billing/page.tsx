@@ -97,9 +97,9 @@ export default function StudentBillingPage() {
         <Badge variant="outline">Student</Badge>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 items-start">
+      <div className="grid lg:grid-cols-3 gap-6 items-start">
         {/* Main */}
-        <section className="md:col-span-2 space-y-6">
+        <section className="lg:col-span-2 space-y-6">
           {/* Payment history */}
           <Card className="relative overflow-hidden">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.08),transparent_60%)]" />
