@@ -262,8 +262,14 @@ export default function StudentEditProfilePage() {
     const offset = circumference - (percentage / 100) * circumference;
 
     let colorClass = "text-[color:var(--color-primary-600)]";
-    if (filled === 0) colorClass = "text-[color:var(--color-neutral-300)]";
-    if (filled === total) colorClass = "text-green-600";
+    let trackClass = "text-[color:var(--color-neutral-100)]";
+
+    if (filled === 0) {
+      colorClass = "text-rose-500/20";
+      trackClass = "text-rose-500";
+    } else if (filled === total) {
+      colorClass = "text-green-600";
+    }
 
     return (
       <div className="relative inline-flex items-center justify-center shrink-0">
@@ -275,7 +281,7 @@ export default function StudentEditProfilePage() {
             stroke="currentColor"
             strokeWidth={strokeWidth}
             fill="transparent"
-            className="text-[color:var(--color-neutral-100)]"
+            className={`${trackClass} transition-colors duration-500`}
           />
           <circle
             cx={size / 2}

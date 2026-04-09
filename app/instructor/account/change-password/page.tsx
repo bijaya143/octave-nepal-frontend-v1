@@ -8,11 +8,15 @@ import Card, {
 } from "@/components/ui/Card";
 import PasswordInput from "@/components/ui/PasswordInput";
 import Button from "@/components/ui/Button";
+import { instructorAuthService } from "@/lib/services/instructor/auth";
+import { toast } from "sonner";
 
 export default function InstructorChangePasswordPage() {
   const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const [errors, setErrors] = React.useState<{
     currentPassword?: string | null;
@@ -23,7 +27,7 @@ export default function InstructorChangePasswordPage() {
 
   const resetErrors = () => setErrors({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     resetErrors();
 
@@ -46,43 +50,57 @@ export default function InstructorChangePasswordPage() {
       return;
     }
 
-    // TODO: Replace with API call / server action to update password
-    alert("Password updated successfully");
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    try {
+      setIsSubmitting(true);
+      const response = await instructorAuthService.updatePassword({
+        oldPassword: currentPassword,
+        newPassword,
+        confirmNewPassword: confirmPassword,
+      });
+
+      if (response.success) {
+        toast.success("Password updated successfully.");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        toast.error(
+          response?.error?.message ||
+            "Failed to update password. Please try again.",
+        );
+      }
+    } catch (err: any) {
+      toast.error(err.message || "An unexpected error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <>
-      <div className="mb-5 w-full max-w-xl md:max-w-2xl mx-auto">
-        <div>
-          <h1
-            className="text-xl md:text-2xl font-semibold"
-            style={{ fontFamily: "var(--font-heading-sans)" }}
-          >
-            Change password
-          </h1>
-          <p className="text-sm text-[color:var(--color-neutral-600)]">
-            Update your account password.
-          </p>
-        </div>
+    <div className="w-full max-w-2xl mx-auto pb-12">
+      <div className="mb-6">
+        <h1
+          className="text-xl md:text-2xl font-semibold text-[color:var(--color-neutral-900)]"
+          style={{ fontFamily: "var(--font-heading-sans)" }}
+        >
+          Change Password
+        </h1>
+        <p className="mt-2 text-sm text-[color:var(--color-neutral-600)]">
+          Ensure your account uses a long, random password to stay secure.
+        </p>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid gap-5 md:gap-6 w-full max-w-xl sm:max-w-xl md:max-w-2xl lg:max-w-2xl mx-auto"
-      >
-        <Card>
-          <CardHeader>
+      <form onSubmit={handleSubmit} className="w-full relative space-y-6">
+        <Card className="overflow-hidden shadow-sm sm:rounded-xl">
+          <CardHeader className="mb-4">
             <h2
               className="text-base font-semibold"
               style={{ fontFamily: "var(--font-heading-sans)" }}
             >
-              Password details
+              Security Settings
             </h2>
-            <p className="mt-1 text-sm text-[color:var(--color-neutral-600)]">
-              Ensure your new password is strong and unique.
+            <p className="mt-1 text-sm text-[color:var(--color-neutral-500)]">
+              Please enter your current password to proceed.
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -96,6 +114,7 @@ export default function InstructorChangePasswordPage() {
               required
               error={errors.currentPassword || null}
               autoComplete="current-password"
+              disabled={isSubmitting}
             />
             <PasswordInput
               label="New password"
@@ -106,8 +125,9 @@ export default function InstructorChangePasswordPage() {
               }
               required
               error={errors.newPassword || null}
-              hint="At least 6 characters"
+              hint="Must be at least 6 characters."
               autoComplete="new-password"
+              disabled={isSubmitting}
             />
             <PasswordInput
               label="Confirm new password"
@@ -119,18 +139,21 @@ export default function InstructorChangePasswordPage() {
               required
               error={errors.confirmPassword || null}
               autoComplete="new-password"
+              disabled={isSubmitting}
             />
-            {errors.form && (
-              <p className="text-sm text-red-600">{errors.form}</p>
-            )}
           </CardContent>
-          <CardFooter className="flex items-center justify-end gap-3">
-            <Button type="submit" variant="primary">
-              Update password
+          <CardFooter className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-6">
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full sm:w-auto"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Changing password..." : "Update Password"}
             </Button>
           </CardFooter>
         </Card>
       </form>
-    </>
+    </div>
   );
 }

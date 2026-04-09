@@ -92,3 +92,12 @@ export interface InstructorResetPasswordInput {
   token: string;
   password: string;
 }
+
+/**
+ * Update password input
+ */
+export interface InstructorUpdatePasswordInput {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
