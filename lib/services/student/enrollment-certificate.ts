@@ -7,12 +7,13 @@
 import { api, ApiResponse } from "@/lib/api";
 import { StudentEnrollmentCertificateOutput } from "./types";
 import { AdminEnrollmentCertificate } from "../admin";
+import { PaginationInput } from "../common-types";
 
 /**
  * Get list of enrollment certificates with filtering and pagination
  */
 export const list = async (
-  query?: any,
+  query?: PaginationInput,
 ): Promise<ApiResponse<StudentEnrollmentCertificateOutput>> => {
   const params = new URLSearchParams();
 

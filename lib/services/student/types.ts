@@ -5,6 +5,7 @@
 import {
   Admin,
   AdminEnrollmentCertificate,
+  AdminEnrollmentPayment,
   Enrollment,
   EnrollmentStatus,
 } from "../admin";
@@ -146,5 +147,13 @@ export interface StudentEnrollmentFilterInput extends PaginationInput {
  */
 export interface StudentEnrollmentCertificateOutput {
   data: AdminEnrollmentCertificate[];
+  meta: PaginationOutput;
+}
+
+/**
+ * Student enrollment payment output
+ */
+export interface StudentEnrollmentPaymentOutput {
+  data: AdminEnrollmentPayment[];
   meta: PaginationOutput;
 }

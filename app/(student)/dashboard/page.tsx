@@ -514,10 +514,9 @@ export default function StudentDashboardPage() {
             <CardContent className="py-5">
               <div className="text-sm font-medium">Billing</div>
               <div className="mt-3 space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span>Latest payment</span>
-                  <span className="font-medium">Rs 2,499 on Nov 5</span>
-                </div>
+              <div className="mt-2.5 text-xs text-[color:var(--color-neutral-600)] leading-relaxed">
+                Review your payment history, download course invoices, and manage your billing profile.
+              </div>
                 <div className="inline-flex items-center gap-1 text-xs text-[color:var(--color-primary-700)]">
                   <span>Manage</span>
                   <ChevronRight size={14} aria-hidden="true" />
@@ -527,8 +526,9 @@ export default function StudentDashboardPage() {
           </Card>
 
           {/* Support */}
-          <Card>
-            <CardContent className="py-5">
+          <Card className="relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.08),transparent_60%)]" />
+            <CardContent className="relative py-5">
               <div className="text-sm font-medium">Need help?</div>
               <div className="mt-2 text-xs text-[color:var(--color-neutral-600)]">
                 Chat with support or browse FAQs.

@@ -99,14 +99,21 @@ const getNextSessionText = (course: any) => {
 export default function StudentCoursesPage() {
   const [enrollments, setEnrollments] = React.useState<Enrollment[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [certificateEnrollmentId, setCertificateEnrollmentId] = React.useState<string | null>(null);
-  const [reviewEnrollmentId, setReviewEnrollmentId] = React.useState<string | null>(null);
+  const [certificateEnrollmentId, setCertificateEnrollmentId] = React.useState<
+    string | null
+  >(null);
+  const [reviewEnrollmentId, setReviewEnrollmentId] = React.useState<
+    string | null
+  >(null);
 
   React.useEffect(() => {
     const fetchEnrollments = async () => {
       try {
         setLoading(true);
-        const res = await studentEnrollmentService.list({ page: 1, limit: 50 });
+        const res = await studentEnrollmentService.list({
+          page: 1,
+          limit: 100,
+        });
         if (res.success) {
           setEnrollments(res.data.data || []);
         }
@@ -404,12 +411,19 @@ export default function StudentCoursesPage() {
                   </div>
 
                   <div className="mt-5 flex items-center justify-end gap-2">
-                    <Button size="sm" onClick={() => setReviewEnrollmentId(c.id)}>
+                    <Button
+                      size="sm"
+                      onClick={() => setReviewEnrollmentId(c.id)}
+                    >
                       Review
                     </Button>
 
                     {c.isCertificateCreated && (
-                      <Button size="sm" variant="secondary" onClick={() => setCertificateEnrollmentId(c.id)}>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setCertificateEnrollmentId(c.id)}
+                      >
                         View certificate
                       </Button>
                     )}
