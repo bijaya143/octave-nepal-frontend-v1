@@ -13,7 +13,7 @@ import Select from "@/components/ui/Select";
 import Badge from "@/components/ui/Badge";
 import { toast } from "sonner";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { X, Camera, Image as ImageIcon } from "lucide-react";
 
 import { useInstructorAuth } from "@/lib/hooks/useInstructorAuth";
 import { instructorAuthService } from "@/lib/services/instructor/auth";
@@ -112,6 +112,7 @@ export default function InstructorEditProfilePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("personal");
   const [skillInput, setSkillInput] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Initial fetch to sync data
   useEffect(() => {
@@ -542,37 +543,54 @@ export default function InstructorEditProfilePage() {
                 </CardHeader>
                 <CardContent className="space-y-6 py-5 bg-white">
                   <div>
-                    <label className="block text-sm font-medium text-[color:var(--color-neutral-700)] mb-3">
+                    <label className="block text-sm font-medium text-[color:var(--color-neutral-700)] mb-4">
                       Profile Picture
                     </label>
-                    <div className="flex items-center gap-4">
-                      <div className="h-16 w-16 rounded-full bg-[color:var(--color-neutral-100)] border border-[color:var(--color-neutral-200)] flex items-center justify-center overflow-hidden shrink-0">
-                        {previewUrl ? (
-                          <img
-                            src={previewUrl}
-                            alt="Preview"
-                            className="h-full w-full object-cover"
-                          />
-                        ) : user?.profilePictureKey ? (
-                          <img
-                            src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${user?.profilePictureKey}`}
-                            alt="Avatar"
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-[color:var(--color-neutral-400)] text-xs font-medium">
-                            Avatar
-                          </span>
-                        )}
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                      <div className="relative group">
+                        <div className="h-20 w-20 rounded-full bg-[color:var(--color-neutral-100)] border-2 border-[color:var(--color-neutral-200)] flex items-center justify-center overflow-hidden shrink-0 shadow-sm transition-all group-hover:border-[color:var(--color-primary-300)]">
+                          {previewUrl ? (
+                            <img
+                              src={previewUrl}
+                              alt="Preview"
+                              className="h-full w-full object-cover"
+                            />
+                          ) : user?.profilePictureKey ? (
+                            <img
+                              src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${user?.profilePictureKey}`}
+                              alt="Avatar"
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center text-[color:var(--color-neutral-400)]">
+                              <ImageIcon className="h-8 w-8 mb-1 opacity-20" />
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="absolute bottom-0 right-0 h-7 w-7 bg-[color:var(--color-primary-600)] text-white rounded-full flex items-center justify-center shadow-md hover:bg-[color:var(--color-primary-700)] transition-transform hover:scale-110 border-2 border-white"
+                          title="Change Photo"
+                        >
+                          <Camera className="h-3.5 w-3.5" />
+                        </button>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <input
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp"
-                          onChange={handleFileChange}
-                          className="block w-full text-xs sm:text-sm text-[color:var(--color-neutral-600)] file:mr-2 sm:file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[color:var(--color-neutral-100)] file:text-[color:var(--color-neutral-900)] hover:file:bg-[color:var(--color-neutral-200)] transition-colors cursor-pointer"
-                        />
+
+                      <div className="flex flex-col gap-2 w-full sm:w-auto">
+                        <p className="text-[11px] text-[color:var(--color-neutral-500)] leading-relaxed text-center sm:text-left">
+                          JPG, PNG or WebP. Max size 2MB.
+                          <br />
+                          Recommended: 400x400px square image.
+                        </p>
                       </div>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
