@@ -14,8 +14,12 @@ import {
   TrendingUp,
   CreditCard,
   GraduationCap,
+  ChevronRight,
+  CalendarClock,
+  Lock,
 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
+import Image from "next/image";
 
 type OpenModalKey =
   | null
@@ -32,10 +36,10 @@ export default function InstructorDashboardPage() {
   const handleClose = () => setOpenModal(null);
 
   const stats = [
-    { label: "Published Courses", value: 4, Icon: BookOpen },
+    { label: "Courses", value: 4, Icon: BookOpen },
     { label: "Total Students", value: 500, Icon: GraduationCap },
-    { label: "Active Enrollments", value: 176, Icon: TrendingUp },
-    { label: "Total Payouts", value: "Rs 12400", Icon: Wallet },
+    { label: "Enrollments", value: 176, Icon: TrendingUp },
+    { label: "Total Payouts", value: "Rs 12400", Icon: Wallet, comingSoon: true },
   ];
 
   const courses = [
@@ -107,57 +111,67 @@ export default function InstructorDashboardPage() {
 
   return (
     <>
-      {/* Instructor dashboard header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <h1
-          className="text-xl md:text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-heading-sans)" }}
-        >
-          Dashboard
-        </h1>
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-          {/* <Button size="sm" variant="secondary" className="inline-flex items-center gap-2 w-full sm:w-auto justify-center" onClick={() => router.push("/courses") }>
-              <Plus size={16} className="md:hidden lg:inline" />
-              Create course
-            </Button> */}
-          {/* <Button size="sm" variant="secondary" className="inline-flex items-center gap-2 w-full sm:w-auto justify-center" onClick={() => handleOpen("sessions") }>
-              <CalendarClock size={16} className="md:hidden lg:inline" />
-              Schedule session
-            </Button> */}
-          <Button
-            size="sm"
-            className="inline-flex items-center gap-2 w-full sm:w-auto justify-center"
-            onClick={() => handleOpen("announcements")}
-          >
-            <Megaphone size={16} className="md:hidden lg:inline" />
-            Post announcement
-          </Button>
-        </div>
-      </div>
+      <h1
+        className="text-xl md:text-2xl font-semibold mb-6"
+        style={{ fontFamily: "var(--font-heading-sans)" }}
+      >
+        Your Dashboard
+      </h1>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
         {/* Main column */}
         <section className="md:col-span-2 lg:col-span-2 space-y-6">
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {stats.map((s) => (
-              <Card key={s.label} className="relative overflow-hidden group">
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.10),transparent_60%)]" />
-                <CardContent className="relative py-4">
+          {/* Quick stats */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {stats.map((s: any) => (
+              <Card
+                key={s.label}
+                className={`relative overflow-hidden ${
+                  s.comingSoon
+                    ? "border-dashed bg-[color:var(--color-neutral-50)] opacity-75 cursor-not-allowed"
+                    : "group"
+                }`}
+                aria-disabled={s.comingSoon ? true : undefined}
+              >
+                <div
+                  className={`pointer-events-none absolute inset-0 ${
+                    s.comingSoon
+                      ? "bg-[radial-gradient(ellipse_at_top_right,rgba(0,0,0,0.06),transparent_60%)]"
+                      : "bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.10),transparent_60%)]"
+                  }`}
+                />
+                <CardContent
+                  className="relative py-4"
+                  title={s.comingSoon ? "Coming soon" : undefined}
+                >
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="text-xs text-[color:var(--color-neutral-600)]">
                         {s.label}
                       </div>
                       <div
-                        className="mt-1 text-lg font-semibold"
+                        className={`mt-1 text-lg font-semibold ${
+                          s.comingSoon
+                            ? "text-[color:var(--color-neutral-500)]"
+                            : ""
+                        }`}
                         style={{ fontFamily: "var(--font-heading-sans)" }}
                       >
-                        {s.value}
+                        {s.comingSoon ? "—" : s.value}
                       </div>
                     </div>
-                    <div className="h-9 w-9 shrink-0 rounded-lg border border-[color:var(--color-neutral-200)] bg-white text-[color:var(--color-primary-700)] shadow-xs flex items-center justify-center lg:hidden">
-                      <s.Icon size={16} aria-hidden="true" />
+                    <div
+                      className={`h-9 w-9 shrink-0 rounded-lg border shadow-xs flex items-center justify-center ${
+                        s.comingSoon
+                          ? "border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] text-[color:var(--color-neutral-600)]"
+                          : "border-[color:var(--color-neutral-200)] bg-white text-[color:var(--color-primary-700)]"
+                      }`}
+                    >
+                      {s.comingSoon ? (
+                        <Lock size={16} aria-hidden="true" />
+                      ) : (
+                        <s.Icon size={16} aria-hidden="true" />
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -168,12 +182,7 @@ export default function InstructorDashboardPage() {
           {/* Your Active courses */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2
-                className="text-base font-semibold"
-                style={{ fontFamily: "var(--font-heading-sans)" }}
-              >
-                Your Active courses
-              </h2>
+              <h2 className="text-base font-semibold">Your Active courses</h2>
               <Link
                 href="/instructor/courses"
                 className="text-sm text-[color:var(--color-primary-700)] hover:underline underline-offset-2 whitespace-nowrap"
@@ -183,43 +192,56 @@ export default function InstructorDashboardPage() {
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               {courses.map((c) => (
-                <Card key={c.id} className="relative overflow-hidden">
+                <Card key={c.id}>
                   <CardContent className="py-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="text-sm font-medium">{c.title}</div>
-                        <div className="mt-1 flex items-center gap-3 text-xs text-[color:var(--color-neutral-600)]">
-                          <span className="inline-flex items-center gap-1">
-                            <GraduationCap size={14} /> {c.students} students
-                          </span>
-                          <span className="inline-flex items-center gap-1">
-                            <Star size={14} /> {c.rating}
-                          </span>
-                        </div>
-                      </div>
-                      <Button size="sm" variant="secondary">
-                        Join
-                      </Button>
-                    </div>
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="font-medium">
-                          {formatReadableDate(c.startDate)}
-                        </span>
-                        <span className="font-medium">
-                          {formatReadableDate(c.endDate)}
-                        </span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-[color:var(--color-neutral-200)] overflow-hidden">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-start justify-between gap-3 font-semibold">
                         <div
-                          className="h-full rounded-full bg-[color:var(--color-primary-500)]"
+                          className="text-sm font-medium leading-relaxed line-clamp-2"
+                          title={c.title}
+                        >
+                          {c.title}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="shrink-0"
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                      <div className="mt-1 flex items-center gap-4 text-xs text-[color:var(--color-neutral-600)]">
+                        <span className="inline-flex items-center gap-1.5 font-medium">
+                          <GraduationCap size={14} className="opacity-70" />{" "}
+                          {c.students} students
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 font-medium text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
+                          <Star size={14} fill="currentColor" /> {c.rating}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-6">
+                      <div className="flex items-center justify-between text-[11px] mb-2 font-bold uppercase tracking-wider text-[color:var(--color-neutral-500)]">
+                        <span>Course Duration Progress</span>
+                        <span className="text-[color:var(--color-primary-600)]">
+                          {computeCourseProgress(c.startDate, c.endDate)}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full rounded-full bg-[color:var(--color-neutral-100)] overflow-hidden shadow-inner flex items-center">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-[color:var(--color-primary-400)] to-[color:var(--color-primary-600)] transition-all duration-700 ease-out"
                           style={{
                             width: `${computeCourseProgress(
                               c.startDate,
-                              c.endDate
+                              c.endDate,
                             )}%`,
                           }}
                         />
+                      </div>
+                      <div className="mt-2 flex items-center justify-between text-[10px] text-[color:var(--color-neutral-400)] font-medium">
+                        <span>{formatReadableDate(c.startDate)}</span>
+                        <span>{formatReadableDate(c.endDate)}</span>
                       </div>
                     </div>
                   </CardContent>
@@ -227,66 +249,129 @@ export default function InstructorDashboardPage() {
               ))}
             </div>
           </div>
+
+          {/* Quick overview widgets */}
+          <div>
+            <h2
+              className="text-base font-semibold mb-3"
+              style={{ fontFamily: "var(--font-heading-sans)" }}
+            >
+              Quick overview
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {/* Post Announcement */}
+              <Card
+                className="relative overflow-hidden border-dashed bg-[color:var(--color-neutral-50)] opacity-75 cursor-not-allowed"
+                title="Coming soon"
+                aria-disabled={true}
+              >
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,0,0,0.06),transparent_60%)]" />
+                <CardContent className="relative py-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3
+                      className="text-sm font-semibold"
+                      style={{ fontFamily: "var(--font-heading-sans)" }}
+                    >
+                      Post Announcement
+                    </h3>
+                    <div className="h-9 w-9 rounded-lg border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] text-[color:var(--color-neutral-600)] shadow-xs flex items-center justify-center">
+                      <Lock size={16} aria-hidden="true" />
+                    </div>
+                  </div>
+                  <div className="mt-3 inline-flex items-center gap-1 text-xs text-[color:var(--color-neutral-400)]">
+                    <span>Coming soon</span>
+                    <ChevronRight size={14} aria-hidden="true" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Upcoming Sessions */}
+              <Card
+                className="relative overflow-hidden border-dashed bg-[color:var(--color-neutral-50)] opacity-75 cursor-not-allowed"
+                title="Coming soon"
+                aria-disabled={true}
+              >
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,0,0,0.06),transparent_60%)]" />
+                <CardContent className="relative py-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3
+                      className="text-sm font-semibold"
+                      style={{ fontFamily: "var(--font-heading-sans)" }}
+                    >
+                      Upcoming Sessions
+                    </h3>
+                    <div className="h-9 w-9 rounded-lg border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] text-[color:var(--color-neutral-600)] shadow-xs flex items-center justify-center">
+                      <Lock size={16} aria-hidden="true" />
+                    </div>
+                  </div>
+                  <div className="mt-3 inline-flex items-center gap-1 text-xs text-[color:var(--color-neutral-400)]">
+                    <span>Coming soon</span>
+                    <ChevronRight size={14} aria-hidden="true" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </section>
 
         {/* Sidebar */}
         <aside className="space-y-6">
-          {/* Payouts */}
-          <Card className="relative overflow-hidden">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.08),transparent_60%)]" />
-            <CardContent className="relative py-5">
-              <div className="flex items-center justify-between">
+          {/* Payouts (Billing style) */}
+          <Card
+            className="relative overflow-hidden border-dashed bg-[color:var(--color-neutral-50)] opacity-75 cursor-not-allowed"
+            title="Coming soon"
+            aria-disabled={true}
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,0,0,0.06),transparent_60%)]" />
+            <CardContent className="py-5">
+              <div className="flex items-center justify-between mb-4">
                 <div className="text-sm font-medium">Payouts</div>
-                <div className="h-8 w-8 rounded-lg border border-[color:var(--color-neutral-200)] bg-white text-[color:var(--color-primary-700)] shadow-xs flex items-center justify-center">
-                  <CreditCard size={16} aria-hidden="true" />
+                <div className="h-8 w-8 rounded-lg border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] text-[color:var(--color-neutral-600)] shadow-xs flex items-center justify-center">
+                  <Lock size={16} aria-hidden="true" />
                 </div>
               </div>
-              <div className="mt-3 space-y-2 text-sm">
-                {payouts.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between">
-                    <div className="min-w-0">
-                      <div className="font-medium">
-                        Rs {p.amount.toLocaleString()}
-                      </div>
-                      <div className="text-xs text-[color:var(--color-neutral-600)]">
-                        {p.date}
-                      </div>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className={getStatusBadgeClassName(p.status)}
-                    >
-                      {p.status}
-                    </Badge>
-                  </div>
-                ))}
+              <div className="space-y-3 text-sm">
+                <div className="text-xs text-[color:var(--color-neutral-500)] leading-relaxed">
+                  Payout management and history view are currently being
+                  finalized. You'll be notified when this feature is active.
+                </div>
+                <div className="pt-2 inline-flex items-center gap-1 text-xs text-[color:var(--color-neutral-400)]">
+                  <span>Coming soon</span>
+                  <ChevronRight size={14} aria-hidden="true" />
+                </div>
               </div>
-              <Button
-                onClick={() => router.push("/instructor/payouts")}
-                size="sm"
-                variant="secondary"
-                className="mt-4 w-full"
-              >
-                Manage
-              </Button>
             </CardContent>
           </Card>
 
           {/* Support */}
-          <Card>
-            <CardContent className="py-5">
+          <Card className="relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.08),transparent_60%)]" />
+            <CardContent className="relative py-5">
               <div className="text-sm font-medium">Need help?</div>
               <div className="mt-2 text-xs text-[color:var(--color-neutral-600)]">
                 Chat with support or browse FAQs.
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2">
-                <Link href="/contact" className="w-full">
-                  <Button size="sm" variant="secondary" className="w-full">
-                    Contact
-                  </Button>
-                </Link>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="inline-flex items-center gap-2 w-full"
+                >
+                  <Image
+                    src="/images/social-medias/whatsapp.png"
+                    alt="WhatsApp"
+                    width={16}
+                    height={16}
+                    className="h-4 w-4"
+                  />
+                  Chat
+                </Button>
                 <Link href="/faq" className="w-full">
-                  <Button size="sm" variant="secondary" className="w-full">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="w-full inline-flex items-center gap-2"
+                  >
                     FAQ
                   </Button>
                 </Link>

@@ -15,6 +15,14 @@ import Container from "./Container";
 import { SITE_NAME } from "@/lib/constant";
 import { usePathname } from "next/navigation";
 import { useStudentAuth } from "@/lib/hooks/useStudentAuth";
+import { cn } from "@/lib/cn";
+
+const navItems = [
+  { label: "Courses", href: "/courses" },
+  { label: "Categories", href: "/categories" },
+  { label: "Testimonials", href: "/testimonials" },
+  { label: "Contact", href: "/contact" },
+];
 
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
@@ -134,6 +142,9 @@ export default function Navbar() {
     setAccountOpen(false);
   }, [logout]);
 
+  const isActive = (href: string) =>
+    pathname === href || (href !== "/" && pathname?.startsWith(href));
+
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[color:var(--color-neutral-200)]">
       <Container>
@@ -149,30 +160,20 @@ export default function Navbar() {
               </span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm">
-              <Link
-                href="/courses"
-                className="hover:text-[color:var(--color-primary-700)]"
-              >
-                Courses
-              </Link>
-              <Link
-                href="/categories"
-                className="hover:text-[color:var(--color-primary-700)]"
-              >
-                Categories
-              </Link>
-              <Link
-                href="/testimonials"
-                className="hover:text-[color:var(--color-primary-700)]"
-              >
-                Testimonials
-              </Link>
-              <Link
-                href="/contact"
-                className="hover:text-[color:var(--color-primary-700)]"
-              >
-                Contact
-              </Link>
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "transition-colors hover:text-[color:var(--color-primary-700)]",
+                    isActive(item.href)
+                      ? "text-[color:var(--color-primary-600)] font-semibold"
+                      : "text-[color:var(--color-neutral-600)]",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
           <div
@@ -275,34 +276,21 @@ export default function Navbar() {
         <div className="md:hidden border-t border-[color:var(--color-neutral-200)]">
           <Container className="py-4" id="mobile-nav">
             <div className="flex flex-col gap-1">
-              <Link
-                href="/courses"
-                className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
-                onClick={handleClose}
-              >
-                Courses
-              </Link>
-              <Link
-                href="/categories"
-                className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
-                onClick={handleClose}
-              >
-                Categories
-              </Link>
-              <Link
-                href="/testimonials"
-                className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
-                onClick={handleClose}
-              >
-                Testimonials
-              </Link>
-              <Link
-                href="/contact"
-                className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
-                onClick={handleClose}
-              >
-                Contact
-              </Link>
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "px-2 py-2 rounded-md transition-colors",
+                    isActive(item.href)
+                      ? "text-[color:var(--color-primary-600)] font-semibold"
+                      : "hover:bg-[color:var(--color-neutral-50)] text-[color:var(--color-neutral-600)]",
+                  )}
+                  onClick={handleClose}
+                >
+                  {item.label}
+                </Link>
+              ))}
               {isLoggedIn ? (
                 <>
                   <div className="border-t border-[color:var(--color-neutral-200)] mt-2 pt-2">

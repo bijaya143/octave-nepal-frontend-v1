@@ -7,6 +7,10 @@ import { Menu, X, User, Settings, LogOut, School, Lock } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useInstructorAuth } from "@/lib/hooks/useInstructorAuth";
 import { getUserType } from "@/lib/utils/auth";
+import { cn } from "@/lib/cn";
+
+// Will have to add annoucements and payouts in near future
+const navItems = [{ label: "Courses", href: "/instructor/courses" }];
 
 export default function InstructorNavbar() {
   const [open, setOpen] = React.useState(false);
@@ -134,6 +138,9 @@ export default function InstructorNavbar() {
     setAccountOpen(false);
   }, [logout]);
 
+  const isActive = (href: string) =>
+    pathname === href || (href !== "/instructor" && pathname?.startsWith(href));
+
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[color:var(--color-neutral-200)]">
       <Container>
@@ -153,24 +160,20 @@ export default function InstructorNavbar() {
             </Link>
             {isLoggedIn && (
               <nav className="hidden md:flex items-center gap-6 text-sm">
-                <Link
-                  href="/instructor/courses"
-                  className="hover:text-[color:var(--color-primary-700)]"
-                >
-                  Courses
-                </Link>
-                <Link
-                  href="/instructor/payouts"
-                  className="hover:text-[color:var(--color-primary-700)]"
-                >
-                  Payouts
-                </Link>
-                <Link
-                  href="/instructor/announcements"
-                  className="hover:text-[color:var(--color-primary-700)]"
-                >
-                  Announcements
-                </Link>
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "transition-colors hover:text-[color:var(--color-primary-700)]",
+                      isActive(item.href)
+                        ? "text-[color:var(--color-primary-600)] font-semibold"
+                        : "text-[color:var(--color-neutral-600)]",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
               </nav>
             )}
           </div>
@@ -258,34 +261,30 @@ export default function InstructorNavbar() {
             <div className="flex flex-col gap-1">
               {isLoggedIn ? (
                 <>
-                  <Link
-                    href="/instructor/courses"
-                    className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
-                    onClick={handleClose}
-                  >
-                    Courses
-                  </Link>
-                  <Link
-                    href="/instructor/payouts"
-                    className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
-                    onClick={handleClose}
-                  >
-                    Payouts
-                  </Link>
-                  <Link
-                    href="/instructor/announcements"
-                    className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
-                    onClick={handleClose}
-                  >
-                    Announcements
-                  </Link>
-                  <Link
-                    href="/instructor/account/edit-profile"
-                    className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
-                    onClick={handleClose}
-                  >
-                    Edit Profile
-                  </Link>
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "px-2 py-2 rounded-md transition-colors",
+                        isActive(item.href)
+                          ? "text-[color:var(--color-primary-600)] font-semibold"
+                          : "hover:bg-[color:var(--color-neutral-50)]",
+                      )}
+                      onClick={handleClose}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  <div className="border-t border-[color:var(--color-neutral-200)] mt-2 pt-2">
+                    <Link
+                      href="/instructor/account/edit-profile"
+                      className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
+                      onClick={handleClose}
+                    >
+                      Edit Profile
+                    </Link>
+                  </div>
                   <Link
                     href="/instructor/account/change-password"
                     className="px-2 py-2 rounded-md hover:bg-[color:var(--color-neutral-50)]"
