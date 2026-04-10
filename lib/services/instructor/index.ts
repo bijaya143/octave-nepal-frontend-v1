@@ -5,4 +5,6 @@
  */
 
 export { instructorAuthService } from "./auth";
+export { instructorCourseService } from "./course";
+export { instructorEnrollmentService } from "./enrollment";
 export * from "./types";

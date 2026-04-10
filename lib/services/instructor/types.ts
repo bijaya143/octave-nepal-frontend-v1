@@ -2,7 +2,8 @@
  * Instructor service types
  */
 
-import { Admin } from "../admin";
+import { Admin, Course, Enrollment, EnrollmentStatus } from "../admin";
+import { PaginationInput, PaginationOutput } from "../common-types";
 
 /**
  * Instructor information returned from authentication
@@ -100,4 +101,27 @@ export interface InstructorUpdatePasswordInput {
   oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;
+}
+
+/**
+ * Instructor course output
+ */
+export interface InstructorCourseOutput {
+  data: Course[];
+  meta: PaginationOutput;
+}
+
+/**
+ * Instructor enrollment output
+ */
+export interface InstructorEnrollmentOutput {
+  data: Enrollment[];
+  meta: PaginationOutput;
+}
+
+/**
+ * Instructor enrollment filter input
+ */
+export interface InstructorEnrollmentFilterInput extends PaginationInput {
+  status?: EnrollmentStatus;
 }
