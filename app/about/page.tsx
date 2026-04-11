@@ -3,7 +3,14 @@ import Link from "next/link";
 import Card, { CardContent } from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
 import Badge from "../../components/ui/Badge";
-import { Award, Target, HeartHandshake, BookOpen, Star, GraduationCap } from "lucide-react";
+import {
+  Award,
+  Target,
+  HeartHandshake,
+  BookOpen,
+  Star,
+  GraduationCap,
+} from "lucide-react";
 import { SITE_NAME } from "@/lib/constant";
 import type { Metadata } from "next";
 import Container from "@/components/Container";
@@ -16,8 +23,8 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main>
-        {/* About section */}
-      <section className="relative py-12 sm:py-16 md:py-20">
+      {/* About section */}
+      <section className="py-5 md:py-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.08),transparent_60%)]" />
         <Container>
           <div className="relative grid md:grid-cols-2 items-center gap-6 md:gap-12">
@@ -25,21 +32,33 @@ export default function AboutPage() {
               <div className="mb-3">
                 <Badge variant="outline">Our story</Badge>
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4" style={{ fontFamily: "var(--font-heading-sans)" }}>
+              <h1
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
+              >
                 About {SITE_NAME}
               </h1>
               <p className="text-[color:var(--color-neutral-600)] text-sm sm:text-base md:text-lg lg:text-xl mb-6">
-                We are a modern online learning platform in Nepal, focused on delivering
-                elegant, practical courses crafted by industry experts. Our mission is to
-                help learners build in-demand skills through delightful user experiences and
-                community-driven learning.
+                We are a modern online learning platform in Nepal, focused on
+                delivering elegant, practical courses crafted by industry
+                experts. Our mission is to help learners build in-demand skills
+                through delightful user experiences and community-driven
+                learning.
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <Link href="/courses" className="block w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto">Browse Courses</Button>
+                  <Button size="lg" className="w-full sm:w-auto">
+                    Browse Courses
+                  </Button>
                 </Link>
                 <Link href="/contact" className="block w-full sm:w-auto">
-                  <Button size="lg" variant="secondary" className="w-full sm:w-auto">Get in touch</Button>
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="w-full sm:w-auto"
+                  >
+                    Get in touch
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -55,7 +74,9 @@ export default function AboutPage() {
                   priority
                 />
                 <CardContent className="py-5">
-                  <p className="text-sm text-[color:var(--color-neutral-600)]">Learning that blends clarity, community, and craftsmanship</p>
+                  <p className="text-sm text-[color:var(--color-neutral-600)]">
+                    Learning that blends clarity, community, and craftsmanship
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -75,8 +96,15 @@ export default function AboutPage() {
                     <div className="h-10 w-10 rounded-lg bg-blue-600/10 text-blue-600 flex items-center justify-center">
                       <GraduationCap size={18} aria-hidden />
                     </div>
-                    <div className="mt-2 text-2xl md:text-3xl font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>10k+</div>
-                    <div className="mt-0.5 text-[11px] uppercase tracking-wide text-blue-700/80">Learners</div>
+                    <div
+                      className="mt-2 text-2xl md:text-3xl font-semibold"
+                      style={{ fontFamily: "var(--font-heading-sans)" }}
+                    >
+                      10k+
+                    </div>
+                    <div className="mt-0.5 text-[11px] uppercase tracking-wide text-blue-700/80">
+                      Learners
+                    </div>
                   </div>
                 </div>
                 {/* Courses */}
@@ -85,8 +113,15 @@ export default function AboutPage() {
                     <div className="h-10 w-10 rounded-lg bg-emerald-600/10 text-emerald-600 flex items-center justify-center">
                       <BookOpen size={18} aria-hidden />
                     </div>
-                    <div className="mt-2 text-2xl md:text-3xl font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>30+</div>
-                    <div className="mt-0.5 text-[11px] uppercase tracking-wide text-emerald-700/80">Courses</div>
+                    <div
+                      className="mt-2 text-2xl md:text-3xl font-semibold"
+                      style={{ fontFamily: "var(--font-heading-sans)" }}
+                    >
+                      30+
+                    </div>
+                    <div className="mt-0.5 text-[11px] uppercase tracking-wide text-emerald-700/80">
+                      Courses
+                    </div>
                   </div>
                 </div>
                 {/* Instructors */}
@@ -95,8 +130,15 @@ export default function AboutPage() {
                     <div className="h-10 w-10 rounded-lg bg-violet-600/10 text-violet-600 flex items-center justify-center">
                       <Award size={18} aria-hidden />
                     </div>
-                    <div className="mt-2 text-2xl md:text-3xl font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>40+</div>
-                    <div className="mt-0.5 text-[11px] uppercase tracking-wide text-violet-700/80">Instructors</div>
+                    <div
+                      className="mt-2 text-2xl md:text-3xl font-semibold"
+                      style={{ fontFamily: "var(--font-heading-sans)" }}
+                    >
+                      40+
+                    </div>
+                    <div className="mt-0.5 text-[11px] uppercase tracking-wide text-violet-700/80">
+                      Instructors
+                    </div>
                   </div>
                 </div>
                 {/* Rating */}
@@ -105,8 +147,15 @@ export default function AboutPage() {
                     <div className="h-10 w-10 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center">
                       <Star size={18} aria-hidden />
                     </div>
-                    <div className="mt-2 text-2xl md:text-3xl font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>4.8/5</div>
-                    <div className="mt-0.5 text-[11px] uppercase tracking-wide text-amber-700/80">Average rating</div>
+                    <div
+                      className="mt-2 text-2xl md:text-3xl font-semibold"
+                      style={{ fontFamily: "var(--font-heading-sans)" }}
+                    >
+                      4.8/5
+                    </div>
+                    <div className="mt-0.5 text-[11px] uppercase tracking-wide text-amber-700/80">
+                      Average rating
+                    </div>
                   </div>
                 </div>
               </div>
@@ -115,12 +164,19 @@ export default function AboutPage() {
         </Container>
       </section>
 
-        {/* Our values section */}
+      {/* Our values section */}
       <section className="mt-12 md:mt-16">
         <Container>
           <div className="mb-4">
-            <h2 className="text-xl md:text-2xl font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>Our values</h2>
-            <p className="text-sm text-[color:var(--color-neutral-600)] mt-1">Principles that shape our courses and community</p>
+            <h2
+              className="text-xl md:text-2xl font-semibold"
+              style={{ fontFamily: "var(--font-heading-sans)" }}
+            >
+              Our values
+            </h2>
+            <p className="text-sm text-[color:var(--color-neutral-600)] mt-1">
+              Principles that shape our courses and community
+            </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
             <Card className="relative overflow-hidden p-0 border border-black/5 bg-white/95 backdrop-blur-sm">
@@ -128,10 +184,16 @@ export default function AboutPage() {
                 <div className="h-10 w-10 rounded-full bg-[rgba(59,130,246,0.08)] text-[color:var(--color-primary-700)] flex items-center justify-center">
                   <Award className="h-5 w-5" aria-hidden={true} />
                 </div>
-                <h3 className="mt-3 text-lg font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>Expert-led</h3>
+                <h3
+                  className="mt-3 text-lg font-semibold"
+                  style={{ fontFamily: "var(--font-heading-sans)" }}
+                >
+                  Expert-led
+                </h3>
                 <p className="text-sm text-[color:var(--color-neutral-700)] mt-2 leading-relaxed">
-                  Courses are designed and reviewed by practitioners with real-world experience,
-                  with a focus on clarity and applicability.
+                  Courses are designed and reviewed by practitioners with
+                  real-world experience, with a focus on clarity and
+                  applicability.
                 </p>
               </CardContent>
             </Card>
@@ -140,10 +202,15 @@ export default function AboutPage() {
                 <div className="h-10 w-10 rounded-full bg-[rgba(59,130,246,0.08)] text-[color:var(--color-primary-700)] flex items-center justify-center">
                   <HeartHandshake className="h-5 w-5" aria-hidden={true} />
                 </div>
-                <h3 className="mt-3 text-lg font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>Community-first</h3>
+                <h3
+                  className="mt-3 text-lg font-semibold"
+                  style={{ fontFamily: "var(--font-heading-sans)" }}
+                >
+                  Community-first
+                </h3>
                 <p className="text-sm text-[color:var(--color-neutral-700)] mt-2 leading-relaxed">
-                  Learn together through live cohorts, Q&A support, and a supportive community of
-                  peers and mentors.
+                  Learn together through live cohorts, Q&A support, and a
+                  supportive community of peers and mentors.
                 </p>
               </CardContent>
             </Card>
@@ -152,10 +219,15 @@ export default function AboutPage() {
                 <div className="h-10 w-10 rounded-full bg-[rgba(59,130,246,0.08)] text-[color:var(--color-primary-700)] flex items-center justify-center">
                   <Target className="h-5 w-5" aria-hidden={true} />
                 </div>
-                <h3 className="mt-3 text-lg font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>Outcomes-driven</h3>
+                <h3
+                  className="mt-3 text-lg font-semibold"
+                  style={{ fontFamily: "var(--font-heading-sans)" }}
+                >
+                  Outcomes-driven
+                </h3>
                 <p className="text-sm text-[color:var(--color-neutral-700)] mt-2 leading-relaxed">
-                  Practical projects and assessments help you build a portfolio and confidence
-                  to apply your skills professionally.
+                  Practical projects and assessments help you build a portfolio
+                  and confidence to apply your skills professionally.
                 </p>
               </CardContent>
             </Card>
@@ -171,15 +243,31 @@ export default function AboutPage() {
             <CardContent className="relative py-8 md:py-10">
               <div className="grid md:grid-cols-2 items-center gap-6 md:gap-10">
                 <div>
-                  <h3 className="text-lg md:text-xl font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>Ready to grow your skills?</h3>
-                  <p className="mt-2 text-sm text-[color:var(--color-neutral-600)]">Join thousands of learners leveling up with high-quality, practical courses.</p>
+                  <h3
+                    className="text-lg md:text-xl font-semibold"
+                    style={{ fontFamily: "var(--font-heading-sans)" }}
+                  >
+                    Ready to grow your skills?
+                  </h3>
+                  <p className="mt-2 text-sm text-[color:var(--color-neutral-600)]">
+                    Join thousands of learners leveling up with high-quality,
+                    practical courses.
+                  </p>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:justify-end">
                   <Link href="/courses" className="block w-full sm:w-auto">
-                    <Button size="lg" className="w-full sm:w-auto">Explore courses</Button>
+                    <Button size="lg" className="w-full sm:w-auto">
+                      Explore courses
+                    </Button>
                   </Link>
                   <Link href="/contact" className="block w-full sm:w-auto">
-                    <Button size="lg" variant="secondary" className="w-full sm:w-auto">Talk to us</Button>
+                    <Button
+                      size="lg"
+                      variant="secondary"
+                      className="w-full sm:w-auto"
+                    >
+                      Talk to us
+                    </Button>
                   </Link>
                 </div>
               </div>
@@ -190,5 +278,3 @@ export default function AboutPage() {
     </main>
   );
 }
-
-

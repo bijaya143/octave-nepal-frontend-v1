@@ -2,7 +2,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
- 
+
 import Rating from "../../components/ui/Rating";
 import Container from "../../components/Container";
 
@@ -35,7 +35,8 @@ const testimonials = [
     rating: 4.5,
   },
   {
-    quote: "Great pacing and clear roadmap. I finally feel confident building apps.",
+    quote:
+      "Great pacing and clear roadmap. I finally feel confident building apps.",
     name: "Nirajan Thapa",
     date: "Jul 2025",
     avatar:
@@ -43,7 +44,8 @@ const testimonials = [
     rating: 4.5,
   },
   {
-    quote: "Assignments mirror real-world tasks. The feedback was actually useful!",
+    quote:
+      "Assignments mirror real-world tasks. The feedback was actually useful!",
     name: "Riya Acharya",
     date: "Jun 2025",
     avatar:
@@ -95,7 +97,7 @@ const testimonials = [
 export default function TestimonialsContent() {
   return (
     <main>
-      <Container className="py-10">
+      <Container className="py-5 md:py-10">
         <SimpleTestimonials items={testimonials} />
       </Container>
     </main>
@@ -106,54 +108,57 @@ type Testimonial = (typeof testimonials)[number];
 
 function SimpleTestimonials({ items }: { items: Testimonial[] }) {
   return (
-    <section className="relative px-4">
-      <div className="mx-auto w-full max-w-6xl">
-        <div className="text-center mb-8 md:mb-10">
-          <h1 className="mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>What learners say</h1>
-          <p className="mt-2 text-sm md:text-base text-[color:var(--color-neutral-600)]">Selected testimonials from our community.</p>
-          <div className="h-px bg-[color:var(--color-neutral-200)] mt-6" />
-          
-        </div>
-        <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 md:gap-x-10 gap-y-12 md:gap-y-16">
-          {items.map((t, i) => {
-            const offsetClasses = ["", "md:mt-8", "md:-mt-6", "", "md:mt-6", "md:-mt-4"][i % 6];
-            const wide = i % 6 === 0; // occasional wide tile on xl
-            const containerClasses = `${offsetClasses} ${wide ? "xl:col-span-2" : ""}`.trim();
-            const headingClamp = wide ? "md:text-2xl lg:text-3xl line-clamp-2" : "line-clamp-3";
-            return (
-              <motion.div
-                key={t.name + i}
-                className={containerClasses}
-                initial={{ opacity: 1, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, ease: "easeOut" }}
-                viewport={{ once: true, amount: 0.25 }}
+    <section className="relative">
+      <div className="text-center mb-5">
+        <h1
+          className="text-2xl sm:text-3xl md:text-4xl font-semibold"
+          style={{ fontFamily: "var(--font-heading-sans)" }}
+        >
+          What learners say
+        </h1>
+        <p className="mt-2 text-sm md:text-base text-[color:var(--color-neutral-600)]">
+          Selected testimonials from our community.
+        </p>
+        <div className="h-px bg-[color:var(--color-neutral-200)] mt-4" />
+      </div>
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5">
+        {items.map((t, i) => (
+          <motion.div
+            key={t.name + i}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <div className="rounded-xl border border-[color:var(--color-neutral-200)] bg-white p-5 hover:shadow-sm transition-shadow h-full">
+              <h2
+                className="text-base sm:text-lg font-semibold leading-tight line-clamp-4"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
               >
-                <div className="rounded-xl border border-[color:var(--color-neutral-200)] bg-white p-5 md:p-6 hover:shadow-sm transition-shadow">
-                  <h2
-                    className={`text-base sm:text-lg md:text-xl font-semibold leading-tight ${headingClamp}`}
-                    style={{ fontFamily: "var(--font-heading-sans)" }}
-                  >
-                    “{t.quote}”
-                  </h2>
-                  <div className="mt-3 flex items-center gap-3">
-                    <Image src={t.avatar} alt={`${t.name} avatar`} width={44} height={44} className="h-11 w-11 rounded-full object-cover" />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">{t.name}</span>
-                      <span className="text-xs text-[color:var(--color-neutral-600)]">{t.date}</span>
-                    </div>
-                    <div className="ml-auto opacity-80">
-                      <Rating value={t.rating} />
-                    </div>
-                  </div>
+                "{t.quote}"
+              </h2>
+              <div className="mt-3 flex items-center gap-3">
+                <Image
+                  src={t.avatar}
+                  alt={`${t.name} avatar`}
+                  width={44}
+                  height={44}
+                  className="h-11 w-11 rounded-full object-cover"
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">{t.name}</span>
+                  <span className="text-xs text-[color:var(--color-neutral-600)]">
+                    {t.date}
+                  </span>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                <div className="ml-auto opacity-80">
+                  <Rating value={t.rating} />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
 }
-
-

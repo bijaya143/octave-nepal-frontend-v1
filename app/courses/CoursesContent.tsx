@@ -81,7 +81,7 @@ export default function CoursesContent() {
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   return (
     <main>
-      <Container className="py-10">
+      <Container className="py-5 md:py-10">
       <div className="grid lg:grid-cols-[260px_1fr] gap-6 items-start">
         {/* Filters */}
         <aside className="sticky top-20 hidden lg:block">
