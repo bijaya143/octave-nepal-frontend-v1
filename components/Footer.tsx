@@ -2,114 +2,198 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SITE_NAME } from "@/lib/constant";
+import { Mail, Phone, MapPin } from "lucide-react";
 import Container from "./Container";
+
+const SOCIAL_LINKS = [
+  {
+    href: "https://facebook.com",
+    label: "Facebook",
+    img: "/images/social-medias/facebook.png",
+  },
+  {
+    href: "https://twitter.com",
+    label: "X (Twitter)",
+    img: "/images/social-medias/twitter.png",
+  },
+  {
+    href: "https://linkedin.com",
+    label: "LinkedIn",
+    img: "/images/social-medias/linkedin.png",
+  },
+  {
+    href: "https://instagram.com",
+    label: "Instagram",
+    img: "/images/social-medias/instagram.png",
+  },
+  {
+    href: "https://youtube.com",
+    label: "YouTube",
+    img: "/images/social-medias/youtube.png",
+  },
+];
+
+const NAV_GROUPS = [
+  {
+    title: "Learn",
+    links: [
+      { label: "Browse Courses", href: "/courses" },
+      { label: "Categories", href: "/categories" },
+      { label: "Blogs", href: "/blogs" },
+      { label: "FAQ", href: "/faq" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Our Team", href: "/team" },
+      { label: "Careers", href: "/careers" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+];
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[color:var(--color-neutral-200)] mt-16">
-      <Container className="py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 items-start gap-6 md:gap-8">
-        <div className="sm:col-span-2 md:col-span-2 lg:col-span-1">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="h-7 w-7 rounded-lg bg-[color:var(--color-primary-600)]"></div>
-            <span className="font-semibold" style={{ fontFamily: "var(--font-heading-sans)" }}>{SITE_NAME}</span>
+    <footer className="relative mt-12 border-t border-[color:var(--color-neutral-200)] bg-white">
+      {/* Subtle background gradient */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(59,130,246,0.05),transparent_65%)]" />
+
+      <Container className="relative pt-10 pb-6">
+        {/* Main link grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-6 md:gap-10">
+          {/* ── Brand column ── */}
+          <div className="md:col-span-3 lg:col-span-1">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2.5 mb-3 group"
+            >
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[color:var(--color-primary-500)] to-[color:var(--color-primary-700)] shadow-sm group-hover:shadow-md transition-shadow" />
+              <span
+                className="text-base font-bold tracking-tight"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
+              >
+                {SITE_NAME}
+              </span>
+            </Link>
+            <p className="text-sm text-[color:var(--color-neutral-600)] leading-relaxed max-w-[22rem] lg:max-w-none">
+              Courses to up skill your career.
+            </p>
+
+            {/* Social icons */}
+            <div className="mt-4 flex items-center flex-wrap gap-1.5">
+              {SOCIAL_LINKS.map((s) => (
+                <Link
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="h-9 w-9 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white hover:bg-[color:var(--color-neutral-50)] hover:border-[color:var(--color-neutral-300)] transition-colors"
+                >
+                  <Image
+                    src={s.img}
+                    alt=""
+                    width={18}
+                    height={18}
+                    sizes="18px"
+                    className="object-contain"
+                    aria-hidden
+                  />
+                </Link>
+              ))}
+            </div>
           </div>
-          <p className="text-sm text-[color:var(--color-neutral-600)]">Courses to up skill your career.</p>
-          <div className="mt-4 flex items-center gap-1">
-            <Link
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
+
+          {/* ── Link groups ── */}
+          {NAV_GROUPS.map((group) => (
+            <div key={group.title}>
+              <p
+                className="text-[11px] font-semibold uppercase tracking-widest text-[color:var(--color-neutral-400)] mb-3"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
+              >
+                {group.title}
+              </p>
+              <ul className="space-y-2.5">
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-[color:var(--color-neutral-700)] hover:text-[color:var(--color-primary-700)] transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          {/* ── Contact column ── */}
+          <div>
+            <p
+              className="text-[11px] font-semibold uppercase tracking-widest text-[color:var(--color-neutral-400)] mb-3"
+              style={{ fontFamily: "var(--font-heading-sans)" }}
             >
-              <Image src="/images/social-medias/facebook.png" alt="" width={24} height={24} sizes="24px" className="object-contain" aria-hidden />
-            </Link>
-            <Link
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter"
-              className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-            >
-              <Image src="/images/social-medias/twitter.png" alt="" width={24} height={24} sizes="24px" className="object-contain" aria-hidden />
-            </Link>
-            <Link
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-            >
-              <Image src="/images/social-medias/linkedin.png" alt="" width={24} height={24} sizes="24px" className="object-contain" aria-hidden />
-            </Link>
-            <Link
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-            >
-              <Image src="/images/social-medias/instagram.png" alt="" width={24} height={24} sizes="24px" className="object-contain" aria-hidden />
-            </Link>
-            <Link
-              href="https://youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="YouTube"
-              className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-            >
-              <Image src="/images/social-medias/youtube.png" alt="" width={24} height={24} sizes="24px" className="object-contain" aria-hidden />
-            </Link>
+              Contact
+            </p>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <a
+                  href="mailto:hello@octavenepal.com"
+                  className="inline-flex items-center gap-2 text-[color:var(--color-neutral-700)] hover:text-[color:var(--color-primary-700)] transition-colors break-all"
+                >
+                  <Mail className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]" aria-hidden />
+                  hello@octavenepal.com
+                </a>
+              </li>
+              <li>
+                <a
+                  href="tel:+9779800000000"
+                  className="inline-flex items-center gap-2 text-[color:var(--color-neutral-700)] hover:text-[color:var(--color-primary-700)] transition-colors"
+                >
+                  <Phone className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]" aria-hidden />
+                  +977 980-0000000
+                </a>
+              </li>
+              <li className="inline-flex items-center gap-2 text-[color:var(--color-neutral-500)]">
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]" aria-hidden />
+                Jawalakhel, Lalitpur
+              </li>
+            </ul>
           </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold mb-3">Learn</p>
-          <ul className="space-y-2 text-sm">
-            <li><Link href="/courses" className="hover:text-[color:var(--color-primary-700)]">Browse Courses</Link></li>
-            <li><Link href="/categories" className="hover:text-[color:var(--color-primary-700)]">Categories</Link></li>
-            <li><Link href="/blogs" className="hover:text-[color:var(--color-primary-700)]">Blogs</Link></li>
-            <li><Link href="/faq" className="hover:text-[color:var(--color-primary-700)]">FAQ</Link></li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-sm font-semibold mb-3">Company</p>
-          <ul className="space-y-2 text-sm">
-            <li><Link href="/about" className="hover:text-[color:var(--color-primary-700)]">About</Link></li>
-            <li><Link href="/team" className="hover:text-[color:var(--color-primary-700)]">Our Team</Link></li>
-            <li><Link href="/careers" className="hover:text-[color:var(--color-primary-700)]">Careers</Link></li>
-            <li><Link href="/contact" className="hover:text-[color:var(--color-primary-700)]">Contact</Link></li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-sm font-semibold mb-3">Legal</p>
-          <ul className="space-y-2 text-sm">
-            <li><Link href="/terms" className="hover:text-[color:var(--color-primary-700)]">Terms</Link></li>
-            <li><Link href="/privacy" className="hover:text-[color:var(--color-primary-700)]">Privacy</Link></li>
-            <li><Link href="/cookies" className="hover:text-[color:var(--color-primary-700)]">Cookies</Link></li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-sm font-semibold mb-3">Contact</p>
-          <ul className="space-y-2 text-sm text-[color:var(--color-neutral-700)]">
-            <li>
-              <a href="mailto:hello@octavenepal.com" className="hover:text-[color:var(--color-primary-700)]">hello@octavenepal.com</a>
-            </li>
-            <li>
-              <a href="tel:+9779800000000" className="hover:text-[color:var(--color-primary-700)]">+977 980-0000000</a>
-            </li>
-            <li>
-              <span>Jawalakhel, Lalitpur</span>
-            </li>
-          </ul>
+
+        {/* ── Bottom bar ── */}
+        <div className="mt-8 pt-5 border-t border-[color:var(--color-neutral-200)] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span className="text-xs text-[color:var(--color-neutral-500)]">
+            © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
+          </span>
+          <div className="flex items-center gap-4 text-xs text-[color:var(--color-neutral-500)]">
+            <Link
+              href="/terms"
+              className="hover:text-[color:var(--color-primary-700)] transition-colors"
+            >
+              Terms
+            </Link>
+            <span aria-hidden>·</span>
+            <Link
+              href="/privacy"
+              className="hover:text-[color:var(--color-primary-700)] transition-colors"
+            >
+              Privacy
+            </Link>
+            <span aria-hidden>·</span>
+            <Link
+              href="/cookies"
+              className="hover:text-[color:var(--color-primary-700)] transition-colors"
+            >
+              Cookies
+            </Link>
+          </div>
         </div>
       </Container>
-      <div className="border-t border-[color:var(--color-neutral-200)]">
-        <Container className="py-4 text-xs text-[color:var(--color-neutral-600)] flex items-center justify-center">
-          <span className="hover:text-[color:var(--color-primary-700)]">© {new Date().getFullYear()} {SITE_NAME}</span>
-        </Container>
-      </div>
     </footer>
   );
 }
-
-
