@@ -181,93 +181,124 @@ export default function StudentDashboardPage() {
         <section className="md:col-span-2 lg:col-span-2 space-y-6">
           {/* Quick stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {[
-              {
-                label: "Enrolled",
-                value: dashboardCounts?.enrollmentCount ?? 0,
-                Icon: BookOpen,
-                loading: loadingDashboardCounts,
-              },
-              {
-                label: "In Progress",
-                value: dashboardCounts?.activeEnrollmentCount ?? 0,
-                Icon: Hammer,
-                loading: loadingDashboardCounts,
-              },
-              {
-                label: "Certificates",
-                value: dashboardCounts?.enrollmentCertificateCount ?? 0,
-                Icon: Award,
-                loading: loadingDashboardCounts,
-              },
-              {
-                label: "Octave Points",
-                value: 0,
-                Icon: Sparkles,
-                comingSoon: true,
-              },
-            ].map((s: any) => (
-              <Card
-                key={s.label}
-                className={`relative overflow-hidden ${
-                  s.comingSoon
-                    ? "border-dashed bg-[color:var(--color-neutral-50)] opacity-75 cursor-not-allowed"
-                    : "group"
-                }`}
-                aria-disabled={s.comingSoon ? true : undefined}
-              >
-                <div
-                  className={`pointer-events-none absolute inset-0 ${
-                    s.comingSoon
-                      ? "bg-[radial-gradient(ellipse_at_top_right,rgba(0,0,0,0.06),transparent_60%)]"
-                      : "bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.10),transparent_60%)]"
-                  }`}
-                />
-                <CardContent
-                  className="relative py-4"
-                  title={s.comingSoon ? "Coming soon" : undefined}
+            {loadingDashboardCounts ? (
+              <>
+                {[0, 1, 2].map((i) => (
+                  <Card key={`stat-skeleton-${i}`} className="relative overflow-hidden animate-pulse">
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.06),transparent_60%)]" />
+                    <CardContent className="relative py-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="space-y-2 flex-1">
+                          <div className="h-3 w-16 bg-neutral-200 rounded" />
+                          <div className="h-6 w-10 bg-neutral-200 rounded" />
+                        </div>
+                        <div className="h-9 w-9 shrink-0 rounded-lg bg-neutral-200" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {/* Octave Points — always static */}
+                <Card
+                  className="relative overflow-hidden border-dashed bg-[color:var(--color-neutral-50)] opacity-75 cursor-not-allowed"
+                  aria-disabled={true}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,0,0,0.06),transparent_60%)]" />
+                  <CardContent className="relative py-4" title="Coming soon">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <div className="text-xs text-[color:var(--color-neutral-600)]">Octave Points</div>
+                        <div
+                          className="mt-1 text-lg font-semibold text-[color:var(--color-neutral-500)]"
+                          style={{ fontFamily: "var(--font-heading-sans)" }}
+                        >
+                          —
+                        </div>
+                      </div>
+                      <div className="h-9 w-9 shrink-0 rounded-lg border shadow-xs flex items-center justify-center border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] text-[color:var(--color-neutral-600)]">
+                        <Lock size={16} aria-hidden="true" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              [
+                {
+                  label: "Enrolled",
+                  value: dashboardCounts?.enrollmentCount ?? 0,
+                  Icon: BookOpen,
+                },
+                {
+                  label: "In Progress",
+                  value: dashboardCounts?.activeEnrollmentCount ?? 0,
+                  Icon: Hammer,
+                },
+                {
+                  label: "Certificates",
+                  value: dashboardCounts?.enrollmentCertificateCount ?? 0,
+                  Icon: Award,
+                },
+                {
+                  label: "Octave Points",
+                  value: 0,
+                  Icon: Sparkles,
+                  comingSoon: true,
+                },
+              ].map((s: any) => (
+                <Card
+                  key={s.label}
+                  className={`relative overflow-hidden ${
+                    s.comingSoon
+                      ? "border-dashed bg-[color:var(--color-neutral-50)] opacity-75 cursor-not-allowed"
+                      : "group"
+                  }`}
+                  aria-disabled={s.comingSoon ? true : undefined}
+                >
+                  <div
+                    className={`pointer-events-none absolute inset-0 ${
+                      s.comingSoon
+                        ? "bg-[radial-gradient(ellipse_at_top_right,rgba(0,0,0,0.06),transparent_60%)]"
+                        : "bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.10),transparent_60%)]"
+                    }`}
+                  />
+                  <CardContent
+                    className="relative py-4"
+                    title={s.comingSoon ? "Coming soon" : undefined}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
                         <div className="text-xs text-[color:var(--color-neutral-600)]">
                           {s.label}
                         </div>
+                        <div
+                          className={`mt-1 text-lg font-semibold ${
+                            s.comingSoon
+                              ? "text-[color:var(--color-neutral-500)]"
+                              : ""
+                          }`}
+                          style={{ fontFamily: "var(--font-heading-sans)" }}
+                        >
+                          {s.comingSoon ? "—" : s.value}
+                        </div>
                       </div>
                       <div
-                        className={`mt-1 text-lg font-semibold ${
+                        className={`h-9 w-9 shrink-0 rounded-lg border shadow-xs flex items-center justify-center ${
                           s.comingSoon
-                            ? "text-[color:var(--color-neutral-500)]"
-                            : ""
+                            ? "border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] text-[color:var(--color-neutral-600)]"
+                            : "border-[color:var(--color-neutral-200)] bg-white text-[color:var(--color-primary-700)]"
                         }`}
-                        style={{ fontFamily: "var(--font-heading-sans)" }}
                       >
                         {s.comingSoon ? (
-                          "—"
-                        ) : s.loading ? (
-                          <div className="h-6 w-8 bg-neutral-200 animate-pulse rounded" />
+                          <Lock size={16} aria-hidden="true" />
                         ) : (
-                          s.value
+                          <s.Icon size={16} aria-hidden="true" />
                         )}
                       </div>
                     </div>
-                    <div
-                      className={`h-9 w-9 shrink-0 rounded-lg border shadow-xs flex items-center justify-center ${
-                        s.comingSoon
-                          ? "border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] text-[color:var(--color-neutral-600)]"
-                          : "border-[color:var(--color-neutral-200)] bg-white text-[color:var(--color-primary-700)]"
-                      }`}
-                    >
-                      {s.comingSoon ? (
-                        <Lock size={16} aria-hidden="true" />
-                      ) : (
-                        <s.Icon size={16} aria-hidden="true" />
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
 
           {/* Active Enrolled courses */}
