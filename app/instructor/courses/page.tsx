@@ -20,7 +20,6 @@ import {
   Timer,
   Star,
   Settings,
-  ShieldCheck,
   Globe,
 } from "lucide-react";
 
@@ -140,17 +139,25 @@ export default function InstructorCoursesPage() {
     value: React.ReactNode,
     icon?: React.ReactNode,
   ) => (
-    <div className="flex items-center justify-between py-1.5">
-      <div className="flex items-center gap-2 text-[color:var(--color-neutral-600)]">
-        {icon}
-        <span>{label}</span>
+    <div className="flex items-start justify-between gap-3 py-2">
+      <div className="flex items-center gap-1.5 text-[color:var(--color-neutral-500)] shrink-0">
+        {icon && (
+          <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-[color:var(--color-neutral-100)] text-[color:var(--color-neutral-500)]">
+            {icon}
+          </span>
+        )}
+        <span className="text-xs font-medium text-[color:var(--color-neutral-500)]">
+          {label}
+        </span>
       </div>
-      <div className="font-medium text-right">{value}</div>
+      <div className="font-medium text-right text-[color:var(--color-neutral-900)] text-sm leading-snug">
+        {value}
+      </div>
     </div>
   );
 
   const renderSectionHeader = (title: string, icon?: React.ReactNode) => (
-    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--color-neutral-400)] pt-4 pb-2 border-b border-[color:var(--color-neutral-100)] mb-2">
+    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[color:var(--color-neutral-400)] pb-2 mb-1">
       {icon}
       {title}
     </div>
@@ -174,185 +181,366 @@ export default function InstructorCoursesPage() {
 
       <Card>
         <CardContent className="py-0">
-          <div className="overflow-auto">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="text-left">
-                  <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                    Title
-                  </th>
-                  <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                    Category
-                  </th>
-                  <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                    Level
-                  </th>
-                  <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                    Students
-                  </th>
-                  <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                    Rating
-                  </th>
-                  <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                    Status
-                  </th>
-                  <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                    Updated
-                  </th>
-                  <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  Array.from({ length: pageSize }).map((_, idx) => (
-                    <tr key={`skeleton-${idx}`}>
-                      {Array.from({ length: 9 }).map((__, tdIdx) => (
-                        <td
-                          key={`skeleton-td-${tdIdx}`}
-                          className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]"
-                        >
-                          <div className="h-4 bg-neutral-100 animate-pulse rounded w-full"></div>
-                        </td>
-                      ))}
+          {loading ? (
+            <>
+              {/* Desktop Skeleton */}
+              <div className="hidden lg:block overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-left">
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Title
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Category
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Level
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Students
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Rating
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Status
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Updated
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Actions
+                      </th>
                     </tr>
-                  ))
-                ) : courses.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={9}
-                      className="px-4 py-8 text-center text-[color:var(--color-neutral-500)]"
+                  </thead>
+                  <tbody>
+                    {Array.from({ length: pageSize }).map((_, idx) => (
+                      <tr key={`skeleton-desktop-${idx}`}>
+                        {Array.from({ length: 8 }).map((__, tdIdx) => (
+                          <td
+                            key={`skeleton-td-${tdIdx}`}
+                            className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]"
+                          >
+                            <div className="h-4 bg-neutral-100 animate-pulse rounded w-full"></div>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Mobile & Tablet Skeleton */}
+              <div className="lg:hidden">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4 md:px-0 -mx-6 md:mx-0">
+                  {Array.from({ length: 4 }).map((_, idx) => (
+                    <div
+                      key={`skeleton-mobile-${idx}`}
+                      className="px-6 py-4 animate-pulse border-t border-[color:var(--color-neutral-100)] md:border md:rounded-xl md:bg-white"
                     >
-                      No courses found.
-                    </td>
-                  </tr>
-                ) : (
-                  courses.map((c) => (
-                    <tr
-                      key={c.id}
-                      className="hover:bg-[color:var(--color-neutral-50)]"
-                    >
-                      <td className="px-6 py-3 border-b border-[color:var(--color-neutral-200)]">
-                        <div
-                          className="font-medium truncate max-w-[260px]"
-                          title={c.title}
-                        >
-                          {c.title}
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="space-y-3 flex-1">
+                          <div className="h-4 bg-neutral-100 rounded w-3/4"></div>
+                          <div className="flex gap-2">
+                            <div className="h-5 bg-neutral-100 rounded-full w-20"></div>
+                            <div className="h-5 bg-neutral-100 rounded-full w-16"></div>
+                          </div>
                         </div>
-                      </td>
-                      <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                        {c.category?.name || "Uncategorized"}
-                      </td>
-                      <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                        <Badge
-                          className={cn(
-                            "font-normal border",
-                            getCourseLevelStyles(c.level),
-                          )}
-                        >
-                          {formatLevel(c.level)}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                        {c.studentCount.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                        {c.averageReviewRatingCount}
-                      </td>
-                      <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                        <Badge
-                          variant="outline"
-                          className={statusBadgeClass(c.status)}
-                        >
-                          <span className="inline-flex items-center gap-1.5 capitalize">
-                            {c.status === "PUBLISHED" ? (
-                              <CheckCircle2 size={14} />
-                            ) : c.status === "UNDER_REVIEW" ? (
-                              <Clock size={14} />
-                            ) : (
-                              <XCircle size={14} />
-                            )}
-                            {c.status.replace(/_/g, " ").toLowerCase()}
-                          </span>
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)] whitespace-nowrap">
-                        {formatReadableDate(c.updatedAt)}
-                      </td>
-                      <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)] flex gap-2">
-                        {(() => {
-                          const meetingLink =
-                            c.meetingLinks.find((l) => l.isPrimary)?.link ||
-                            c.meetingLinks[0]?.link;
-
-                          if (
-                            isCourseOngoing(c.startDate, c.endDate) &&
-                            meetingLink
-                          ) {
-                            return (
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                onClick={() =>
-                                  window.open(meetingLink, "_blank")
-                                }
-                              >
-                                <CirclePlay size={14} className="mr-1" />
-                                Join
-                              </Button>
-                            );
-                          }
-                          return null;
-                        })()}
-
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => setSelectedCourse(c)}
-                        >
-                          View
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4">
-            <p className="text-sm text-[color:var(--color-neutral-600)]">
-              Showing {total === 0 ? 0 : (page - 1) * pageSize + 1}-
-              {Math.min(page * pageSize, total)} of {total}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-              <Button
-                size="sm"
-                variant="secondary"
-                className="w-full sm:w-auto"
-                onClick={prevPage}
-                disabled={page === 1 || loading}
-              >
-                Previous
-              </Button>
-              <div className="text-sm sm:hidden">
-                {page}/{pageCount}
+                        <div className="h-6 bg-neutral-100 rounded-full w-24"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="text-sm hidden sm:block">
-                Page {page} of {pageCount}
-              </div>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="w-full sm:w-auto"
-                onClick={nextPage}
-                disabled={page === pageCount || loading}
-              >
-                Next
-              </Button>
+            </>
+          ) : courses.length === 0 ? (
+            <div className="px-4 py-12 text-center text-[color:var(--color-neutral-500)] border-t border-[color:var(--color-neutral-200)]">
+              No courses found.
             </div>
-          </div>
+          ) : (
+            <>
+              {/* Desktop Table */}
+              <div className="hidden lg:block overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-left">
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Title
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Category
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Level
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Students
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Rating
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Status
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Updated
+                      </th>
+                      <th className="font-medium px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {courses.map((c) => (
+                      <tr
+                        key={c.id}
+                        className="hover:bg-[color:var(--color-neutral-50)] transition-colors"
+                      >
+                        <td className="px-6 py-3 border-b border-[color:var(--color-neutral-200)]">
+                          <div
+                            className="font-medium truncate max-w-[260px]"
+                            title={c.title}
+                          >
+                            {c.title}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                          {c.category?.name || "Uncategorized"}
+                        </td>
+                        <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                          <Badge
+                            className={cn(
+                              "font-normal border",
+                              getCourseLevelStyles(c.level),
+                            )}
+                          >
+                            {formatLevel(c.level)}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)] text-center sm:text-left">
+                          {c.studentCount.toLocaleString()}
+                        </td>
+                        <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                          <div className="flex items-center gap-1">
+                            <Star
+                              size={12}
+                              className="fill-amber-400 text-amber-400"
+                            />
+                            <span>{c.averageReviewRatingCount}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                          <Badge
+                            variant="outline"
+                            className={statusBadgeClass(c.status)}
+                          >
+                            <span className="inline-flex items-center gap-1.5 capitalize whitespace-nowrap">
+                              {c.status === "PUBLISHED" ? (
+                                <CheckCircle2 size={14} />
+                              ) : c.status === "UNDER_REVIEW" ? (
+                                <Clock size={14} />
+                              ) : (
+                                <XCircle size={14} />
+                              )}
+                              {c.status.replace(/_/g, " ").toLowerCase()}
+                            </span>
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)] whitespace-nowrap">
+                          {formatReadableDate(c.updatedAt)}
+                        </td>
+                        <td className="px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
+                          <div className="flex items-center gap-2">
+                            {(() => {
+                              const meetingLink =
+                                c.meetingLinks.find((l) => l.isPrimary)?.link ||
+                                c.meetingLinks[0]?.link;
+
+                              if (
+                                isCourseOngoing(c.startDate, c.endDate) &&
+                                meetingLink
+                              ) {
+                                return (
+                                  <Button
+                                    size="sm"
+                                    variant="secondary"
+                                    onClick={() =>
+                                      window.open(meetingLink, "_blank")
+                                    }
+                                  >
+                                    <CirclePlay size={14} className="mr-1" />
+                                    Join
+                                  </Button>
+                                );
+                              }
+                              return null;
+                            })()}
+
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => setSelectedCourse(c)}
+                            >
+                              View
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile & Tablet list view */}
+              <div className="lg:hidden">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4 md:px-0 -mx-6 md:mx-0">
+                  {courses.map((c) => (
+                    <div
+                      key={c.id}
+                      className="px-6 py-5 hover:bg-[color:var(--color-neutral-50)] transition-colors border-t border-[color:var(--color-neutral-100)] md:border md:rounded-xl md:bg-white md:shadow-sm"
+                    >
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1.5 flex-1 min-w-0">
+                            <div
+                              className="font-semibold text-[15px] leading-tight text-neutral-900 line-clamp-2"
+                              title={c.title}
+                            >
+                              {c.title}
+                            </div>
+                            <div className="flex flex-wrap gap-2 items-center">
+                              <span className="text-[11px] font-medium text-[color:var(--color-neutral-500)] uppercase tracking-wider">
+                                {c.category?.name || "Uncategorized"}
+                              </span>
+                              <span className="text-[color:var(--color-neutral-300)]">
+                                •
+                              </span>
+                              <Badge
+                                className={cn(
+                                  "font-normal border scale-90 origin-left h-5 px-2",
+                                  getCourseLevelStyles(c.level),
+                                )}
+                              >
+                                {formatLevel(c.level)}
+                              </Badge>
+                              <Badge
+                                variant="outline"
+                                className={cn(
+                                  "shrink-0 py-0.5 px-2",
+                                  statusBadgeClass(c.status),
+                                )}
+                              >
+                                <span className="inline-flex items-center gap-1.5 capitalize text-[10px] font-semibold">
+                                  {c.status === "PUBLISHED" ? (
+                                    <CheckCircle2 size={10} />
+                                  ) : c.status === "UNDER_REVIEW" ? (
+                                    <Clock size={10} />
+                                  ) : (
+                                    <XCircle size={10} />
+                                  )}
+                                  {c.status.replace(/_/g, " ").toLowerCase()}
+                                </span>
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4 text-xs font-medium text-[color:var(--color-neutral-600)]">
+                            <div className="flex items-center gap-1.5">
+                              <Users
+                                size={14}
+                                className="text-[color:var(--color-neutral-400)]"
+                              />
+                              <span>{c.studentCount.toLocaleString()}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <Star
+                                size={14}
+                                className="fill-amber-400 text-amber-400"
+                              />
+                              <span>{c.averageReviewRatingCount}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {(() => {
+                              const meetingLink =
+                                c.meetingLinks.find((l) => l.isPrimary)?.link ||
+                                c.meetingLinks[0]?.link;
+                              if (
+                                isCourseOngoing(c.startDate, c.endDate) &&
+                                meetingLink
+                              ) {
+                                return (
+                                  <Button
+                                    size="sm"
+                                    variant="secondary"
+                                    className="h-8 text-[11px] px-3 font-semibold"
+                                    onClick={() =>
+                                      window.open(meetingLink, "_blank")
+                                    }
+                                  >
+                                    <CirclePlay size={14} className="mr-1" />
+                                    Join
+                                  </Button>
+                                );
+                              }
+                              return null;
+                            })()}
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="h-8 text-[11px] px-3 font-semibold"
+                              onClick={() => setSelectedCourse(c)}
+                            >
+                              View
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Pagination Controls */}
+          {total > pageSize && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-[color:var(--color-neutral-100)]">
+              <p className="text-sm text-[color:var(--color-neutral-500)] text-center sm:text-left">
+                Showing{" "}
+                <span className="font-medium text-[color:var(--color-neutral-900)]">
+                  {total === 0 ? 0 : (page - 1) * pageSize + 1}-
+                  {Math.min(page * pageSize, total)}
+                </span>{" "}
+                of {total}
+              </p>
+              <div className="flex items-center justify-center sm:justify-end gap-2 w-full sm:w-auto">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="h-8 px-3"
+                  onClick={prevPage}
+                  disabled={page === 1 || loading}
+                >
+                  Previous
+                </Button>
+                <div className="text-sm font-medium text-[color:var(--color-neutral-600)] px-1 whitespace-nowrap">
+                  {page} of {pageCount}
+                </div>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="h-8 px-3"
+                  onClick={nextPage}
+                  disabled={page === pageCount || loading}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -362,139 +550,161 @@ export default function InstructorCoursesPage() {
         title={selectedCourse ? selectedCourse.title : undefined}
       >
         {selectedCourse && (
-          <div className="space-y-6 text-sm max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-0 text-sm">
-              <div className="space-y-1">
-                {renderSectionHeader("General Details", <Info size={14} />)}
-                {renderDetailRow(
-                  "Status",
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "px-2 py-0.5",
-                      statusBadgeClass(selectedCourse.status),
-                    )}
-                  >
-                    <span className="inline-flex items-center gap-1.5 capitalize">
-                      {selectedCourse.status === "PUBLISHED" ? (
-                        <CheckCircle2 size={12} />
-                      ) : selectedCourse.status === "UNDER_REVIEW" ? (
-                        <Clock size={12} />
-                      ) : (
-                        <XCircle size={12} />
-                      )}
-                      {selectedCourse.status.replace(/_/g, " ").toLowerCase()}
-                    </span>
-                  </Badge>,
-                  <ShieldCheck size={14} />,
+          <div className="text-sm max-h-[72vh] overflow-y-auto custom-scrollbar">
+            {/* Status banner */}
+            <div className="flex flex-wrap items-center gap-2 mb-5 pb-4 border-b border-[color:var(--color-neutral-100)]">
+              <Badge
+                variant="outline"
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold capitalize rounded-full",
+                  statusBadgeClass(selectedCourse.status),
                 )}
-                {renderDetailRow(
-                  "Category",
-                  selectedCourse.category?.name || "Uncategorized",
-                  <Tag size={14} />,
+              >
+                {selectedCourse.status === "PUBLISHED" ? (
+                  <CheckCircle2 size={11} />
+                ) : selectedCourse.status === "UNDER_REVIEW" ? (
+                  <Clock size={11} />
+                ) : (
+                  <XCircle size={11} />
                 )}
-                {renderDetailRow(
-                  "Level",
-                  <Badge
-                    className={cn(
-                      "font-normal border px-2 py-0",
-                      getCourseLevelStyles(selectedCourse.level),
-                    )}
-                  >
-                    {formatLevel(selectedCourse.level)}
-                  </Badge>,
-                  <Layers size={14} />,
+                {selectedCourse.status.replace(/_/g, " ").toLowerCase()}
+              </Badge>
+              <Badge
+                className={cn(
+                  "font-semibold border px-2.5 py-1 text-xs rounded-full",
+                  getCourseLevelStyles(selectedCourse.level),
                 )}
-                {renderDetailRow(
-                  "Language",
-                  selectedCourse.language || "N/A",
-                  <Languages size={14} />,
-                )}
-                {renderDetailRow(
-                  "Type",
-                  <span className="capitalize">
-                    {selectedCourse.courseType?.toLowerCase() || "N/A"}
-                  </span>,
-                  <Settings size={14} />,
-                )}
+              >
+                {formatLevel(selectedCourse.level)}
+              </Badge>
+              {selectedCourse.language && (
+                <span className="inline-flex items-center gap-1 text-xs text-[color:var(--color-neutral-500)] bg-[color:var(--color-neutral-100)] px-2.5 py-1 rounded-full font-medium">
+                  <Languages size={11} />
+                  {selectedCourse.language}
+                </span>
+              )}
+              {selectedCourse.lessonCount ? (
+                <span className="inline-flex items-center gap-1 text-xs text-[color:var(--color-neutral-500)] bg-[color:var(--color-neutral-100)] px-2.5 py-1 rounded-full font-medium">
+                  <Layers size={11} />
+                  {selectedCourse.lessonCount} Lessons
+                </span>
+              ) : null}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* General Details card */}
+              <div className="rounded-xl border border-[color:var(--color-neutral-100)] bg-[color:var(--color-neutral-50)] p-4">
+                {renderSectionHeader("General Details", <Info size={11} />)}
+                <div className="divide-y divide-[color:var(--color-neutral-100)]">
+                  {renderDetailRow(
+                    "Category",
+                    selectedCourse.category?.name || "Uncategorized",
+                    <Tag size={12} />,
+                  )}
+                  {renderDetailRow(
+                    "Type",
+                    <span className="capitalize">
+                      {selectedCourse.courseType?.toLowerCase() || "N/A"}
+                    </span>,
+                    <Settings size={12} />,
+                  )}
+                </div>
               </div>
 
-              <div className="space-y-1">
+              {/* Enrollment & Stats card */}
+              <div className="rounded-xl border border-[color:var(--color-neutral-100)] bg-[color:var(--color-neutral-50)] p-4">
+                {renderSectionHeader("Stats", <BarChart3 size={11} />)}
+                <div className="divide-y divide-[color:var(--color-neutral-100)]">
+                  {renderDetailRow(
+                    "Students",
+                    <span className="font-semibold text-[color:var(--color-neutral-900)]">
+                      {selectedCourse.studentCount?.toLocaleString() || "0"}
+                    </span>,
+                    <Users size={12} />,
+                  )}
+                  {renderDetailRow(
+                    "Rating",
+                    <span className="inline-flex items-center gap-1 font-semibold text-[color:var(--color-neutral-900)]">
+                      <Star
+                        size={12}
+                        className="fill-amber-400 text-amber-400"
+                      />
+                      {selectedCourse.averageReviewRatingCount}
+                      <span className="font-normal text-[color:var(--color-neutral-400)] text-xs">
+                        ({selectedCourse.reviewCount || 0} reviews)
+                      </span>
+                    </span>,
+                    <BarChart3 size={12} />,
+                  )}
+                </div>
+              </div>
+
+              {/* Schedule & Duration card — full width */}
+              <div className="sm:col-span-2 rounded-xl border border-[color:var(--color-neutral-100)] bg-[color:var(--color-neutral-50)] p-4">
                 {renderSectionHeader(
                   "Schedule & Duration",
-                  <Calendar size={14} />,
+                  <Calendar size={11} />,
                 )}
-                {renderDetailRow(
-                  "Duration",
-                  formatDuration(
-                    selectedCourse.duration,
-                    selectedCourse.durationUnit,
-                  ),
-                  <Timer size={14} />,
-                )}
-                {renderDetailRow(
-                  "Dates",
-                  `${formatReadableDate(selectedCourse.startDate)} - ${formatReadableDate(selectedCourse.endDate)}`,
-                  null,
-                )}
-                {renderDetailRow(
-                  "Days",
-                  formatSchedule(selectedCourse.fromDay, selectedCourse.toDay),
-                  null,
-                )}
-                {renderDetailRow(
-                  "Time",
-                  `${formatTime(selectedCourse.startTime, selectedCourse.startTimeDesignator)} - ${formatTime(selectedCourse.endTime, selectedCourse.endTimeDesignator)}`,
-                  <Clock size={14} />,
-                )}
-                {selectedCourse.timezone &&
-                  renderDetailRow(
-                    "Timezone",
-                    selectedCourse.timezone,
-                    <Globe size={14} />,
-                  )}
-              </div>
-
-              <div className="space-y-1">
-                {renderSectionHeader("Enrollment & Stats", <Users size={14} />)}
-                {renderDetailRow(
-                  "Students",
-                  selectedCourse.studentCount?.toLocaleString() || 0,
-                  <Users size={14} />,
-                )}
-                {renderDetailRow(
-                  "Rating",
-                  <div className="flex items-center gap-1">
-                    <Star size={12} className="fill-amber-400 text-amber-400" />
-                    <span>
-                      {selectedCourse.averageReviewRatingCount} (
-                      {selectedCourse.reviewCount || 0})
-                    </span>
-                  </div>,
-                  <BarChart3 size={14} />,
-                )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[color:var(--color-neutral-100)]">
+                  <div className="sm:pr-4 divide-y divide-[color:var(--color-neutral-100)]">
+                    {renderDetailRow(
+                      "Duration",
+                      formatDuration(
+                        selectedCourse.duration,
+                        selectedCourse.durationUnit,
+                      ),
+                      <Timer size={12} />,
+                    )}
+                    {renderDetailRow(
+                      "Start Date",
+                      <span className="text-right">
+                        {formatReadableDate(selectedCourse.startDate)}
+                      </span>,
+                      <Calendar size={12} />,
+                    )}
+                    {renderDetailRow(
+                      "End Date",
+                      <span className="text-right">
+                        {formatReadableDate(selectedCourse.endDate)}
+                      </span>,
+                      <Calendar size={12} />,
+                    )}
+                  </div>
+                  <div className="sm:pl-4 pt-2 sm:pt-0 divide-y divide-[color:var(--color-neutral-100)]">
+                    {renderDetailRow(
+                      "Days",
+                      formatSchedule(
+                        selectedCourse.fromDay,
+                        selectedCourse.toDay,
+                      ),
+                      <Clock size={12} />,
+                    )}
+                    {renderDetailRow(
+                      "Time",
+                      `${formatTime(selectedCourse.startTime, selectedCourse.startTimeDesignator)} – ${formatTime(selectedCourse.endTime, selectedCourse.endTimeDesignator)}`,
+                      <Clock size={12} />,
+                    )}
+                    {selectedCourse.timezone &&
+                      renderDetailRow(
+                        "Timezone",
+                        selectedCourse.timezone,
+                        <Globe size={12} />,
+                      )}
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 pt-4 border-t border-[color:var(--color-neutral-100)] text-xs text-[color:var(--color-neutral-500)]">
-              <div className="flex items-center gap-1.5">
-                <Calendar size={12} />
-                <span>
-                  Created: {formatReadableDate(selectedCourse.createdAt)}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Clock size={12} />
-                <span>
-                  Last Updated: {formatReadableDate(selectedCourse.updatedAt)}
-                </span>
-              </div>
-              {selectedCourse.lessonCount && (
-                <div className="flex items-center gap-1.5">
-                  <Layers size={12} />
-                  <span>{selectedCourse.lessonCount} Lessons</span>
-                </div>
-              )}
+            {/* Footer metadata */}
+            <div className="flex flex-wrap gap-x-5 gap-y-1.5 mt-4 pt-4 border-t border-[color:var(--color-neutral-100)]">
+              <span className="inline-flex items-center gap-1.5 text-xs text-[color:var(--color-neutral-400)]">
+                <Calendar size={11} />
+                Created {formatReadableDate(selectedCourse.createdAt)}
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs text-[color:var(--color-neutral-400)]">
+                <Clock size={11} />
+                Updated {formatReadableDate(selectedCourse.updatedAt)}
+              </span>
             </div>
           </div>
         )}

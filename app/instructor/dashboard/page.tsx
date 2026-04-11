@@ -21,8 +21,12 @@ import {
 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import Image from "next/image";
-import { instructorCourseService } from "@/lib/services/instructor";
+import {
+  instructorCourseService,
+  instructorDashboardService,
+} from "@/lib/services/instructor";
 import { Course } from "@/lib/services/admin/types";
+import { InstructorDashboardCountOutput } from "@/lib/services/instructor/types";
 
 type OpenModalKey =
   | null
@@ -120,17 +124,27 @@ export default function InstructorDashboardPage() {
   const handleOpen = (key: Exclude<OpenModalKey, null>) => setOpenModal(key);
   const handleClose = () => setOpenModal(null);
 
-  const stats = [
-    { label: "Courses", value: 4, Icon: BookOpen },
-    { label: "Total Students", value: 500, Icon: GraduationCap },
-    { label: "Enrollments", value: 176, Icon: TrendingUp },
-    {
-      label: "Total Payouts",
-      value: "Rs 12400",
-      Icon: Wallet,
-      comingSoon: true,
-    },
-  ];
+  const [dashboardCounts, setDashboardCounts] =
+    React.useState<InstructorDashboardCountOutput | null>(null);
+  const [loadingDashboardCounts, setLoadingDashboardCounts] =
+    React.useState(true);
+
+  React.useEffect(() => {
+    const fetchDashboardCounts = async () => {
+      try {
+        setLoadingDashboardCounts(true);
+        const res = await instructorDashboardService.get();
+        if (res.success) {
+          setDashboardCounts(res.data);
+        }
+      } catch {
+        // silently fail — counts are non-critical
+      } finally {
+        setLoadingDashboardCounts(false);
+      }
+    };
+    fetchDashboardCounts();
+  }, []);
 
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [loadingCourses, setLoadingCourses] = React.useState<boolean>(true);
@@ -198,7 +212,32 @@ export default function InstructorDashboardPage() {
         <section className="md:col-span-2 lg:col-span-2 space-y-6">
           {/* Quick stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {stats.map((s: any) => (
+            {[
+              {
+                label: "Courses",
+                value: dashboardCounts?.courseCount ?? 0,
+                Icon: BookOpen,
+                loading: loadingDashboardCounts,
+              },
+              {
+                label: "Students",
+                value: dashboardCounts?.studentCount ?? 0,
+                Icon: GraduationCap,
+                loading: loadingDashboardCounts,
+              },
+              {
+                label: "Classes",
+                value: dashboardCounts?.activeEnrollmentCount ?? 0,
+                Icon: TrendingUp,
+                loading: loadingDashboardCounts,
+              },
+              {
+                label: "Payouts",
+                value: "—",
+                Icon: Wallet,
+                comingSoon: true,
+              },
+            ].map((s: any) => (
               <Card
                 key={s.label}
                 className={`relative overflow-hidden ${
@@ -232,7 +271,13 @@ export default function InstructorDashboardPage() {
                         }`}
                         style={{ fontFamily: "var(--font-heading-sans)" }}
                       >
-                        {s.comingSoon ? "—" : s.value}
+                        {s.comingSoon ? (
+                          "—"
+                        ) : s.loading ? (
+                          <div className="h-6 w-8 bg-neutral-200 animate-pulse rounded" />
+                        ) : (
+                          s.value
+                        )}
                       </div>
                     </div>
                     <div

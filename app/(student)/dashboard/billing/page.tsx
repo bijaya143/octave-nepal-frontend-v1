@@ -305,29 +305,32 @@ export default function StudentBillingPage() {
 
               {/* Pagination Controls */}
               {pagination && pagination.total > pageSize && (
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-neutral-100 mt-4 relative z-10">
-                  <p className="text-sm text-neutral-600">
-                    Showing {(page - 1) * pageSize + 1}-
-                    {Math.min(page * pageSize, pagination.total)} of{" "}
-                    {pagination.total}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-neutral-100 mt-4 relative z-10">
+                  <p className="text-sm text-neutral-500 text-center sm:text-left">
+                    Showing{" "}
+                    <span className="font-medium text-neutral-900">
+                      {(page - 1) * pageSize + 1}-
+                      {Math.min(page * pageSize, pagination.total)}
+                    </span>{" "}
+                    of {pagination.total}
                   </p>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center sm:justify-end gap-2 w-full sm:w-auto">
                     <Button
-                      type="button"
-                      variant="secondary"
                       size="sm"
+                      variant="secondary"
+                      className="h-8 px-3"
                       disabled={page === 1 || loading}
                       onClick={() => setPage(page - 1)}
                     >
                       Previous
                     </Button>
-                    <div className="text-sm text-neutral-600 hidden sm:block">
-                      Page {page} of {Math.ceil(pagination.total / pageSize)}
+                    <div className="text-sm font-medium text-neutral-600 px-1 whitespace-nowrap">
+                      {page} of {Math.ceil(pagination.total / pageSize)}
                     </div>
                     <Button
-                      type="button"
-                      variant="secondary"
                       size="sm"
+                      variant="secondary"
+                      className="h-8 px-3"
                       disabled={
                         page === Math.ceil(pagination.total / pageSize) ||
                         loading

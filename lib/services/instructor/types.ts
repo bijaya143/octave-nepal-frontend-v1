@@ -125,3 +125,12 @@ export interface InstructorEnrollmentOutput {
 export interface InstructorEnrollmentFilterInput extends PaginationInput {
   status?: EnrollmentStatus;
 }
+
+/**
+ * Instructor dashboard count output
+ */
+export interface InstructorDashboardCountOutput {
+  studentCount: number;
+  activeEnrollmentCount: number;
+  courseCount: number;
+}
