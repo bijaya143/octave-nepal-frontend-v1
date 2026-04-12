@@ -29,3 +29,4 @@ export * from "./student";
 export * from "./admin";
 export * from "./instructor";
 export * from "./common-types";
+export * from "./guest";

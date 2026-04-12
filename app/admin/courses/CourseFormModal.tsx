@@ -1265,9 +1265,11 @@ export default function CourseFormModal({
                     const raw = e.target.value;
                     if (raw === "") {
                       handleChange("discountValue", "");
+                      handleChange("isDiscountApplied", false);
                     } else {
                       const v = Number(raw);
                       handleChange("discountValue", v);
+                      handleChange("isDiscountApplied", v > 0);
                     }
                   }}
                   placeholder="0"
@@ -1300,6 +1302,7 @@ export default function CourseFormModal({
                   onChange={(r) => {
                     handleChange("saleStartDate", r.from || "");
                     handleChange("saleEndDate", r.to || "");
+                    handleChange("isSalePeriodApplied", !!(r.from && r.to));
                   }}
                   max={salePeriodMaxDate}
                   placeholder="Optional start and end date"
