@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { Timer } from "lucide-react";
 
 type OfferTimerProps = {
   startDate: string; // e.g., "Nov 05, 2025"
@@ -8,7 +9,9 @@ type OfferTimerProps = {
   reservedSeats: number;
 };
 
-function parseTime12h(time: string | undefined): { hours: number; minutes: number } | null {
+function parseTime12h(
+  time: string | undefined,
+): { hours: number; minutes: number } | null {
   if (!time) return null;
   const match = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
   if (!match) return null;
@@ -20,7 +23,10 @@ function parseTime12h(time: string | undefined): { hours: number; minutes: numbe
   return { hours, minutes };
 }
 
-function buildTargetDate(startDate: string, time: string | undefined): Date | null {
+function buildTargetDate(
+  startDate: string,
+  time: string | undefined,
+): Date | null {
   // Attempt to combine date and time into a single local Date
   const base = new Date(startDate);
   if (isNaN(base.getTime())) return null;
@@ -46,7 +52,12 @@ function formatDuration(ms: number): string {
   return parts.join(" ");
 }
 
-export default function OfferTimer({ startDate, timeStart, totalSeats, reservedSeats }: OfferTimerProps) {
+export default function OfferTimer({
+  startDate,
+  timeStart,
+  totalSeats,
+  reservedSeats,
+}: OfferTimerProps) {
   const [now, setNow] = React.useState<Date | null>(null);
 
   React.useEffect(() => {
@@ -56,7 +67,10 @@ export default function OfferTimer({ startDate, timeStart, totalSeats, reservedS
   }, []);
 
   const seatsLeft = totalSeats - reservedSeats;
-  const target = React.useMemo(() => buildTargetDate(startDate, timeStart), [startDate, timeStart]);
+  const target = React.useMemo(
+    () => buildTargetDate(startDate, timeStart),
+    [startDate, timeStart],
+  );
 
   const shouldShow = React.useMemo(() => {
     if (seatsLeft <= 0) return false;
@@ -71,14 +85,9 @@ export default function OfferTimer({ startDate, timeStart, totalSeats, reservedS
   const text = `Starts in ${formatDuration(remaining)}`;
 
   return (
-    <div className="inline-flex items-center gap-1 text-[11px] text-amber-700">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-amber-600">
-        <path d="M6 2h12M12 2v5M7 13h10M4 22h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        <path d="M8 9h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-      </svg>
+    <div className="inline-flex items-center gap-1 text-[11px] text-red-700">
+      <Timer size={12} className="text-red-600" />
       {text}
     </div>
   );
 }
-
-

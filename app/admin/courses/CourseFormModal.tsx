@@ -67,8 +67,8 @@ export type CourseFormValues = {
   discountValue: number | "";
   sellingPrice: number | "";
   isSalePeriodApplied: boolean;
-  saleStartDate: string;
-  saleEndDate: string;
+  saleStartDate: string | null;
+  saleEndDate: string | null;
   isTaxIncluded: boolean;
 
   // Schedule
@@ -148,8 +148,8 @@ const DEFAULTS: CourseFormValues = {
   discountValue: "",
   sellingPrice: "",
   isSalePeriodApplied: false,
-  saleStartDate: "",
-  saleEndDate: "",
+  saleStartDate: null,
+  saleEndDate: null,
   isTaxIncluded: true,
   startDate: "",
   endDate: "",
@@ -222,7 +222,7 @@ export default function CourseFormModal({
       availableInstructors.find((i) => i.id === values.instructorId) ||
       instructorList.find((i) => i.id === values.instructorId) ||
       null,
-    [availableInstructors, instructorList, values.instructorId]
+    [availableInstructors, instructorList, values.instructorId],
   );
 
   const fetchInstructors = React.useCallback(
@@ -236,10 +236,10 @@ export default function CourseFormModal({
         });
         if (resp.success) {
           setInstructorList((prev) =>
-            reset ? resp.data.data : [...prev, ...resp.data.data]
+            reset ? resp.data.data : [...prev, ...resp.data.data],
           );
           const totalPages = Math.ceil(
-            resp.data.meta.total / resp.data.meta.limit
+            resp.data.meta.total / resp.data.meta.limit,
           );
           setHasMoreInstructors(resp.data.meta.page < totalPages);
         }
@@ -249,7 +249,7 @@ export default function CourseFormModal({
         setIsLoadingInstructors(false);
       }
     },
-    []
+    [],
   );
 
   React.useEffect(() => {
@@ -286,7 +286,7 @@ export default function CourseFormModal({
       availableCategories.find((c) => c.id === values.categoryId) ||
       categoryList.find((c) => c.id === values.categoryId) ||
       null,
-    [availableCategories, categoryList, values.categoryId]
+    [availableCategories, categoryList, values.categoryId],
   );
 
   const fetchCategories = React.useCallback(
@@ -301,10 +301,10 @@ export default function CourseFormModal({
         });
         if (resp.success) {
           setCategoryList((prev) =>
-            reset ? resp.data.data : [...prev, ...resp.data.data]
+            reset ? resp.data.data : [...prev, ...resp.data.data],
           );
           const totalPages = Math.ceil(
-            resp.data.meta.total / resp.data.meta.limit
+            resp.data.meta.total / resp.data.meta.limit,
           );
           setHasMoreCategories(resp.data.meta.page < totalPages);
         }
@@ -314,7 +314,7 @@ export default function CourseFormModal({
         setIsLoadingCategories(false);
       }
     },
-    []
+    [],
   );
 
   React.useEffect(() => {
@@ -371,7 +371,7 @@ export default function CourseFormModal({
           icon: "/images/meeting/video-call.png",
         },
       ] as const,
-    []
+    [],
   );
   const [meetingTypeInput, setMeetingTypeInput] =
     React.useState<CourseMeetingPlatform>(meetingPlatforms[0].value);
@@ -391,7 +391,7 @@ export default function CourseFormModal({
         { key: "meeting", label: "Meeting" },
         { key: "seo", label: "SEO" },
       ] as const,
-    []
+    [],
   );
 
   React.useEffect(() => {
@@ -469,12 +469,12 @@ export default function CourseFormModal({
     () => () => {
       if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
     },
-    [previewUrl]
+    [previewUrl],
   );
 
   function handleChange<K extends keyof CourseFormValues>(
     key: K,
-    value: CourseFormValues[K]
+    value: CourseFormValues[K],
   ) {
     setValues((prev) => ({ ...prev, [key]: value }));
   }
@@ -515,7 +515,7 @@ export default function CourseFormModal({
   function removeMediaLink(id: string) {
     handleChange(
       "additionalResourceLinks",
-      values.additionalResourceLinks.filter((l) => l.id !== id)
+      values.additionalResourceLinks.filter((l) => l.id !== id),
     );
   }
 
@@ -537,7 +537,7 @@ export default function CourseFormModal({
   function removeMeetingLink(id: string) {
     const remaining = values.meetingLinks.filter((l) => l.id !== id);
     const removedWasPrimary = values.meetingLinks.find(
-      (l) => l.id === id
+      (l) => l.id === id,
     )?.isPrimary;
     if (removedWasPrimary && remaining.length > 0) {
       remaining[0].isPrimary = true;
@@ -547,7 +547,7 @@ export default function CourseFormModal({
   function setPrimaryMeetingLink(id: string) {
     handleChange(
       "meetingLinks",
-      values.meetingLinks.map((l) => ({ ...l, isPrimary: l.id === id }))
+      values.meetingLinks.map((l) => ({ ...l, isPrimary: l.id === id })),
     );
   }
 
@@ -804,7 +804,7 @@ export default function CourseFormModal({
                                               ins.email,
                                             ]
                                               .filter(Boolean)
-                                              .join(" ")
+                                              .join(" "),
                                           )}&background=random`
                                     }
                                     alt={ins.firstName || "Instructor"}
@@ -1199,7 +1199,7 @@ export default function CourseFormModal({
                       const isChecked = e.target.checked;
                       handleChange(
                         "courseType",
-                        isChecked ? CourseType.FREE : CourseType.PAID
+                        isChecked ? CourseType.FREE : CourseType.PAID,
                       );
                     }}
                   />
@@ -1213,7 +1213,7 @@ export default function CourseFormModal({
                       const isChecked = e.target.checked;
                       handleChange(
                         "courseType",
-                        isChecked ? CourseType.PAID : CourseType.FREE
+                        isChecked ? CourseType.PAID : CourseType.FREE,
                       );
                     }}
                   />
@@ -1242,7 +1242,7 @@ export default function CourseFormModal({
                   onChange={(e) =>
                     handleChange(
                       "discountType",
-                      e.target.value as CourseDiscountType
+                      e.target.value as CourseDiscountType,
                     )
                   }
                 >
@@ -1293,15 +1293,19 @@ export default function CourseFormModal({
                 )}
               </div>
               <div className="sm:col-span-2">
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <label className="block text-sm font-medium text-[color:var(--foreground)]">
+                    Sale period
+                  </label>
+                </div>
                 <DateRangePicker
-                  label="Sale period"
                   value={{
                     from: values.saleStartDate || null,
                     to: values.saleEndDate || null,
                   }}
                   onChange={(r) => {
-                    handleChange("saleStartDate", r.from || "");
-                    handleChange("saleEndDate", r.to || "");
+                    handleChange("saleStartDate", r.from);
+                    handleChange("saleEndDate", r.to);
                     handleChange("isSalePeriodApplied", !!(r.from && r.to));
                   }}
                   max={salePeriodMaxDate}
@@ -1391,7 +1395,7 @@ export default function CourseFormModal({
                     onChange={(e) =>
                       handleChange(
                         "startTimeDesignator",
-                        e.target.value as TimeDesignator
+                        e.target.value as TimeDesignator,
                       )
                     }
                   >
@@ -1420,7 +1424,7 @@ export default function CourseFormModal({
                     onChange={(e) =>
                       handleChange(
                         "endTimeDesignator",
-                        e.target.value as TimeDesignator
+                        e.target.value as TimeDesignator,
                       )
                     }
                   >
@@ -1527,7 +1531,7 @@ export default function CourseFormModal({
                       "waitlistCapacityCount",
                       e.target.value === ""
                         ? ""
-                        : Math.max(0, Number(e.target.value))
+                        : Math.max(0, Number(e.target.value)),
                     )
                   }
                   placeholder="0"
@@ -1578,7 +1582,7 @@ export default function CourseFormModal({
                   onChange={(e) =>
                     handleChange(
                       "isReviewAllowed",
-                      e.target.value === "Allowed"
+                      e.target.value === "Allowed",
                     )
                   }
                 >
@@ -1607,7 +1611,7 @@ export default function CourseFormModal({
                       <>
                         {(() => {
                           const platform = meetingPlatforms.find(
-                            (p) => p.value === meetingTypeInput
+                            (p) => p.value === meetingTypeInput,
                           );
                           return platform ? (
                             <>
@@ -1698,15 +1702,15 @@ export default function CourseFormModal({
                     meetingTypeInput === CourseMeetingPlatform.ZOOM
                       ? "https://zoom.us/j/..."
                       : meetingTypeInput === CourseMeetingPlatform.GOOGLE_MEET
-                      ? "https://meet.google.com/..."
-                      : meetingTypeInput ===
-                        CourseMeetingPlatform.MICROSOFT_TEAMS
-                      ? "https://teams.microsoft.com/..."
-                      : meetingTypeInput === CourseMeetingPlatform.WEBEX
-                      ? "https://..."
-                      : meetingTypeInput === CourseMeetingPlatform.OTHER
-                      ? "https://..."
-                      : "Select a platform first"
+                        ? "https://meet.google.com/..."
+                        : meetingTypeInput ===
+                            CourseMeetingPlatform.MICROSOFT_TEAMS
+                          ? "https://teams.microsoft.com/..."
+                          : meetingTypeInput === CourseMeetingPlatform.WEBEX
+                            ? "https://..."
+                            : meetingTypeInput === CourseMeetingPlatform.OTHER
+                              ? "https://..."
+                              : "Select a platform first"
                   }
                   disabled={!meetingTypeInput}
                 />
@@ -1837,8 +1841,8 @@ export default function CourseFormModal({
               {isLoading
                 ? "Saving..."
                 : mode === "edit"
-                ? "Save changes"
-                : "Create"}
+                  ? "Save changes"
+                  : "Create"}
             </Button>
           )}
         </div>

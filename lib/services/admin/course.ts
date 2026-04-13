@@ -158,67 +158,104 @@ export interface UpdateCourseInput extends Partial<CreateCourseInput> {
  */
 const appendToFormData = (
   formData: FormData,
-  input: Partial<CreateCourseInput>
+  input: Partial<CreateCourseInput>,
 ) => {
-  (Object.entries(input) as [keyof CreateCourseInput, any][]).forEach(([key, value]) => {
-    if (value === undefined || value === null) return;
+  (Object.entries(input) as [keyof CreateCourseInput, any][]).forEach(
+    ([key, value]) => {
+      if (value === undefined || value === null) return;
 
-    if (key === "syllabus") {
-      const syllabus = value as CourseSyllabusInput;
-      if (syllabus && Array.isArray(syllabus.sections)) {
-        syllabus.sections.forEach((section, sIndex) => {
-          formData.append(`syllabus[sections][${sIndex}][title]`, section.title);
-          if (Array.isArray(section.items)) {
-            section.items.forEach((item, iIndex) => {
-              formData.append(`syllabus[sections][${sIndex}][items][${iIndex}][type]`, item.type);
-              formData.append(`syllabus[sections][${sIndex}][items][${iIndex}][title]`, item.title);
-              if (item.description) formData.append(`syllabus[sections][${sIndex}][items][${iIndex}][description]`, item.description);
-              if (item.isPublished !== undefined) formData.append(`syllabus[sections][${sIndex}][items][${iIndex}][isPublished]`, item.isPublished.toString());
-              formData.append(`syllabus[sections][${sIndex}][items][${iIndex}][duration]`, item.duration.toString());
-              formData.append(`syllabus[sections][${sIndex}][items][${iIndex}][durationUnit]`, item.durationUnit);
-            });
-          }
+      if (key === "syllabus") {
+        const syllabus = value as CourseSyllabusInput;
+        if (syllabus && Array.isArray(syllabus.sections)) {
+          syllabus.sections.forEach((section, sIndex) => {
+            formData.append(
+              `syllabus[sections][${sIndex}][title]`,
+              section.title,
+            );
+            if (Array.isArray(section.items)) {
+              section.items.forEach((item, iIndex) => {
+                formData.append(
+                  `syllabus[sections][${sIndex}][items][${iIndex}][type]`,
+                  item.type,
+                );
+                formData.append(
+                  `syllabus[sections][${sIndex}][items][${iIndex}][title]`,
+                  item.title,
+                );
+                if (item.description)
+                  formData.append(
+                    `syllabus[sections][${sIndex}][items][${iIndex}][description]`,
+                    item.description,
+                  );
+                if (item.isPublished !== undefined)
+                  formData.append(
+                    `syllabus[sections][${sIndex}][items][${iIndex}][isPublished]`,
+                    item.isPublished.toString(),
+                  );
+                formData.append(
+                  `syllabus[sections][${sIndex}][items][${iIndex}][duration]`,
+                  item.duration.toString(),
+                );
+                formData.append(
+                  `syllabus[sections][${sIndex}][items][${iIndex}][durationUnit]`,
+                  item.durationUnit,
+                );
+              });
+            }
+          });
+        }
+      } else if (key === "salePeriodDateRange") {
+        const range = value as CourseSaleDateRangeInput;
+        formData.append("salePeriodDateRange[startDate]", range.startDate);
+        formData.append("salePeriodDateRange[endDate]", range.endDate);
+      } else if (key === "additionalResourceLinks" && Array.isArray(value)) {
+        (value as CourseAdditionalResourceLinkInput[]).forEach(
+          (link, index) => {
+            formData.append(
+              `additionalResourceLinks[${index}][link]`,
+              link.link,
+            );
+            if (link.label)
+              formData.append(
+                `additionalResourceLinks[${index}][label]`,
+                link.label,
+              );
+          },
+        );
+      } else if (key === "meetingLinks" && Array.isArray(value)) {
+        (value as CourseMeetingLinkInput[]).forEach((link, index) => {
+          formData.append(`meetingLinks[${index}][platform]`, link.platform);
+          formData.append(`meetingLinks[${index}][link]`, link.link);
+          formData.append(
+            `meetingLinks[${index}][isPrimary]`,
+            link.isPrimary.toString(),
+          );
         });
+      } else if (key === "metaKeywords" && Array.isArray(value)) {
+        (value as string[]).forEach((keyword) => {
+          formData.append("metaKeywords[]", keyword);
+        });
+      } else if (key === "thumbnail" && value instanceof File) {
+        formData.append(key, value);
+      } else if (typeof value === "boolean") {
+        formData.append(key, value.toString());
+      } else if (Array.isArray(value)) {
+        // General array handling if any others exist
+        value.forEach((v: any) => formData.append(`${key}[]`, v.toString()));
+      } else if (typeof value === "object" && !(value instanceof File)) {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value.toString());
       }
-    } else if (key === "salePeriodDateRange") {
-      const range = value as CourseSaleDateRangeInput;
-      formData.append("salePeriodDateRange[startDate]", range.startDate);
-      formData.append("salePeriodDateRange[endDate]", range.endDate);
-    } else if (key === "additionalResourceLinks" && Array.isArray(value)) {
-      (value as CourseAdditionalResourceLinkInput[]).forEach((link, index) => {
-        formData.append(`additionalResourceLinks[${index}][link]`, link.link);
-        if (link.label) formData.append(`additionalResourceLinks[${index}][label]`, link.label);
-      });
-    } else if (key === "meetingLinks" && Array.isArray(value)) {
-      (value as CourseMeetingLinkInput[]).forEach((link, index) => {
-        formData.append(`meetingLinks[${index}][platform]`, link.platform);
-        formData.append(`meetingLinks[${index}][link]`, link.link);
-        formData.append(`meetingLinks[${index}][isPrimary]`, link.isPrimary.toString());
-      });
-    } else if (key === "metaKeywords" && Array.isArray(value)) {
-      (value as string[]).forEach((keyword) => {
-        formData.append("metaKeywords[]", keyword);
-      });
-    } else if (key === "thumbnail" && value instanceof File) {
-      formData.append(key, value);
-    } else if (typeof value === "boolean") {
-      formData.append(key, value.toString());
-    } else if (Array.isArray(value)) {
-      // General array handling if any others exist
-      value.forEach((v: any) => formData.append(`${key}[]`, v.toString()));
-    } else if (typeof value === "object" && !(value instanceof File)) {
-      formData.append(key, JSON.stringify(value));
-    } else {
-      formData.append(key, value.toString());
-    }
-  });
+    },
+  );
 };
 
 /**
  * Get list of courses with filtering and pagination
  */
 export const list = async (
-  query?: AdminCourseFilterInput
+  query?: AdminCourseFilterInput,
 ): Promise<ApiResponse<AdminCourseOutput>> => {
   const params = new URLSearchParams();
 
@@ -248,7 +285,7 @@ export const get = async (id: string): Promise<ApiResponse<Course>> => {
  * Create a new course
  */
 export const create = async (
-  input: CreateCourseInput
+  input: CreateCourseInput,
 ): Promise<ApiResponse<Course>> => {
   const formData = new FormData();
   appendToFormData(formData, input);
@@ -259,7 +296,7 @@ export const create = async (
  * Update an existing course
  */
 export const update = async (
-  input: UpdateCourseInput
+  input: UpdateCourseInput,
 ): Promise<ApiResponse<AdminCommonResponseData>> => {
   const { id, ...updateData } = input;
   const formData = new FormData();
@@ -271,7 +308,7 @@ export const update = async (
  * Delete a course
  */
 export const deleteCourse = async (
-  id: string
+  id: string,
 ): Promise<ApiResponse<AdminCommonResponseData>> => {
   return api.delete<AdminCommonResponseData>(`/admin/course/${id}`);
 };

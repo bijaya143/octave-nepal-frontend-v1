@@ -9,6 +9,7 @@ import OfferTimer from "../../components/ui/OfferTimer";
 import Link from "next/link";
 import Button from "../../components/ui/Button";
 import { guestCourseService } from "@/lib/services/guest";
+import { Clock, Calendar, Armchair, Hourglass } from "lucide-react";
 import {
   Course,
   DayType,
@@ -191,7 +192,7 @@ export default function SpecialOfferCourse() {
                     className="relative p-0 overflow-hidden"
                   >
                     <div className="absolute right-3 top-3 z-10">
-                      <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-50/95 backdrop-blur px-2 py-1 border border-amber-200 shadow">
+                      <div className="inline-flex items-center gap-1.5 rounded-full bg-red-50/95 backdrop-blur px-2 py-1 border border-red-200 shadow">
                         <OfferTimer
                           startDate={course.startDate}
                           timeStart={timeStart}
@@ -226,69 +227,26 @@ export default function SpecialOfferCourse() {
 
                       <div className="mt-2 flex flex-wrap items-center gap-3 text-[11px] text-[color:var(--color-neutral-600)]">
                         <span className="inline-flex items-center gap-1">
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                          <Clock
+                            size={12}
                             className="text-[color:var(--color-neutral-600)]"
-                          >
-                            <path
-                              d="M12 8v5l3 2"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <circle
-                              cx="12"
-                              cy="12"
-                              r="9"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                            />
-                          </svg>
+                          />
                           {days} · {timeStart} – {timeEnd}
                         </span>
                         <span className="inline-flex items-center gap-1">
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                          <Hourglass
+                            size={12}
                             className="text-[color:var(--color-neutral-600)]"
-                          >
-                            <path
-                              d="M7 3h10M7 21h10M7 3c0 3 5 5 5 9s-5 6-5 9M17 3c0 3-5 5-5 9s5 6 5 9"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                          />
                           {duration}
                         </span>
                       </div>
                       <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-[color:var(--color-neutral-600)]">
                         <span className="inline-flex items-center gap-1">
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                          <Calendar
+                            size={12}
                             className="text-[color:var(--color-neutral-600)]"
-                          >
-                            <path
-                              d="M7 2v3M17 2v3M3.5 9.5h17M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                          />
                           Starts {formatStartDate(course.startDate)}
                         </span>
                         <span
@@ -296,24 +254,12 @@ export default function SpecialOfferCourse() {
                             limited ? "text-red-700" : "text-green-700"
                           }`}
                         >
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                          <Armchair
+                            size={12}
                             className={
                               limited ? "text-red-600" : "text-green-600"
                             }
-                          >
-                            <path
-                              d="M7 11v6M12 11v6M17 11v6M5 21h14a2 2 0 002-2v-7a2 2 0 00-2-2h-1V7a4 4 0 00-8 0v3H5a2 2 0 00-2 2v7a2 2 0 002 2z"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                          />
                           {limited
                             ? `Limited seats (${seatsLeft} left)`
                             : `Seats available (${seatsLeft} left)`}
