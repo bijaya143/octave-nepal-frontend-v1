@@ -550,3 +550,27 @@ export interface AdminReviewFilterInput extends PaginationInput {
   startDate?: string;
   endDate?: string;
 }
+
+export interface Testimonial {
+  id: string;
+  fullName: string;
+  profilePictureKey: string;
+  rating: number;
+  message: string | null;
+  isPublished?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AdminTestimonialOutput {
+  data: Testimonial[];
+  meta: PaginationOutput;
+}
+
+export interface AdminTestimonialFilterInput extends PaginationInput {
+  isPublished?: boolean;
+  startDate?: string;
+  endDate?: string;
+  keyword?: string;
+  rating?: number;
+}

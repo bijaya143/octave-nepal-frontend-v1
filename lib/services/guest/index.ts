@@ -6,4 +6,5 @@
 
 export { guestCourseService } from "./course";
 export { guestCategoryService } from "./category";
+export { guestTestimonialService } from "./testimonial";
 export * from "./types";

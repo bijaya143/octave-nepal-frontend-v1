@@ -2,7 +2,7 @@
  * Guest service types
  */
 
-import { Category, Course } from "../admin";
+import { Category, Course, Testimonial } from "../admin";
 import { PaginationOutput } from "../common-types";
 
 /**
@@ -18,5 +18,13 @@ export interface GuestCourseOutput {
  */
 export interface GuestCategoryOutput {
   data: Category[];
+  meta: PaginationOutput;
+}
+
+/**
+ * Guest testimonial output
+ */
+export interface GuestTestimonialOutput {
+  data: Testimonial[];
   meta: PaginationOutput;
 }
