@@ -278,7 +278,7 @@ export default function SpecialOfferCourse() {
                           )}
                         </div>
                         <div className="flex items-center gap-2">
-                          <Link href={`/courses/${course.id}`}>
+                          <Link href={`/courses/${course.slug}`}>
                             <Button size="sm">View Details</Button>
                           </Link>
                         </div>

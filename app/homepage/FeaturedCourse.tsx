@@ -1,75 +1,38 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Container from "../../components/Container";
 import Carousel from "../../components/ui/Carousel";
-import CourseCard, { type Course } from "../../components/CourseCard";
+import CourseCard, {
+  type Course as UICourse,
+} from "../../components/CourseCard";
+import Card, { CardContent } from "../../components/ui/Card";
+import { guestCourseService } from "@/lib/services/guest";
+import {
+  PublishStatusType,
+  CourseDiscountType,
+  Course,
+} from "@/lib/services/admin";
 
-const featured: Course[] = [
-  {
-    id: "1",
-    title: "Mastering React 19",
-    instructor: "Jane Doe",
-    instructorAvatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=96&q=80",
-    rating: 4.7,
-    ratingCount: 1120,
-    price: 129,
-    discount: 35,
-    thumbnail:
-      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    id: "2",
-    title: "TypeScript Deep Dive",
-    instructor: "John Smith",
-    instructorAvatar:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=96&q=80",
-    rating: 4.8,
-    ratingCount: 860,
-    price: 119,
-    discount: 25,
-    thumbnail:
-      "https://images.unsplash.com/photo-1517433456452-f9633a875f6f?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    id: "3",
-    title: "Next.js 15 Pro",
-    instructor: "Alex Kim",
-    instructorAvatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=96&q=80",
-    rating: 4.9,
-    ratingCount: 540,
-    price: 139,
-    discount: 30,
-    thumbnail:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    id: "4",
-    title: "UI Design Principles",
-    instructor: "Sam Lee",
-    instructorAvatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=96&q=80",
-    rating: 4.6,
-    ratingCount: 540,
-    price: 139,
-    discount: 30,
-    thumbnail:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    id: "5",
-    title: "Python for Beginners",
-    instructor: "Sam Lee",
-    instructorAvatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=96&q=80",
-    rating: 4.6,
-    ratingCount: 540,
-    price: 139,
-    discount: 30,
-    thumbnail:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-  },
-];
+// ─── helpers ────────────────────────────────────────────────────────────────
+
+function getDiscountPercent(course: any): number {
+  if (!course.isDiscountApplied || !course.markedPrice) return 0;
+
+  if (
+    course.discountType === CourseDiscountType.PERCENTAGE &&
+    course.discountValue
+  ) {
+    return Math.round(course.discountValue);
+  }
+
+  if (course.discountType === CourseDiscountType.FLAT && course.discountValue) {
+    return Math.round((course.discountValue / course.markedPrice) * 100);
+  }
+
+  return 0;
+}
 
 function chunkArray<T>(items: T[], size: number): T[][] {
   const chunks: T[][] = [];
@@ -79,7 +42,83 @@ function chunkArray<T>(items: T[], size: number): T[][] {
   return chunks;
 }
 
+// ─── skeleton ───────────────────────────────────────────────────────────────
+
+function SkeletonCard() {
+  return (
+    <Card className="relative p-0 overflow-hidden animate-pulse">
+      <div className="h-44 sm:h-48 md:h-56 bg-[color:var(--color-neutral-200)]" />
+      <CardContent className="py-4 space-y-3">
+        <div className="h-4 w-3/4 rounded bg-[color:var(--color-neutral-200)]" />
+        <div className="h-3 w-1/2 rounded bg-[color:var(--color-neutral-100)]" />
+        <div className="h-3 w-2/3 rounded bg-[color:var(--color-neutral-100)]" />
+        <div className="flex items-center justify-between pt-1">
+          <div className="h-4 w-20 rounded bg-[color:var(--color-neutral-200)]" />
+          <div className="h-8 w-24 rounded-lg bg-[color:var(--color-neutral-200)]" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── component ──────────────────────────────────────────────────────────────
+
 export default function FeaturedCourse() {
+  const [featured, setCourses] = useState<UICourse[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    guestCourseService
+      .list({
+        isSalePeriodApplied: false,
+        status: PublishStatusType.PUBLISHED,
+        page: 1,
+        limit: 10,
+      })
+      .then((res) => {
+        if (res.success && res.data?.data) {
+          const now = new Date();
+          const visibleData = res.data.data.filter((c: any) => {
+            if (!c.lastEnrollmentDate) return true;
+            const lastDate = new Date(c.lastEnrollmentDate);
+            lastDate.setHours(23, 59, 59, 999);
+            return lastDate >= now;
+          });
+
+          setCourses(
+            visibleData.map((c: Course) => ({
+              id: c.id,
+              title: c.title,
+              slug: c.slug,
+              instructor:
+                [c.instructor?.firstName, c.instructor?.lastName]
+                  .filter(Boolean)
+                  .join(" ") || "Instructor",
+              instructorAvatar: c.instructor?.profilePictureKey
+                ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${c.instructor.profilePictureKey}`
+                : undefined,
+              rating: c.averageReviewRatingCount || 0,
+              ratingCount: c.reviewCount || 0,
+              price: c.markedPrice,
+              sellingPrice: c.sellingPrice,
+              discount: getDiscountPercent(c),
+              thumbnail: c.thumbnailKey
+                ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${c.thumbnailKey}`
+                : undefined,
+            })),
+          );
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch featured courses:", err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (!loading && featured.length === 0) {
+    return null;
+  }
+
   return (
     <section className="mt-12 md:mt-16">
       <Container>
@@ -94,45 +133,56 @@ export default function FeaturedCourse() {
             href="/courses"
             className="text-sm text-[color:var(--color-primary-700)] hover:underline underline-offset-2 whitespace-nowrap"
           >
-            View all
+            View all courses
           </Link>
         </div>
-        {/* Mobile: one course per slide */}
-        <div className="sm:hidden">
-          <Carousel>
-            {featured.map((course) => (
-              <div key={course.id}>
-                <CourseCard course={course} />
-              </div>
-            ))}
-          </Carousel>
-        </div>
 
-        {/* Tablets: slides of 2 items */}
-        <div className="hidden sm:block lg:hidden">
-          <Carousel>
-            {chunkArray(featured, 2).map((group, i) => (
-              <div key={i} className="grid sm:grid-cols-2 gap-4 md:gap-6">
-                {group.map((course) => (
-                  <CourseCard key={course.id} course={course} />
-                ))}
-              </div>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <SkeletonCard key={i} />
             ))}
-          </Carousel>
-        </div>
+          </div>
+        ) : (
+          <>
+            {/* Mobile: one course per slide */}
+            <div className="sm:hidden">
+              <Carousel>
+                {featured.map((course) => (
+                  <div key={course.id}>
+                    <CourseCard course={course} />
+                  </div>
+                ))}
+              </Carousel>
+            </div>
 
-        {/* Desktop: slides of 3 items */}
-        <div className="hidden lg:block">
-          <Carousel>
-            {chunkArray(featured, 3).map((group, i) => (
-              <div key={i} className="grid lg:grid-cols-3 gap-6">
-                {group.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+            {/* Tablets: slides of 2 items */}
+            <div className="hidden sm:block lg:hidden">
+              <Carousel>
+                {chunkArray(featured, 2).map((group, i) => (
+                  <div key={i} className="grid sm:grid-cols-2 gap-4 md:gap-6">
+                    {group.map((course) => (
+                      <CourseCard key={course.id} course={course} />
+                    ))}
+                  </div>
                 ))}
-              </div>
-            ))}
-          </Carousel>
-        </div>
+              </Carousel>
+            </div>
+
+            {/* Desktop: slides of 3 items */}
+            <div className="hidden lg:block">
+              <Carousel>
+                {chunkArray(featured, 3).map((group, i) => (
+                  <div key={i} className="grid lg:grid-cols-3 gap-6">
+                    {group.map((course) => (
+                      <CourseCard key={course.id} course={course} />
+                    ))}
+                  </div>
+                ))}
+              </Carousel>
+            </div>
+          </>
+        )}
       </Container>
     </section>
   );
