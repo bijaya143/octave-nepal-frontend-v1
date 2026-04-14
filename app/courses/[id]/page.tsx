@@ -13,6 +13,7 @@ const related: Course[] = [
   {
     id: "2",
     title: "TypeScript Deep Dive",
+    slug: "typescript-deep-dive",
     instructor: "John Smith",
     instructorAvatar:
       "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=96&q=80",
@@ -26,6 +27,7 @@ const related: Course[] = [
   {
     id: "3",
     title: "Next.js 15 Pro",
+    slug: "nextjs-15-pro",
     instructor: "Alex Kim",
     instructorAvatar:
       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=96&q=80",
@@ -39,6 +41,7 @@ const related: Course[] = [
   {
     id: "4",
     title: "UI Design Principles",
+    slug: "ui-design-principles",
     instructor: "Sam Lee",
     instructorAvatar:
       "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=96&q=80",
@@ -76,7 +79,7 @@ export async function generateMetadata({
   const { id } = await params;
   const course = await getCourse(id);
   return {
-    title: course.title + " - " + SITE_NAME,
+    title: course.slug + " - " + SITE_NAME,
     description: "Learn more about " + course.title + " at " + SITE_NAME + ".",
   };
 }
@@ -86,6 +89,7 @@ async function getCourse(id: string): Promise<Course> {
   return {
     id,
     title: `Professional Course ${id}`,
+    slug: `professional-course-${id}`,
     instructor: "Jane Doe",
     instructorAvatar:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=96&q=80",
