@@ -574,3 +574,17 @@ export interface AdminTestimonialFilterInput extends PaginationInput {
   keyword?: string;
   rating?: number;
 }
+
+export enum NewsletterSubscriberSourceType {
+  HOMEPAGE = "HOMEPAGE",
+}
+
+export interface NewsletterSubscriber {
+  id: string;
+  email: string;
+  isSubscribed?: boolean;
+  unsubscribedAt?: Date;
+  source?: NewsletterSubscriberSourceType;
+  createdAt: Date;
+  updatedAt: Date;
+}

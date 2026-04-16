@@ -1,8 +1,41 @@
+"use client";
+
+import React from "react";
 import Container from "../../components/Container";
-import NewsletterForm from "../../components/NewsletterForm";
 import Card, { CardContent } from "../../components/ui/Card";
+import Input from "../../components/ui/Input";
+import Button from "../../components/ui/Button";
+import { guestNewsletterSubscriberService } from "@/lib/services/guest";
+import { CircleCheck } from "lucide-react";
 
 export default function Newsletter() {
+  const [email, setEmail] = React.useState("");
+  const [status, setStatus] = React.useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setStatus("error");
+      return;
+    }
+    setStatus("loading");
+    try {
+      const response = await guestNewsletterSubscriberService.subscribe({
+        email,
+      });
+      if (response.success) {
+        setStatus("success");
+        setEmail("");
+      } else {
+        setStatus("error");
+      }
+    } catch (_) {
+      setStatus("error");
+    }
+  }
+
   return (
     <section id="newsletter" className="mt-6 md:mt-10 mb-8">
       <Container>
@@ -21,7 +54,36 @@ export default function Newsletter() {
                   Get updates on new courses, offers, and events. No spam.
                 </p>
               </div>
-              <NewsletterForm />
+              <div className="w-full">
+                {status === "success" ? (
+                  <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">
+                    <CircleCheck className="h-4 w-4" /> Subscribed! You’ll hear
+                    from us soon.
+                  </div>
+                ) : (
+                  <form
+                    onSubmit={handleSubmit}
+                    className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+                  >
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      aria-label="Email address"
+                      className="flex-1"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      error={
+                        status === "error"
+                          ? "Please enter a valid email"
+                          : undefined
+                      }
+                    />
+                    <Button type="submit" disabled={status === "loading"}>
+                      {status === "loading" ? "Subscribing…" : "Subscribe"}
+                    </Button>
+                  </form>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
