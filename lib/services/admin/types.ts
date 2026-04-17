@@ -588,3 +588,28 @@ export interface NewsletterSubscriber {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface AdminNewsletterSubscriberOutput {
+  data: NewsletterSubscriber[];
+  meta: PaginationOutput;
+}
+
+export interface ContactMessage {
+  id: string;
+  fullName: string;
+  email: string;
+  subject?: string;
+  message: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AdminContactMessageOutput {
+  data: ContactMessage[];
+  meta: PaginationOutput;
+}
+
+export interface AdminContactMessageFilterInput extends PaginationInput {
+  startDate?: string;
+  endDate?: string;
+}

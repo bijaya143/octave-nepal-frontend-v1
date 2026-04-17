@@ -5,6 +5,8 @@ import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { Mail, Phone, MapPin, Send, Clock } from "lucide-react";
 import Container from "@/components/Container";
+import { guestContactMessageService } from "@/lib/services/guest/contact-message";
+import { toast } from "sonner";
 
 export default function ContactContent() {
   const [name, setName] = React.useState("");
@@ -14,19 +16,42 @@ export default function ContactContent() {
   const [submitted, setSubmitted] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name || !email || !message) return;
+    if (!name || !email || !message) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
     setLoading(true);
-    // Fake submit without API
-    setTimeout(() => {
-      setSubmitted(true);
+    try {
+      const payload: any = {
+        fullName: name,
+        email,
+        message,
+      };
+
+      if (subject.trim()) {
+        payload.subject = subject.trim();
+      }
+
+      const response = await guestContactMessageService.create(payload);
+
+      if (response.success) {
+        toast.success("Your message has been sent successfully!");
+        setSubmitted(true);
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+      } else {
+        toast.error(response.error?.message || "Failed to send message.");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An unexpected error occurred.");
+    } finally {
       setLoading(false);
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
-    }, 700);
+    }
   }
 
   return (
@@ -50,11 +75,6 @@ export default function ContactContent() {
             <Card className="relative overflow-hidden">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.06),transparent_65%)]" />
               <CardContent className="relative py-6">
-                {submitted && (
-                  <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                    Your message was prepared locally. No API was called.
-                  </div>
-                )}
                 <form
                   onSubmit={handleSubmit}
                   className="grid sm:grid-cols-2 gap-4"
