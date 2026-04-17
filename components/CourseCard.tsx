@@ -38,12 +38,15 @@ export default function CourseCard({ course }: { course: Course }) {
     <Card className="relative p-0 overflow-hidden">
       <div className="relative h-48 md:h-56">
         <Image
-          src={course.thumbnail || "/images/thumb-1.svg"}
+          src={course.thumbnail || "/images/thumb-3.svg"}
           alt="Course thumbnail"
           fill
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
           className="object-cover"
           unoptimized
+          onError={(e) => {
+            e.currentTarget.src = "/images/thumb-3.svg";
+          }}
         />
         {hasDiscount && (
           <div className="absolute left-3 top-3">
@@ -69,6 +72,9 @@ export default function CourseCard({ course }: { course: Course }) {
                 height={18}
                 className="h-[18px] w-[18px] rounded-full object-cover"
                 unoptimized
+                onError={(e) => {
+                  e.currentTarget.src = "/images/thumb-3.svg";
+                }}
               />
             )}
             <span>{course.instructor}</span>
@@ -77,13 +83,13 @@ export default function CourseCard({ course }: { course: Course }) {
             <Rating value={course.rating} count={course.ratingCount} />
           </div> */}
         </div>
-        <div className="mt-3 flex items-center justify-between gap-2">
-          <div className="flex items-baseline gap-2">
-            <span className="text-base font-semibold text-[color:var(--color-primary-700)]">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className="text-lg font-bold text-[color:var(--color-primary-700)]">
               Rs {discounted}
             </span>
             {hasDiscount && (
-              <span className="text-xs line-through text-[color:var(--color-neutral-500)]">
+              <span className="text-sm line-through text-[color:var(--color-neutral-500)]">
                 Rs {course.price}
               </span>
             )}
