@@ -70,6 +70,7 @@ export default function FeaturedCourse() {
   useEffect(() => {
     guestCourseService
       .list({
+        beforeEnrollmentDate: new Date().toISOString().split("T")[0], // For guest only
         isSalePeriodApplied: false,
         status: PublishStatusType.PUBLISHED,
         page: 1,
@@ -77,16 +78,8 @@ export default function FeaturedCourse() {
       })
       .then((res) => {
         if (res.success && res.data?.data) {
-          const now = new Date();
-          const visibleData = res.data.data.filter((c: any) => {
-            if (!c.lastEnrollmentDate) return true;
-            const lastDate = new Date(c.lastEnrollmentDate);
-            lastDate.setHours(23, 59, 59, 999);
-            return lastDate >= now;
-          });
-
           setCourses(
-            visibleData.map((c: Course) => ({
+            res.data?.data.map((c: Course) => ({
               id: c.id,
               title: c.title,
               slug: c.slug,

@@ -6,83 +6,18 @@ import Card, { CardContent } from "../../components/ui/Card";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Badge from "../../components/ui/Badge";
-import { LayoutGrid, BookOpen, GraduationCap } from "lucide-react";
+import {
+  LayoutGrid,
+  BookOpen,
+  GraduationCap,
+  Tag,
+  TrendingUp,
+  Users,
+  SearchX,
+} from "lucide-react";
 import Container from "../../components/Container";
-import Select from "../../components/ui/Select";
-
-type Category = {
-  name: string;
-  icon: string;
-  bg: string;
-  description: string;
-  courseCount: number;
-  learners: number;
-  tags: string[];
-  accent: string; // tailwind color token e.g. bg-blue-600
-};
-
-const categories: Category[] = [
-  {
-    name: "Development",
-    icon: "https://placehold.co/40x40/png?text=</>",
-    bg: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-    description: "Frontend, backend, mobile and DevOps with modern stacks.",
-    courseCount: 58,
-    learners: 12400,
-    tags: ["React", "Next.js", "Node", "Docker"],
-    accent: "bg-blue-600",
-  },
-  {
-    name: "Design",
-    icon: "https://placehold.co/40x40/png?text=UI",
-    bg: "https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&w=1200&q=80",
-    description: "UI/UX, prototyping, and visual systems that scale.",
-    courseCount: 34,
-    learners: 8400,
-    tags: ["Figma", "Design Systems", "UX"],
-    accent: "bg-pink-600",
-  },
-  {
-    name: "Marketing",
-    icon: "https://placehold.co/40x40/png?text=Ad",
-    bg: "https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=80",
-    description: "Performance, content, and brand growth strategies.",
-    courseCount: 21,
-    learners: 6100,
-    tags: ["SEO", "Ads", "Content"],
-    accent: "bg-emerald-600",
-  },
-  {
-    name: "Data Science",
-    icon: "https://placehold.co/40x40/png?text=DS",
-    bg: "https://images.unsplash.com/photo-1517148815978-75f6acaaf32c?auto=format&fit=crop&w=1200&q=80",
-    description: "Analytics, ML, and real-world data pipelines.",
-    courseCount: 27,
-    learners: 7300,
-    tags: ["Python", "Pandas", "ML"],
-    accent: "bg-purple-600",
-  },
-  {
-    name: "Business",
-    icon: "https://placehold.co/40x40/png?text=Biz",
-    bg: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80",
-    description: "Strategy, finance, and operations for modern teams.",
-    courseCount: 19,
-    learners: 5400,
-    tags: ["Finance", "Strategy"],
-    accent: "bg-amber-600",
-  },
-  {
-    name: "Photography",
-    icon: "https://placehold.co/40x40/png?text=📷",
-    bg: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-    description: "Composition, lighting, and editing workflows.",
-    courseCount: 14,
-    learners: 3200,
-    tags: ["Lighting", "Editing"],
-    accent: "bg-slate-700",
-  },
-];
+import { guestCategoryService } from "@/lib/services/guest";
+import { Category } from "@/lib/services/admin/types";
 
 function formatNumber(n: number) {
   return new Intl.NumberFormat().format(n);
@@ -95,11 +30,58 @@ function formatCompact(n: number) {
   }).format(n);
 }
 
+function CategorySkeleton() {
+  return (
+    <Card className="relative overflow-hidden p-0 group border border-black/5 bg-white/95 backdrop-blur-sm flex flex-col h-full animate-pulse shadow-sm">
+      <div className="relative aspect-[16/9] w-full bg-[color:var(--color-neutral-200)]">
+        <div className="absolute top-3 right-3 h-6 w-20 rounded-lg bg-[color:var(--color-neutral-300)]" />
+      </div>
+      <CardContent className="py-4 flex-1 flex flex-col">
+        <div className="flex items-start">
+          <div className="h-5 w-1/2 rounded bg-[color:var(--color-neutral-200)]" />
+        </div>
+        <div className="mt-4 grid grid-cols-3 gap-1.5 lg:gap-2">
+          <div className="h-12 lg:h-20 rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
+          <div className="h-12 lg:h-20 rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
+          <div className="h-12 lg:h-20 rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
+        </div>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          <div className="h-6 w-12 rounded bg-[color:var(--color-neutral-200)]" />
+          <div className="h-6 w-16 rounded bg-[color:var(--color-neutral-200)]" />
+        </div>
+        <div className="mt-auto pt-4 flex">
+          <div className="h-9 w-full rounded bg-[color:var(--color-neutral-200)]" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function CategoriesContent() {
   const [query, setQuery] = React.useState("");
-  const [sort, setSort] = React.useState<"popular" | "courses" | "az">(
-    "popular",
-  );
+  const [categories, setCategories] = React.useState<Category[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoading(true);
+      try {
+        const res = await guestCategoryService.list({
+          isPublished: true,
+          limit: 100,
+          page: 1,
+        });
+        if (res.success && res.data) {
+          setCategories(res.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -107,24 +89,25 @@ export default function CategoriesContent() {
       ? categories.filter((c) =>
           [
             c.name.toLowerCase(),
-            c.description.toLowerCase(),
-            ...c.tags.map((t) => t.toLowerCase()),
+            (c.description || "").toLowerCase(),
+            ...(c.categoryToTags?.map((ct) => ct.tag.name.toLowerCase()) || []),
           ].some((v) => v.includes(q)),
         )
       : categories;
-    const sorted = [...base].sort((a, b) => {
-      if (sort === "popular") return b.learners - a.learners;
-      if (sort === "courses") return b.courseCount - a.courseCount;
-      return a.name.localeCompare(b.name);
-    });
-    return sorted;
-  }, [query, sort]);
+    return base;
+  }, [categories, query]);
 
   const totals = React.useMemo(() => {
-    const totalCourses = categories.reduce((sum, c) => sum + c.courseCount, 0);
-    const totalLearners = categories.reduce((sum, c) => sum + c.learners, 0);
+    const totalCourses = categories.reduce(
+      (sum, c) => sum + (c.courseCount || 0),
+      0,
+    );
+    const totalLearners = categories.reduce(
+      (sum, c) => sum + (c.studentCount || 0),
+      0,
+    );
     return { totalCategories: categories.length, totalCourses, totalLearners };
-  }, []);
+  }, [categories]);
 
   return (
     <main>
@@ -148,24 +131,12 @@ export default function CategoriesContent() {
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <div className="w-full sm:w-80">
               <Input
-                placeholder="Search categories, tags…"
+                placeholder="Search categories…"
                 value={query}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setQuery(e.target.value)
                 }
               />
-            </div>
-          </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="w-full sm:w-56">
-              <Select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as any)}
-              >
-                <option value="popular">Most popular</option>
-                <option value="courses">Most courses</option>
-                <option value="az">A–Z</option>
-              </Select>
             </div>
           </div>
         </div>
@@ -269,96 +240,157 @@ export default function CategoriesContent() {
 
         {/* Categories grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {filtered.map((c) => (
-            <Card
-              key={c.name}
-              className="relative overflow-hidden p-0 group border border-black/5 bg-white/95 backdrop-blur-sm flex flex-col h-full"
-            >
-              <div className="relative aspect-[16/9] w-full">
-                <Image
-                  src={c.bg}
-                  alt={`${c.name} background`}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-              </div>
-              <CardContent className="py-4 flex-1 flex flex-col">
-                {/* Header row (no icon or inline tag) */}
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <h3
-                      className="text-base font-semibold leading-snug truncate"
-                      style={{ fontFamily: "var(--font-heading-sans)" }}
-                    >
-                      {c.name}
-                    </h3>
+          {isLoading
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <CategorySkeleton key={i} />
+              ))
+            : filtered.map((c) => (
+                <Card
+                  key={c.id}
+                  className="relative overflow-hidden p-0 group border border-black/5 bg-white/95 backdrop-blur-sm flex flex-col h-full"
+                >
+                  <div className="relative aspect-[16/9] w-full">
+                    <Image
+                      src={
+                        c.imageKey
+                          ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${c.imageKey}`
+                          : "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80"
+                      }
+                      alt={`${c.name} background`}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-orange-50/90 backdrop-blur-sm text-orange-700 border border-orange-100/50 shadow-sm z-10">
+                      <Users size={12} className="text-orange-600" />
+                      <span className="text-[10px] font-bold">
+                        {formatCompact(c.studentCount || 0)} learners
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-[11px] text-[color:var(--color-neutral-600)] whitespace-nowrap">
-                    {formatCompact(c.learners)} learners
-                  </div>
-                </div>
-                {/* description removed as per request */}
+                  <CardContent className="py-4 flex-1 flex flex-col">
+                    {/* Header row */}
+                    <div className="flex items-start">
+                      <div className="min-w-0">
+                        <h3
+                          className="text-base font-semibold leading-snug truncate"
+                          style={{ fontFamily: "var(--font-heading-sans)" }}
+                        >
+                          {c.name}
+                        </h3>
+                      </div>
+                    </div>
 
-                {/* Dense stats strip */}
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  <div className="rounded-lg border border-black/5 px-2 py-2 text-center">
-                    <div className="text-[10px] uppercase tracking-wide text-[color:var(--color-neutral-600)]">
-                      Courses
-                    </div>
-                    <div className="text-sm font-semibold">{c.courseCount}</div>
-                  </div>
-                  <div className="rounded-lg border border-black/5 px-2 py-2 text-center">
-                    <div className="text-[10px] uppercase tracking-wide text-[color:var(--color-neutral-600)]">
-                      Tags
-                    </div>
-                    <div className="text-sm font-semibold">{c.tags.length}</div>
-                  </div>
-                  <div className="rounded-lg border border-black/5 px-2 py-2 text-center">
-                    <div className="text-[10px] uppercase tracking-wide text-[color:var(--color-neutral-600)]">
-                      Popularity
-                    </div>
-                    <div className="text-sm font-semibold">
-                      {formatCompact(c.learners)}
-                    </div>
-                  </div>
-                </div>
+                    {/* Quick Stats */}
+                    {/* Quick Stats Grid - Responsive Layout */}
+                    <div className="mt-4 grid grid-cols-3 gap-1.5 lg:gap-2">
+                      <div className="flex flex-row lg:flex-col items-center gap-2 lg:gap-1 p-1.5 lg:p-2.5 rounded-lg lg:rounded-xl bg-blue-50 border border-blue-100 group/stat hover:bg-blue-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-6 w-6 lg:h-7 lg:w-7 rounded-md lg:rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs lg:shadow-sm lg:mb-1">
+                          <BookOpen className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                        </div>
+                        <div className="flex flex-col min-w-0 lg:items-center lg:text-center">
+                          <span className="text-[11px] lg:text-xs font-bold text-blue-900 leading-none truncate">
+                            {c.courseCount || 0}
+                          </span>
+                          <span className="text-[8px] lg:text-[9px] font-semibold text-blue-700 uppercase tracking-tight truncate mt-0.5">
+                            Courses
+                          </span>
+                        </div>
+                      </div>
 
-                {/* Tag chips */}
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {c.tags.slice(0, 3).map((t) => (
-                    <Badge key={t} variant="outline" className="text-[11px]">
-                      {t}
-                    </Badge>
-                  ))}
-                  {c.tags.length > 3 && (
-                    <Badge variant="outline" className="text-[11px]">
-                      +{c.tags.length - 3}
-                    </Badge>
-                  )}
-                </div>
+                      <div className="flex flex-row lg:flex-col items-center gap-2 lg:gap-1 p-1.5 lg:p-2.5 rounded-lg lg:rounded-xl bg-emerald-50 border border-emerald-100 group/stat hover:bg-emerald-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-6 w-6 lg:h-7 lg:w-7 rounded-md lg:rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs lg:shadow-sm lg:mb-1">
+                          <Tag className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                        </div>
+                        <div className="flex flex-col min-w-0 lg:items-center lg:text-center">
+                          <span className="text-[11px] lg:text-xs font-bold text-emerald-900 leading-none truncate">
+                            {c.categoryToTags?.length || 0}
+                          </span>
+                          <span className="text-[8px] lg:text-[9px] font-semibold text-emerald-700 uppercase tracking-tight truncate mt-0.5">
+                            Tags
+                          </span>
+                        </div>
+                      </div>
 
-                {/* CTA row pinned (no divider) */}
-                <div className="mt-auto pt-4 flex items-center justify-end">
-                  <Link
-                    href={`/courses?category=${encodeURIComponent(c.name)}`}
-                    className="block w-full sm:w-auto"
-                  >
-                    <Button size="sm" className="w-full sm:w-auto">
-                      Browse
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                      <div className="flex flex-row lg:flex-col items-center gap-2 lg:gap-1 p-1.5 lg:p-2.5 rounded-lg lg:rounded-xl bg-violet-50 border border-violet-100 group/stat hover:bg-violet-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-6 w-6 lg:h-7 lg:w-7 rounded-md lg:rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center shadow-xs lg:shadow-sm lg:mb-1">
+                          <TrendingUp className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                        </div>
+                        <div className="flex flex-col min-w-0 lg:items-center lg:text-center">
+                          <span className="text-[11px] lg:text-xs font-bold text-violet-900 leading-none truncate">
+                            {formatCompact(c.popularityCount || 0)}
+                          </span>
+                          <span className="text-[8px] lg:text-[9px] font-semibold text-violet-700 uppercase tracking-tight truncate mt-0.5">
+                            Popular
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tag chips */}
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {c.categoryToTags?.slice(0, 3).map((ct) => (
+                        <Badge
+                          key={ct.tag.id}
+                          variant="outline"
+                          className="text-[11px]"
+                        >
+                          {ct.tag.name}
+                        </Badge>
+                      ))}
+                      {(c.categoryToTags?.length || 0) > 3 && (
+                        <Badge variant="outline" className="text-[11px]">
+                          +{(c.categoryToTags?.length || 0) - 3}
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* CTA row pinned (no divider) */}
+                    <div className="mt-auto pt-4 flex items-center">
+                      <Link
+                        href={`/courses?category=${c.slug}`}
+                        className="block w-full"
+                      >
+                        <Button
+                          variant="secondary"
+                          size="md"
+                          className="w-full"
+                        >
+                          Browse
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
         </div>
 
         {/* Empty state */}
-        {filtered.length === 0 && (
-          <div className="mt-10 text-center text-sm text-[color:var(--color-neutral-600)]">
-            No categories match your search.
+        {!isLoading && filtered.length === 0 && (
+          <div className="mt-12 mb-20 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="h-20 w-20 rounded-full bg-[color:var(--color-neutral-50)] border border-[color:var(--color-neutral-100)] flex items-center justify-center mb-6 shadow-sm">
+              <SearchX size={32} className="text-[color:var(--color-neutral-400)]" />
+            </div>
+            <h3 
+              className="text-xl font-semibold text-[color:var(--color-neutral-900)] mb-2"
+              style={{ fontFamily: "var(--font-heading-sans)" }}
+            >
+              No categories found
+            </h3>
+            <p className="text-sm text-[color:var(--color-neutral-600)] max-w-sm mb-8 leading-relaxed">
+              We couldn't find any categories matching {query ? `"${query}"` : "your criteria"}. 
+              Try adjusting your search or clearing all filters.
+            </p>
+            {query && (
+              <Button 
+                variant="secondary" 
+                onClick={() => setQuery("")}
+                className="inline-flex items-center gap-2"
+              >
+                Clear all filters
+              </Button>
+            )}
           </div>
         )}
       </Container>

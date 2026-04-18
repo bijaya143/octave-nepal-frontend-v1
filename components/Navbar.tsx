@@ -180,12 +180,6 @@ export default function Navbar() {
             className="hidden md:flex items-center gap-3 relative"
             ref={desktopMenuRef}
           >
-            <div className="relative hidden lg:block">
-              <input
-                placeholder="Search courses"
-                className="h-10 w-48 lg:w-64 rounded-lg border border-[color:var(--color-neutral-200)] bg-white px-3 shadow-xs focus:border-[color:var(--color-primary-400)]"
-              />
-            </div>
             {isLoggedIn ? (
               <>
                 <button

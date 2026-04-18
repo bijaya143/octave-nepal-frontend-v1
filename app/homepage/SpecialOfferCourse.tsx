@@ -116,6 +116,7 @@ export default function SpecialOfferCourse() {
   useEffect(() => {
     guestCourseService
       .list({
+        beforeEnrollmentDate: new Date().toISOString().split("T")[0], // For guest only
         isSalePeriodApplied: true,
         status: PublishStatusType.PUBLISHED,
         page: 1,
@@ -130,16 +131,7 @@ export default function SpecialOfferCourse() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Hide section entirely if no offer courses exist
-  const now = new Date();
-  const visibleCourses = courses.filter((course) => {
-    if (!course.lastEnrollmentDate) return true;
-    const lastDate = new Date(course.lastEnrollmentDate);
-    lastDate.setHours(23, 59, 59, 999);
-    return lastDate >= now;
-  });
-
-  if (!loading && visibleCourses.length === 0) return null;
+  if (!loading && courses.length === 0) return null;
 
   return (
     <section id="offers" className="mt-12 md:mt-16">
@@ -163,7 +155,7 @@ export default function SpecialOfferCourse() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {loading
             ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
-            : visibleCourses.map((course) => {
+            : courses.map((course) => {
                 const discountPercent = getDiscountPercent(course);
                 const originalPrice = course.markedPrice;
                 const price = course.sellingPrice ?? course.markedPrice;

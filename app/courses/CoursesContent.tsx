@@ -10,7 +10,7 @@ import Container from "@/components/Container";
 import Select from "@/components/ui/Select";
 import Slider from "@/components/ui/Slider";
 import { guestCourseService, guestCategoryService } from "@/lib/services/guest";
-import { CourseDiscountType } from "@/lib/services/admin";
+import { CourseDiscountType, PublishStatusType } from "@/lib/services/admin";
 
 function getDiscountPercent(course: any): number {
   if (!course.isDiscountApplied || !course.markedPrice) return 0;
@@ -63,6 +63,7 @@ function FiltersForm({ initialFilters, onApply, onReset, onCloseModal }: any) {
       setIsLoadingCategories(true);
       try {
         const res = await guestCategoryService.list({
+          isPublished: true,
           page,
           limit: 10,
           keyword: keyword || undefined,
@@ -354,6 +355,8 @@ export default function CoursesContent() {
       setIsLoading(true);
       try {
         const response = await guestCourseService.list({
+          beforeEnrollmentDate: new Date().toISOString().split("T")[0], // For guest only
+          status: PublishStatusType.PUBLISHED,
           page,
           limit: pageSize,
           keyword: filters.query || undefined,

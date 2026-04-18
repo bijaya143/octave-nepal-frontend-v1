@@ -395,6 +395,7 @@ export interface AdminCourseFilterInput extends PaginationInput {
   endDate?: string;
   isSalePeriodApplied?: boolean;
   isFeatured?: boolean;
+  beforeEnrollmentDate?: string;
 }
 
 export enum CreationMethod {
