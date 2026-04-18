@@ -39,9 +39,18 @@ export const get = async (id: string): Promise<ApiResponse<Course>> => {
 };
 
 /**
+ * Get a specific course by slug
+ */
+export const getBySlug = async (slug: string): Promise<ApiResponse<Course>> => {
+  const endpoint = `/course/slug/${slug}`;
+  return api.get<Course>(endpoint);
+};
+
+/**
  * Guest course service object
  */
 export const guestCourseService = {
   list,
   get,
+  getBySlug,
 };

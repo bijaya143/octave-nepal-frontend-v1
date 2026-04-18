@@ -5,12 +5,20 @@ import Button from "../../components/ui/Button";
 import Card, { CardContent } from "../../components/ui/Card";
 import CourseCard, { type Course } from "../../components/CourseCard";
 import Modal from "../../components/ui/Modal";
-import { Filter, SlidersHorizontal, RotateCcw, X } from "lucide-react";
+import {
+  Filter,
+  SlidersHorizontal,
+  RotateCcw,
+  X,
+  SearchX,
+  Inbox,
+} from "lucide-react";
 import Container from "@/components/Container";
 import Select from "@/components/ui/Select";
 import Slider from "@/components/ui/Slider";
 import { guestCourseService, guestCategoryService } from "@/lib/services/guest";
 import { CourseDiscountType, PublishStatusType } from "@/lib/services/admin";
+import { useSearchParams } from "next/navigation";
 
 function getDiscountPercent(course: any): number {
   if (!course.isDiscountApplied || !course.markedPrice) return 0;
@@ -146,7 +154,7 @@ function FiltersForm({ initialFilters, onApply, onReset, onCloseModal }: any) {
         </h2>
         <button
           onClick={onReset}
-          className="text-xs font-semibold text-[color:var(--color-primary-600)] hover:text-[color:var(--color-primary-700)] bg-[color:var(--color-primary-50)] hover:bg-[color:var(--color-primary-100)] px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors"
+          className="text-xs font-semibold text-[color:var(--color-primary-600)] hover:text-[color:var(--color-primary-700)] border border-[color:var(--color-primary-300)] hover:bg-[color:var(--color-primary-50)] px-3 py-1.5 rounded-sm flex items-center gap-1.5 transition-colors"
         >
           <RotateCcw className="h-3.5 w-3.5" />
           Reset
@@ -336,9 +344,13 @@ const DEFAULT_FILTERS: FilterState = {
 };
 
 export default function CoursesContent() {
+  const searchParams = useSearchParams();
+  const categorySlug = searchParams.get("category");
+
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isResolvingSlug, setIsResolvingSlug] = React.useState(!!categorySlug);
 
   const [page, setPage] = React.useState(1);
   const pageSize = 6;
@@ -350,7 +362,30 @@ export default function CoursesContent() {
 
   const [filters, setFilters] = React.useState<FilterState>(DEFAULT_FILTERS);
 
+  // Resolution of category from URL slug
   React.useEffect(() => {
+    if (categorySlug) {
+      guestCategoryService
+        .getBySlug(categorySlug)
+        .then((res) => {
+          if (res.success && res.data) {
+            setFilters((prev) => ({
+              ...prev,
+              selectedCategoryId: res.data.id,
+            }));
+          }
+        })
+        .finally(() => {
+          setIsResolvingSlug(false);
+        });
+    } else {
+      setIsResolvingSlug(false);
+    }
+  }, [categorySlug]);
+
+  React.useEffect(() => {
+    if (isResolvingSlug) return;
+
     const fetchCourses = async () => {
       setIsLoading(true);
       try {
@@ -424,6 +459,12 @@ export default function CoursesContent() {
     setFiltersOpen(false);
   };
 
+  const isFilterApplied =
+    filters.query !== DEFAULT_FILTERS.query ||
+    filters.selectedCategoryId !== DEFAULT_FILTERS.selectedCategoryId ||
+    filters.maxPrice !== DEFAULT_FILTERS.maxPrice ||
+    filters.level !== DEFAULT_FILTERS.level;
+
   return (
     <main>
       <Container className="py-5 md:py-10">
@@ -483,8 +524,43 @@ export default function CoursesContent() {
                   <CourseCard key={course.id} course={course} />
                 ))
               ) : (
-                <div className="col-span-full py-12 text-center text-[color:var(--color-neutral-500)]">
-                  No courses found using the selected filters.
+                <div className="col-span-full py-16 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="h-20 w-20 rounded-full bg-[color:var(--color-neutral-50)] border border-[color:var(--color-neutral-100)] flex items-center justify-center mb-6 shadow-sm">
+                    {isFilterApplied ? (
+                      <SearchX
+                        size={32}
+                        className="text-[color:var(--color-neutral-400)]"
+                      />
+                    ) : (
+                      <Inbox
+                        size={32}
+                        className="text-[color:var(--color-neutral-400)]"
+                      />
+                    )}
+                  </div>
+                  <h3
+                    className="text-xl font-semibold text-[color:var(--color-neutral-900)] mb-2"
+                    style={{ fontFamily: "var(--font-heading-sans)" }}
+                  >
+                    {isFilterApplied
+                      ? "No courses found"
+                      : "No courses available"}
+                  </h3>
+                  <p className="text-sm text-[color:var(--color-neutral-600)] max-w-sm mb-8 leading-relaxed">
+                    {isFilterApplied
+                      ? "We couldn't find any courses matching your current filters. Try adjusting your search keywords or clearing the filters."
+                      : "We're currently updating our curriculum with new and exciting courses. Please check back soon!"}
+                  </p>
+                  {isFilterApplied && (
+                    <Button
+                      variant="secondary"
+                      onClick={handleResetFilters}
+                      className="inline-flex items-center gap-2"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      Clear all filters
+                    </Button>
+                  )}
                 </div>
               )}
             </div>

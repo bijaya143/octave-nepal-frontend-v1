@@ -39,9 +39,20 @@ export const get = async (id: string): Promise<ApiResponse<Category>> => {
 };
 
 /**
+ * Get a specific category by slug
+ */
+export const getBySlug = async (
+  slug: string,
+): Promise<ApiResponse<Category>> => {
+  const endpoint = `/category/slug/${slug}`;
+  return api.get<Category>(endpoint);
+};
+
+/**
  * Guest category service object
  */
 export const guestCategoryService = {
   list,
   get,
+  getBySlug,
 };
