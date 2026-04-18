@@ -240,7 +240,9 @@ export default function CourseDetailPage() {
                 value={course.averageReviewRatingCount}
                 count={course.reviewCount}
               />
-              <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-[color:var(--color-neutral-600)] bg-[color:var(--color-neutral-50)] px-3 py-2 rounded-lg border border-[color:var(--color-neutral-100)]">
+
+              {/* Desktop & Tablet: Inline pill (md breakpoint and above) */}
+              <div className="hidden md:flex items-center gap-4 text-xs font-medium text-[color:var(--color-neutral-600)] bg-[color:var(--color-neutral-50)] px-3 py-2 rounded-lg border border-[color:var(--color-neutral-100)]">
                 <span className="flex items-center gap-1.5">
                   <BarChart2
                     size={14}
@@ -248,7 +250,7 @@ export default function CourseDetailPage() {
                   />
                   {course.level}
                 </span>
-                <div className="h-3 w-px bg-[color:var(--color-neutral-200)]" />
+                <span className="h-3 w-px bg-[color:var(--color-neutral-200)]" />
                 <span className="flex items-center gap-1.5">
                   <Globe
                     size={14}
@@ -256,7 +258,7 @@ export default function CourseDetailPage() {
                   />
                   {course.language}
                 </span>
-                <div className="h-3 w-px bg-[color:var(--color-neutral-200)]" />
+                <span className="h-3 w-px bg-[color:var(--color-neutral-200)]" />
                 <span className="flex items-center gap-1.5">
                   <BookOpen
                     size={14}
@@ -264,7 +266,7 @@ export default function CourseDetailPage() {
                   />
                   {course.lessonCount || "N/A"} lessons
                 </span>
-                <div className="h-3 w-px bg-[color:var(--color-neutral-200)]" />
+                <span className="h-3 w-px bg-[color:var(--color-neutral-200)]" />
                 <span className="flex items-center gap-1.5">
                   <Clock
                     size={14}
@@ -272,6 +274,46 @@ export default function CourseDetailPage() {
                   />
                   {course.duration} {course.durationUnit.toLowerCase()}(s)
                 </span>
+              </div>
+
+              {/* Mobile: Full-width Grid (Below md breakpoint) */}
+              <div className="md:hidden w-full grid grid-cols-4 divide-x divide-[color:var(--color-neutral-200)] border border-[color:var(--color-neutral-200)] rounded-xl bg-[color:var(--color-neutral-50)] overflow-hidden">
+                <div className="flex flex-col items-center justify-center gap-1 py-3 px-1">
+                  <BarChart2
+                    size={15}
+                    className="text-[color:var(--color-primary-600)]"
+                  />
+                  <span className="text-[10px] font-semibold text-[color:var(--color-neutral-700)] text-center leading-tight">
+                    {course.level}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center gap-1 py-3 px-1">
+                  <Globe
+                    size={15}
+                    className="text-[color:var(--color-primary-600)]"
+                  />
+                  <span className="text-[10px] font-semibold text-[color:var(--color-neutral-700)] text-center leading-tight">
+                    {course.language}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center gap-1 py-3 px-1">
+                  <BookOpen
+                    size={15}
+                    className="text-[color:var(--color-primary-600)]"
+                  />
+                  <span className="text-[10px] font-semibold text-[color:var(--color-neutral-700)] text-center leading-tight">
+                    {course.lessonCount || "N/A"} lessons
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center gap-1 py-3 px-1">
+                  <Clock
+                    size={15}
+                    className="text-[color:var(--color-primary-600)]"
+                  />
+                  <span className="text-[10px] font-semibold text-[color:var(--color-neutral-700)] text-center leading-tight">
+                    {course.duration} {course.durationUnit.toLowerCase()}(s)
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -281,7 +323,7 @@ export default function CourseDetailPage() {
                   src={
                     course.thumbnailKey
                       ? `${baseUrl}/${course.thumbnailKey}`
-                      : "/images/placeholder.svg"
+                      : "/images/hero.svg"
                   }
                   alt={course.title}
                   fill

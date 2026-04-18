@@ -142,8 +142,7 @@ export default function Navbar() {
     setAccountOpen(false);
   }, [logout]);
 
-  const isActive = (href: string) =>
-    pathname === href || (href !== "/" && pathname?.startsWith(href));
+  const isActive = (href: string) => pathname === href;
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[color:var(--color-neutral-200)]">
