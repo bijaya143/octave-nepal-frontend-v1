@@ -1,112 +1,82 @@
 "use client";
-import * as React from "react";
+
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { MessageSquareOff } from "lucide-react";
 
 import Rating from "../../components/ui/Rating";
 import Container from "../../components/Container";
-
-const testimonials = [
-  {
-    quote:
-      "The UI is beautiful and the content is top-notch. Highly recommended!",
-    name: "Aarav Shrestha",
-    date: "Oct 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=256&q=80",
-    rating: 5,
-  },
-  {
-    quote:
-      "Instructors explain complex topics clearly. I landed a better job after these courses.",
-    name: "Prerana Karki",
-    date: "Sep 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=256&q=80",
-    rating: 5,
-  },
-  {
-    quote:
-      "Practical projects and elegant design made learning enjoyable and effective.",
-    name: "Sujan Gurung",
-    date: "Aug 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80",
-    rating: 4.5,
-  },
-  {
-    quote:
-      "Great pacing and clear roadmap. I finally feel confident building apps.",
-    name: "Nirajan Thapa",
-    date: "Jul 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1545996124-0501ebae84d0?auto=format&fit=crop&w=256&q=80",
-    rating: 4.5,
-  },
-  {
-    quote:
-      "Assignments mirror real-world tasks. The feedback was actually useful!",
-    name: "Riya Acharya",
-    date: "Jun 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?auto=format&fit=crop&w=256&q=80",
-    rating: 5,
-  },
-  {
-    quote: "Loved the minimalist design and the focus on fundamentals.",
-    name: "Bibek Karki",
-    date: "May 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&w=256&q=80",
-    rating: 4,
-  },
-  {
-    quote: "Concise videos, strong projects, and friendly community.",
-    name: "Asmita Rai",
-    date: "Apr 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=256&q=80",
-    rating: 5,
-  },
-  {
-    quote: "I switched careers thanks to these courses. Worth every rupee.",
-    name: "Krishna Adhikari",
-    date: "Mar 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80",
-    rating: 5,
-  },
-  {
-    quote: "Simple interface that doesn’t get in the way of learning.",
-    name: "Sneha Shrestha",
-    date: "Feb 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80",
-    rating: 4.5,
-  },
-  {
-    quote: "Best value platform I’ve used. Practical, elegant, and effective.",
-    name: "Prakash Bista",
-    date: "Jan 2025",
-    avatar:
-      "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=256&q=80",
-    rating: 5,
-  },
-];
+import Button from "../../components/ui/Button";
+import { guestTestimonialService } from "@/lib/services/guest";
+import { Testimonial } from "@/lib/services/admin/types";
 
 export default function TestimonialsContent() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const pageSize = 9;
+  const [pagination, setPagination] = useState<{
+    page: number;
+    limit: number;
+    total: number;
+  } | null>(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+    guestTestimonialService
+      .list({
+        isPublished: true,
+        page,
+        limit: pageSize,
+      })
+      .then((res) => {
+        if (res.success && res.data) {
+          setTestimonials(res.data.data);
+          if (res.data.meta) {
+            setPagination(res.data.meta);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch testimonials:", err);
+      })
+      .finally(() => setIsLoading(false));
+  }, [page]);
+
   return (
     <main>
       <Container className="py-5 md:py-10">
-        <SimpleTestimonials items={testimonials} />
+        <SimpleTestimonials
+          items={testimonials}
+          isLoading={isLoading}
+          page={page}
+          setPage={setPage}
+          pageSize={pageSize}
+          total={pagination?.total || 0}
+        />
       </Container>
     </main>
   );
 }
 
-type Testimonial = (typeof testimonials)[number];
+function SimpleTestimonials({
+  items,
+  isLoading,
+  page,
+  setPage,
+  pageSize,
+  total,
+}: {
+  items: Testimonial[];
+  isLoading: boolean;
+  page: number;
+  setPage: (p: number) => void;
+  pageSize: number;
+  total: number;
+}) {
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
 
-function SimpleTestimonials({ items }: { items: Testimonial[] }) {
   return (
     <section className="relative">
       <div className="text-center mb-5">
@@ -121,44 +91,131 @@ function SimpleTestimonials({ items }: { items: Testimonial[] }) {
         </p>
         <div className="h-px bg-[color:var(--color-neutral-200)] mt-4" />
       </div>
+
       <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5">
-        {items.map((t, i) => (
-          <motion.div
-            key={t.name + i}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            <div className="rounded-xl border border-[color:var(--color-neutral-200)] bg-white p-5 hover:shadow-sm transition-shadow h-full">
-              <h2
-                className="text-base sm:text-lg font-semibold leading-tight line-clamp-4"
-                style={{ fontFamily: "var(--font-heading-sans)" }}
-              >
-                "{t.quote}"
-              </h2>
-              <div className="mt-3 flex items-center gap-3">
-                <Image
-                  src={t.avatar}
-                  alt={`${t.name} avatar`}
-                  width={44}
-                  height={44}
-                  className="h-11 w-11 rounded-full object-cover"
-                />
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{t.name}</span>
-                  <span className="text-xs text-[color:var(--color-neutral-600)]">
-                    {t.date}
-                  </span>
+        {!isLoading &&
+          items.map((t, i) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              <div className="rounded-xl border border-[color:var(--color-neutral-200)] bg-white p-5 hover:shadow-sm transition-shadow h-full">
+                <h2
+                  className="text-base sm:text-lg font-semibold leading-tight line-clamp-4"
+                  style={{ fontFamily: "var(--font-heading-sans)" }}
+                >
+                  {t.message ? `“${t.message}”` : ""}
+                </h2>
+                <div className="mt-3 flex items-center gap-3">
+                  <Image
+                    src={
+                      t.profilePictureKey
+                        ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${t.profilePictureKey}`
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(t.fullName)}&background=random`
+                    }
+                    alt={`${t.fullName} avatar`}
+                    width={44}
+                    height={44}
+                    className="h-11 w-11 rounded-full object-cover"
+                    unoptimized
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">{t.fullName}</span>
+                    <span className="text-xs text-[color:var(--color-neutral-600)]">
+                      {new Date(t.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <div className="ml-auto opacity-80">
+                    <Rating value={t.rating} />
+                  </div>
                 </div>
-                <div className="ml-auto opacity-80">
-                  <Rating value={t.rating} />
+              </div>
+            </motion.div>
+          ))}
+
+        {isLoading &&
+          Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="rounded-xl border border-[color:var(--color-neutral-200)] bg-white p-5 animate-pulse h-[160px]"
+            >
+              <div className="h-4 w-full bg-[color:var(--color-neutral-100)] rounded mb-3" />
+              <div className="h-4 w-2/3 bg-[color:var(--color-neutral-100)] rounded mb-8" />
+              <div className="flex items-center gap-3">
+                <div className="h-11 w-11 rounded-full bg-[color:var(--color-neutral-100)]" />
+                <div className="flex-1">
+                  <div className="h-3 w-1/3 bg-[color:var(--color-neutral-100)] rounded mb-2" />
+                  <div className="h-2 w-1/4 bg-[color:var(--color-neutral-100)] rounded" />
                 </div>
               </div>
             </div>
-          </motion.div>
-        ))}
+          ))}
       </div>
+
+      {/* Empty state */}
+      {!isLoading && items.length === 0 && (
+        <div className="mt-16 mb-24 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="h-20 w-20 rounded-full bg-[color:var(--color-neutral-50)] border border-[color:var(--color-neutral-100)] flex items-center justify-center mb-6 shadow-sm">
+            <MessageSquareOff
+              size={32}
+              className="text-[color:var(--color-neutral-400)]"
+            />
+          </div>
+          <h3
+            className="text-xl font-semibold text-[color:var(--color-neutral-900)] mb-2"
+            style={{ fontFamily: "var(--font-heading-sans)" }}
+          >
+            No testimonials yet
+          </h3>
+          <p className="text-sm text-[color:var(--color-neutral-600)] max-w-sm leading-relaxed">
+            We haven't received any testimonials for this view yet. Check back
+            later to see what our community is saying!
+          </p>
+        </div>
+      )}
+
+      {/* Pagination component */}
+      {!isLoading && total > pageSize && (
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[color:var(--color-neutral-200)] pt-6">
+          <p className="text-sm text-[color:var(--color-neutral-500)] text-center sm:text-left">
+            Showing{" "}
+            <span className="font-medium text-[color:var(--color-neutral-900)]">
+              {total === 0 ? 0 : (page - 1) * pageSize + 1}-
+              {Math.min(page * pageSize, total)}
+            </span>{" "}
+            of {total} testimonials
+          </p>
+          <div className="flex items-center justify-center sm:justify-end gap-2 w-full sm:w-auto">
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-8 px-3"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </Button>
+            <div className="text-sm font-medium text-[color:var(--color-neutral-600)] px-1 whitespace-nowrap">
+              {page} of {pageCount}
+            </div>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-8 px-3"
+              onClick={() => setPage(page + 1)}
+              disabled={page === pageCount}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
