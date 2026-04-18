@@ -78,7 +78,6 @@ function mapValuesToInput(values: CourseFormValues) {
       saleStartDate && saleEndDate
         ? { startDate: saleStartDate, endDate: saleEndDate }
         : { startDate: null, endDate: null },
-    isSalePeriodApplied: !!(saleStartDate && saleEndDate),
     metaKeywords: metaKeywords
       ? metaKeywords
           .split(",")
@@ -732,10 +731,7 @@ export default function AdminCoursesPage() {
                 isDiscountApplied: (Number(editing.discountValue) || 0) > 0,
                 discountType: editing.discountType,
                 discountValue: editing.discountValue,
-                isSalePeriodApplied: !!(
-                  editing.salePeriodDateRange?.startDate &&
-                  editing.salePeriodDateRange?.endDate
-                ),
+                isSalePeriodApplied: editing.isSalePeriodApplied ?? false,
                 saleStartDate: editing.salePeriodDateRange?.startDate || null,
                 saleEndDate: editing.salePeriodDateRange?.endDate || null,
                 isTaxIncluded: editing.isTaxIncluded,
