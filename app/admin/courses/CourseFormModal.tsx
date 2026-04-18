@@ -1,5 +1,5 @@
 "use client";
-import { X } from "lucide-react";
+import { X, HelpCircle } from "lucide-react";
 import React from "react";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
@@ -1030,8 +1030,56 @@ export default function CourseFormModal({
                 />
               </div>
               <div className="sm:col-span-2">
+                <div className="flex items-center gap-1.5 mb-1.5 relative">
+                  <span className="text-sm font-medium text-[color:var(--foreground)]">
+                    Prerequisites
+                  </span>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      id="prereq-help-btn"
+                      aria-label="Prerequisites help"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const el = document.getElementById("prereq-help-tip");
+                        if (el) el.hidden = !el.hidden;
+                      }}
+                      className="text-[color:var(--color-neutral-400)] hover:text-[color:var(--color-primary-600)] transition-colors"
+                    >
+                      <HelpCircle className="h-3.5 w-3.5" />
+                    </button>
+                    <div
+                      id="prereq-help-tip"
+                      hidden
+                      className="absolute left-5 top-0 z-50 w-56 rounded-lg border border-[color:var(--color-neutral-200)] bg-white px-3 py-2 text-[11px] text-[color:var(--color-neutral-600)] shadow-md leading-relaxed"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span>
+                          Press{" "}
+                          <kbd className="px-1 py-0.5 rounded bg-[color:var(--color-neutral-100)] border border-[color:var(--color-neutral-200)] font-mono text-[10px]">
+                            Enter
+                          </kbd>{" "}
+                          to start a new line. Each line becomes a separate list
+                          item.
+                        </span>
+                        <button
+                          type="button"
+                          aria-label="Close tip"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const el =
+                              document.getElementById("prereq-help-tip");
+                            if (el) el.hidden = true;
+                          }}
+                          className="shrink-0 text-[color:var(--color-neutral-400)] hover:text-[color:var(--color-neutral-700)] mt-0.5"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <Textarea
-                  label="Prerequisites"
                   value={values.prerequisite}
                   onChange={(e) => handleChange("prerequisite", e.target.value)}
                   placeholder="What should learners know before starting?"
@@ -1039,8 +1087,56 @@ export default function CourseFormModal({
                 />
               </div>
               <div className="sm:col-span-2">
+                <div className="flex items-center gap-1.5 mb-1.5 relative">
+                  <span className="text-sm font-medium text-[color:var(--foreground)]">
+                    Learning outcomes
+                  </span>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      id="outcomes-help-btn"
+                      aria-label="Learning outcomes help"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const el = document.getElementById("outcomes-help-tip");
+                        if (el) el.hidden = !el.hidden;
+                      }}
+                      className="text-[color:var(--color-neutral-400)] hover:text-[color:var(--color-primary-600)] transition-colors"
+                    >
+                      <HelpCircle className="h-3.5 w-3.5" />
+                    </button>
+                    <div
+                      id="outcomes-help-tip"
+                      hidden
+                      className="absolute left-5 top-0 z-50 w-56 rounded-lg border border-[color:var(--color-neutral-200)] bg-white px-3 py-2 text-[11px] text-[color:var(--color-neutral-600)] shadow-md leading-relaxed"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span>
+                          Press{" "}
+                          <kbd className="px-1 py-0.5 rounded bg-[color:var(--color-neutral-100)] border border-[color:var(--color-neutral-200)] font-mono text-[10px]">
+                            Enter
+                          </kbd>{" "}
+                          to start a new line. Each line becomes a separate list
+                          item.
+                        </span>
+                        <button
+                          type="button"
+                          aria-label="Close tip"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const el =
+                              document.getElementById("outcomes-help-tip");
+                            if (el) el.hidden = true;
+                          }}
+                          className="shrink-0 text-[color:var(--color-neutral-400)] hover:text-[color:var(--color-neutral-700)] mt-0.5"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <Textarea
-                  label="Learning outcomes"
                   value={values.learningOutcome}
                   onChange={(e) =>
                     handleChange("learningOutcome", e.target.value)

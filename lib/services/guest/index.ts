@@ -9,4 +9,5 @@ export { guestCategoryService } from "./category";
 export { guestTestimonialService } from "./testimonial";
 export { guestNewsletterSubscriberService } from "./newsletter-subscriber";
 export { guestContactMessageService } from "./contact-message";
+export { guestReviewService } from "./review";
 export * from "./types";
