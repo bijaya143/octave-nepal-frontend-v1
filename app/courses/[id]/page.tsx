@@ -107,6 +107,13 @@ export default function CourseDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isReviewsLoading, setIsReviewsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const isEnrollmentClosed = course
+    ? !course.lastEnrollmentDate ||
+      course.availableSeatCount <= 0 ||
+      new Date(course.lastEnrollmentDate) < new Date()
+    : false;
+
   const [expandedSections, setExpandedSections] = useState<
     Record<number, boolean>
   >({ 0: true });
@@ -486,7 +493,7 @@ export default function CourseDetailPage() {
                                       </div>
                                     </div>
                                   </div>
-                                  {item.duration && item.duration !== 0 && (
+                                  {item.duration !== 0 && (
                                     <div className="text-xs text-[color:var(--color-neutral-500)]">
                                       {item.duration}{" "}
                                       {item.durationUnit.toLowerCase()}(s)
@@ -695,13 +702,13 @@ export default function CourseDetailPage() {
                         course.sellingPrice || course.markedPrice
                       ).toLocaleString()}
                     </span>
-                    {course.isDiscountApplied && (
+                    {!isEnrollmentClosed && course.isDiscountApplied && (
                       <Badge className="bg-[color:var(--color-primary-50)] text-[color:var(--color-primary-700)] border-[color:var(--color-primary-200)]">
                         Save {getDiscountPercent(course)}%
                       </Badge>
                     )}
                   </div>
-                  {course.isDiscountApplied && (
+                  {!isEnrollmentClosed && course.isDiscountApplied && (
                     <div className="flex items-center gap-2.5">
                       <span className="text-sm line-through text-[color:var(--color-neutral-400)]">
                         Rs {course.markedPrice.toLocaleString()}
@@ -716,17 +723,30 @@ export default function CourseDetailPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <Link
-                    href={`/checkout?courseId=${course.slug}`}
-                    className="block"
-                  >
-                    <Button className="w-full h-12 text-base font-bold shadow-md shadow-primary-600/10">
-                      Enroll now
+                  {isEnrollmentClosed ? (
+                    <Button
+                      disabled
+                      className="w-full h-12 text-base font-bold opacity-80 cursor-not-allowed"
+                    >
+                      {course.availableSeatCount <= 0
+                        ? "Batch Full"
+                        : "Registration Closed"}
                     </Button>
-                  </Link>
+                  ) : (
+                    <Link
+                      href={`/checkout?courseId=${course.slug}`}
+                      className="block"
+                    >
+                      <Button className="w-full h-12 text-base font-bold shadow-md shadow-primary-600/10">
+                        Enroll now
+                      </Button>
+                    </Link>
+                  )}
                   <div className="space-y-2">
                     <p className="text-center text-[11px] text-[color:var(--color-neutral-500)] font-medium">
-                      7-Day Money-Back Guarantee
+                      {isEnrollmentClosed
+                        ? "Check related courses for upcoming batches"
+                        : "7-Day Money-Back Guarantee"}
                     </p>
                   </div>
                 </div>
