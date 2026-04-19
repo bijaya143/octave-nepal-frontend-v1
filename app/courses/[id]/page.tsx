@@ -17,11 +17,13 @@ import {
   CheckCircle2,
   ListChecks,
   Timer,
-  Calendar,
   Clock,
   Star,
   Link2,
   ExternalLink,
+  TableOfContents,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import Container from "@/components/Container";
 import { guestCourseService, guestReviewService } from "@/lib/services/guest";
@@ -105,6 +107,16 @@ export default function CourseDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isReviewsLoading, setIsReviewsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedSections, setExpandedSections] = useState<
+    Record<number, boolean>
+  >({ 0: true });
+
+  const toggleSection = (idx: number) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
+  };
 
   const fetchData = useCallback(async () => {
     if (!slug) return;
@@ -415,48 +427,79 @@ export default function CourseDetailPage() {
             {course.syllabus && course.syllabus.sections.length > 0 && (
               <section className="space-y-4 mb-10">
                 <h2
-                  className="text-xl font-bold border-b border-[color:var(--color-neutral-200)] pb-2"
+                  className="text-xl font-bold border-b border-[color:var(--color-neutral-200)] pb-2 flex items-center gap-2"
                   style={{ fontFamily: "var(--font-heading-sans)" }}
                 >
+                  <TableOfContents
+                    className="text-[color:var(--color-primary-600)]"
+                    size={20}
+                  />
                   Course Syllabus
                 </h2>
                 <div className="space-y-4">
-                  {course.syllabus.sections.map((section, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-lg border border-[color:var(--color-neutral-200)] overflow-hidden"
-                    >
-                      <div className="bg-[color:var(--color-neutral-50)] px-4 py-3 border-b border-[color:var(--color-neutral-200)]">
-                        <h3 className="font-semibold text-sm">
-                          Section {idx + 1}: {section.title}
-                        </h3>
-                      </div>
-                      <div className="divide-y divide-[color:var(--color-neutral-200)] bg-white">
-                        {section.items.map((item, iIdx) => (
-                          <div
-                            key={iIdx}
-                            className="px-4 py-3 flex items-center justify-between gap-4"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="h-2 w-2 rounded-full bg-[color:var(--color-primary-500)] shrink-0" />
-                              <div>
-                                <div className="text-sm font-medium">
-                                  {item.title}
+                  {course.syllabus.sections.map((section, idx) => {
+                    const isExpanded = expandedSections[idx];
+                    return (
+                      <div
+                        key={idx}
+                        className="rounded-lg border border-[color:var(--color-neutral-200)] overflow-hidden transition-all duration-300"
+                      >
+                        <button
+                          onClick={() => toggleSection(idx)}
+                          className={`w-full flex items-center justify-between bg-[color:var(--color-neutral-50)] px-4 py-3 text-left transition-colors hover:bg-[color:var(--color-neutral-100)] border-b ${
+                            isExpanded
+                              ? "border-[color:var(--color-neutral-200)]"
+                              : "border-transparent"
+                          }`}
+                        >
+                          <h3 className="font-semibold text-sm">
+                            {section.title}
+                          </h3>
+                          {isExpanded ? (
+                            <ChevronUp className="h-4 w-4 text-[color:var(--color-neutral-500)]" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 text-[color:var(--color-neutral-500)]" />
+                          )}
+                        </button>
+                        <div
+                          className={`grid transition-all duration-300 ease-in-out ${
+                            isExpanded
+                              ? "grid-rows-[1fr] opacity-100"
+                              : "grid-rows-[0fr] opacity-0"
+                          }`}
+                        >
+                          <div className="overflow-hidden">
+                            <div className="divide-y divide-[color:var(--color-neutral-200)] bg-white">
+                              {section.items.map((item, iIdx) => (
+                                <div
+                                  key={iIdx}
+                                  className="px-4 py-3 flex items-center justify-between gap-4"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="h-2 w-2 rounded-full bg-[color:var(--color-primary-500)] shrink-0" />
+                                    <div>
+                                      <div className="text-sm font-medium">
+                                        {item.title}
+                                      </div>
+                                      <div className="text-[10px] text-[color:var(--color-neutral-500)] uppercase tracking-wider">
+                                        {item.type}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {item.duration && item.duration !== 0 && (
+                                    <div className="text-xs text-[color:var(--color-neutral-500)]">
+                                      {item.duration}{" "}
+                                      {item.durationUnit.toLowerCase()}(s)
+                                    </div>
+                                  )}
                                 </div>
-                                <div className="text-[10px] text-[color:var(--color-neutral-500)] uppercase tracking-wider">
-                                  {item.type}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-xs text-[color:var(--color-neutral-500)]">
-                              {item.duration} {item.durationUnit.toLowerCase()}
-                              (s)
+                              ))}
                             </div>
                           </div>
-                        ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -473,50 +516,50 @@ export default function CourseDetailPage() {
                   />
                   Class Schedule
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-5 rounded-xl border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50">
-                    <div className="flex items-center gap-4">
-                      <div className="h-11 w-11 rounded-xl bg-white border border-[color:var(--color-neutral-100)] flex items-center justify-center shrink-0 shadow-sm">
-                        <Calendar
-                          size={20}
-                          className="text-[color:var(--color-primary-500)]"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm font-bold text-[color:var(--color-neutral-900)] leading-tight">
-                          {course.fromDay} - {course.toDay}
-                        </span>
-                        <span className="text-xs font-medium text-[color:var(--color-neutral-500)] leading-tight">
-                          Starts:{" "}
-                          {new Date(course.startDate).toLocaleDateString(
-                            "en-US",
-                            {
-                              month: "long",
-                              day: "numeric",
-                              year: "numeric",
-                            },
-                          )}
-                        </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                  {/* Date Card */}
+                  <div className="relative overflow-hidden">
+                    <div className="relative p-5 rounded-2xl border border-[color:var(--color-neutral-200)] bg-white/50 backdrop-blur-sm shadow-sm">
+                      <div className="flex items-start gap-5">
+                        <div className="flex flex-col gap-1.5">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--color-primary-600)]">
+                            Days & Dates
+                          </span>
+                          <span className="text-lg font-bold text-[color:var(--color-neutral-900)] leading-tight">
+                            {course.fromDay} - {course.toDay}
+                          </span>
+                          <span className="text-sm font-medium text-[color:var(--color-neutral-500)] leading-tight">
+                            Starts{" "}
+                            {new Date(course.startDate).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-5 rounded-xl border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50">
-                    <div className="flex items-center gap-4">
-                      <div className="h-11 w-11 rounded-xl bg-white border border-[color:var(--color-neutral-100)] flex items-center justify-center shrink-0 shadow-sm">
-                        <Clock
-                          size={20}
-                          className="text-[color:var(--color-primary-500)]"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm font-bold text-[color:var(--color-neutral-900)] leading-tight">
-                          {course.startTime} {course.startTimeDesignator} -{" "}
-                          {course.endTime} {course.endTimeDesignator}
-                        </span>
-                        <span className="text-xs font-medium text-[color:var(--color-neutral-500)] leading-tight">
-                          {course.timezone} Standard Time
-                        </span>
+                  {/* Time Card */}
+                  <div className="relative overflow-hidden">
+                    <div className="relative p-5 rounded-2xl border border-[color:var(--color-neutral-200)] bg-white/50 backdrop-blur-sm shadow-sm">
+                      <div className="flex items-start gap-5">
+                        <div className="flex flex-col gap-1.5">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--color-primary-600)]">
+                            Time & Zone
+                          </span>
+                          <span className="text-lg font-bold text-[color:var(--color-neutral-900)] leading-tight">
+                            {course.startTime} {course.startTimeDesignator} -{" "}
+                            {course.endTime} {course.endTimeDesignator}
+                          </span>
+                          <span className="text-xs font-medium text-[color:var(--color-neutral-500)] leading-tight">
+                            {course.timezone} Standard Time
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>

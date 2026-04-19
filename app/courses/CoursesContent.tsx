@@ -18,7 +18,7 @@ import Select from "@/components/ui/Select";
 import Slider from "@/components/ui/Slider";
 import { guestCourseService, guestCategoryService } from "@/lib/services/guest";
 import { CourseDiscountType, PublishStatusType } from "@/lib/services/admin";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 function getDiscountPercent(course: any): number {
   if (!course.isDiscountApplied || !course.markedPrice) return 0;
@@ -152,13 +152,6 @@ function FiltersForm({ initialFilters, onApply, onReset, onCloseModal }: any) {
           <SlidersHorizontal className="h-5 w-5 text-[color:var(--color-primary-600)]" />
           Filters
         </h2>
-        <button
-          onClick={onReset}
-          className="text-xs font-semibold text-[color:var(--color-primary-600)] hover:text-[color:var(--color-primary-700)] border border-[color:var(--color-primary-300)] hover:bg-[color:var(--color-primary-50)] px-3 py-1.5 rounded-sm flex items-center gap-1.5 transition-colors"
-        >
-          <RotateCcw className="h-3.5 w-3.5" />
-          Reset
-        </button>
       </div>
 
       <div className="space-y-5">
@@ -344,6 +337,8 @@ const DEFAULT_FILTERS: FilterState = {
 };
 
 export default function CoursesContent() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const categorySlug = searchParams.get("category");
 
@@ -457,6 +452,7 @@ export default function CoursesContent() {
     setFilters(DEFAULT_FILTERS);
     setPage(1);
     setFiltersOpen(false);
+    router.replace(pathname);
   };
 
   const isFilterApplied =
@@ -501,11 +497,24 @@ export default function CoursesContent() {
                   aria-label="Open filters"
                   title="Filters"
                   type="button"
-                  className="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-0 leading-none shadow-xs hover:bg-[color:var(--color-neutral-50)] active:bg-[color:var(--color-neutral-100)] text-[color:var(--color-primary-600)] hover:text-[color:var(--color-primary-700)]"
+                  className="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-0 leading-none shadow-xs hover:bg-[color:var(--color-neutral-50)] active:bg-[color:var(--color-neutral-100)] text-[color:var(--color-primary-600)] hover:text-[color:var(--color-primary-700)] cursor-pointer"
                   onClick={() => setFiltersOpen(true)}
                 >
                   <Filter className="h-5 w-5" aria-hidden />
                 </button>
+                {isFilterApplied && (
+                  <button
+                    onClick={handleResetFilters}
+                    title="Clear all filters"
+                    className="inline-flex h-11 w-11 lg:w-auto lg:px-4 items-center justify-center rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-0 leading-none shadow-xs hover:bg-[color:var(--color-neutral-50)] active:bg-[color:var(--color-neutral-100)] text-[color:var(--color-primary-600)] hover:text-[color:var(--color-primary-700)] transition-all duration-200 gap-2 cursor-pointer"
+                  >
+                    <RotateCcw className="h-5 w-5" />
+                    <span className="hidden lg:inline text-sm font-semibold">
+                      Reset
+                    </span>
+                  </button>
+                )}
+
                 {/* <Select>
                   <option>Most popular</option>
                   <option>Highest rated</option>
