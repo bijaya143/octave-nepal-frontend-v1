@@ -5,7 +5,7 @@
  */
 
 import { api, ApiResponse } from "@/lib/api";
-import { AdminCommonResponseData } from "../admin/types";
+import { GuestCommonResponseData } from "./types";
 
 /**
  * Create Newsletter subscriber input type
@@ -19,8 +19,8 @@ export interface CreateNewsletterSubscriberInput {
  */
 export const subscribe = async (
   input: CreateNewsletterSubscriberInput,
-): Promise<ApiResponse<AdminCommonResponseData>> => {
-  return api.post<AdminCommonResponseData>(
+): Promise<ApiResponse<GuestCommonResponseData>> => {
+  return api.post<GuestCommonResponseData>(
     "/newsletter-subscriber/subscribe",
     input,
   );
@@ -31,8 +31,8 @@ export const subscribe = async (
  */
 export const unsubscribe = async (
   input: CreateNewsletterSubscriberInput,
-): Promise<ApiResponse<AdminCommonResponseData>> => {
-  return api.post<AdminCommonResponseData>(
+): Promise<ApiResponse<GuestCommonResponseData>> => {
+  return api.post<GuestCommonResponseData>(
     "/newsletter-subscriber/unsubscribe",
     input,
   );

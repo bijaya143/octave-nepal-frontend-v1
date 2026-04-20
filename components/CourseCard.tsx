@@ -105,7 +105,7 @@ export default function CourseCard({ course }: { course: Course }) {
               View
             </Button>
             <Link
-              href={`/checkout?courseId=${course.slug}`}
+              href={`/checkout?course=${course.slug}`}
               onClick={(e) => e.stopPropagation()}
             >
               <Button size="sm" variant="secondary">

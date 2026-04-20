@@ -5,7 +5,7 @@
  */
 
 import { api, ApiResponse } from "@/lib/api";
-import { AdminCommonResponseData } from "../admin/types";
+import { GuestCommonResponseData } from "./types";
 
 /**
  * Create Contact Message input type
@@ -22,8 +22,8 @@ export interface CreateContactMessageInput {
  */
 export const create = async (
   input: CreateContactMessageInput,
-): Promise<ApiResponse<AdminCommonResponseData>> => {
-  return api.post<AdminCommonResponseData>("/contact-message", input);
+): Promise<ApiResponse<GuestCommonResponseData>> => {
+  return api.post<GuestCommonResponseData>("/contact-message", input);
 };
 
 /**

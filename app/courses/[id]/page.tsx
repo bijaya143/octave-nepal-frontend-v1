@@ -734,7 +734,7 @@ export default function CourseDetailPage() {
                     </Button>
                   ) : (
                     <Link
-                      href={`/checkout?courseId=${course.slug}`}
+                      href={`/checkout?course=${course.slug}`}
                       className="block"
                     >
                       <Button className="w-full h-12 text-base font-bold shadow-md shadow-primary-600/10">

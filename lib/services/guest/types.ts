@@ -36,3 +36,10 @@ export interface GuestReviewOutput {
   data: AdminReview[];
   meta: PaginationOutput;
 }
+
+/**
+ * Common response data
+ */
+export interface GuestCommonResponseData {
+  message: string;
+}
