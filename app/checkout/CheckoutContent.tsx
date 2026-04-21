@@ -178,7 +178,7 @@ export default function CheckoutContent() {
                       value={formData.phone}
                       onChange={(phone) => setFormData({ ...formData, phone })}
                       className="flex items-stretch"
-                      inputClassName="!h-11 !w-full !rounded-r-lg !rounded-l-none !border !border-[color:var(--color-neutral-200)] !px-4 !text-[color:var(--foreground)] !text-sm !transition-all !shadow-xs focus:!shadow-sm"
+                      inputClassName="!h-11 !w-full !rounded-r-lg !rounded-l-none !border !border-[color:var(--color-neutral-200)] !px-4 !text-[color:var(--foreground)] !text-base md:!text-sm !transition-all !shadow-xs focus:!shadow-sm"
                       countrySelectorStyleProps={{
                         buttonClassName:
                           "!h-11 !rounded-l-lg !rounded-r-none !border !border-r-0 !border-[color:var(--color-neutral-200)] !bg-white !px-3 hover:!bg-[color:var(--color-neutral-50)] !transition-all",
