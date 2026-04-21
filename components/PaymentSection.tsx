@@ -3,7 +3,7 @@ import React from "react";
 import Card, { CardContent } from "./ui/Card";
 import Input from "./ui/Input";
 import Button from "./ui/Button";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, X } from "lucide-react";
 import Carousel from "./ui/Carousel";
 
 type PaymentMethod = "qr" | "bank";
@@ -24,11 +24,34 @@ const bankDetails = {
 export default function PaymentSection() {
   const [method, setMethod] = React.useState<PaymentMethod>("qr");
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-  const [fileName, setFileName] = React.useState<string>("");
+  const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
+
+  function getFileKey(file: File) {
+    return `${file.name}-${file.size}-${file.lastModified}`;
+  }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    setFileName(file ? file.name : "");
+    const files = Array.from(e.target.files ?? []);
+    // If the user cancels the picker dialog, keep the previous selection.
+    if (files.length === 0) return;
+    setSelectedFiles((prev) => {
+      const existingKeys = new Set(prev.map(getFileKey));
+      const newUniqueFiles = files.filter((file) => !existingKeys.has(getFileKey(file)));
+      return [...prev, ...newUniqueFiles];
+    });
+    // Allow choosing the same file again in a later selection.
+    e.target.value = "";
+  }
+
+  function removeSelectedFile(indexToRemove: number) {
+    setSelectedFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
+  }
+
+  function clearSelectedFiles() {
+    setSelectedFiles([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   }
 
   return (
@@ -136,18 +159,59 @@ export default function PaymentSection() {
 
       <div className="space-y-2">
         <h4 className="text-sm font-medium">Upload payment receipt <span className="ml-1 text-red-600" aria-hidden>*</span></h4>
-        <div className="flex items-center gap-3">
+        <div className="space-y-2">
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*,application/pdf"
+            multiple
             className="hidden"
             required
             aria-required="true"
             onChange={handleFileChange}
           />
-          <Button type="button" variant="secondary" onClick={() => fileInputRef.current?.click()}>Choose file</Button>
-          <span className="text-xs text-[color:var(--color-neutral-600)] truncate">{fileName || "No file chosen"}</span>
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full sm:w-auto"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Choose files
+          </Button>
+          {selectedFiles.length > 0 ? (
+            <div className="text-xs text-[color:var(--color-neutral-600)] space-y-1">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <p>{selectedFiles.length} file(s) selected</p>
+                <button
+                  type="button"
+                  className="text-[color:var(--color-primary-700)] hover:underline"
+                  onClick={clearSelectedFiles}
+                >
+                  Remove all
+                </button>
+              </div>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {selectedFiles.map((file, index) => (
+                  <li
+                    key={`${file.name}-${index}`}
+                    className="grid grid-cols-[1fr_auto] items-start gap-2 rounded-md border border-[color:var(--color-neutral-200)] bg-white px-3 py-2 hover:bg-[color:var(--color-neutral-50)]"
+                  >
+                    <span className="min-w-0 break-words">{file.name}</span>
+                    <button
+                      type="button"
+                      className="shrink-0 text-red-600 hover:text-red-700 justify-self-end"
+                      onClick={() => removeSelectedFile(index)}
+                      aria-label={`Remove ${file.name}`}
+                    >
+                      <X className="h-4 w-4" aria-hidden />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p className="text-xs text-[color:var(--color-neutral-600)]">No files chosen</p>
+          )}
         </div>
         <Input label="Reference/Transaction ID (optional)" placeholder="e.g. TXN-123456" />
       </div>

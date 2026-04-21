@@ -9,7 +9,30 @@ import PaymentSection from "@/components/PaymentSection";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { guestCourseService } from "@/lib/services/guest";
-import type { Course } from "@/lib/services/admin";
+import { CourseDiscountType, type Course } from "@/lib/services/admin";
+
+function toAmount(value: unknown): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function getDiscountPercent(course: Course): number {
+  const markedPrice = toAmount(course.markedPrice);
+  if (!course.isDiscountApplied || !markedPrice) return 0;
+
+  if (
+    course.discountType === CourseDiscountType.PERCENTAGE &&
+    course.discountValue
+  ) {
+    return Math.round(toAmount(course.discountValue));
+  }
+
+  if (course.discountType === CourseDiscountType.FLAT && course.discountValue) {
+    return Math.round((toAmount(course.discountValue) / markedPrice) * 100);
+  }
+
+  return 0;
+}
 
 export default function CheckoutContent() {
   const router = useRouter();
@@ -63,8 +86,18 @@ export default function CheckoutContent() {
     };
   }, [courseSlug, router]);
 
+  const isEnrollmentClosed = course
+    ? !course.lastEnrollmentDate ||
+      course.availableSeatCount <= 0 ||
+      new Date(course.lastEnrollmentDate) < new Date()
+    : false;
+
+  const unavailableMessage =
+    notFoundMessage ||
+    (isEnrollmentClosed ? "Enrollment for this course is currently closed." : "");
+
   useEffect(() => {
-    if (!notFoundMessage) return;
+    if (!unavailableMessage) return;
 
     setRedirectCountdown(10);
     const intervalId = window.setInterval(() => {
@@ -74,13 +107,13 @@ export default function CheckoutContent() {
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [notFoundMessage]);
+  }, [unavailableMessage]);
 
   useEffect(() => {
-    if (!notFoundMessage) return;
+    if (!unavailableMessage) return;
     if (redirectCountdown !== 0) return;
     router.replace("/courses");
-  }, [notFoundMessage, redirectCountdown, router]);
+  }, [unavailableMessage, redirectCountdown, router]);
 
   const courseTitle = useMemo(() => {
     if (isLoadingCourse) return "Loading…";
@@ -89,31 +122,58 @@ export default function CheckoutContent() {
 
   const orderTotal = useMemo(() => {
     if (!course) return 0;
-    return typeof course.sellingPrice === "number"
-      ? course.sellingPrice
-      : course.markedPrice;
+    const markedPrice = toAmount(course.markedPrice);
+    const sellingPrice = toAmount(course.sellingPrice);
+    return sellingPrice > 0 ? sellingPrice : markedPrice;
   }, [course]);
 
-  if (notFoundMessage) {
+  const discountPercent = useMemo(() => {
+    if (!course) return 0;
+    return getDiscountPercent(course);
+  }, [course]);
+
+  const markedPrice = useMemo(() => {
+    if (!course) return 0;
+    return toAmount(course.markedPrice);
+  }, [course]);
+
+  const discountAmount = useMemo(() => {
+    if (!course?.isDiscountApplied) return 0;
+    return Math.max(markedPrice - orderTotal, 0);
+  }, [course, markedPrice, orderTotal]);
+
+  if (unavailableMessage) {
     return (
       <main>
-        <Container className="py-10 md:py-16">
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="py-8 text-center space-y-3">
+        <Container className="py-12 md:py-20">
+          <Card className="max-w-2xl mx-auto border border-[color:var(--color-neutral-200)] shadow-sm">
+            <CardContent className="py-10 md:py-12 text-center">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--color-primary-50)] border border-[color:var(--color-primary-100)]">
+                <span className="text-lg font-semibold text-[color:var(--color-primary-700)]">
+                  !
+                </span>
+              </div>
               <h1
-                className="text-xl md:text-2xl font-semibold"
+                className="text-2xl md:text-3xl font-semibold tracking-tight"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
                 Course not available
               </h1>
-              <p className="text-sm text-[color:var(--color-neutral-700)]">
-                {notFoundMessage}
+              <p className="mx-auto mt-3 max-w-xl text-sm md:text-base leading-relaxed text-[color:var(--color-neutral-700)]">
+                {unavailableMessage}
               </p>
-              <p className="text-sm text-[color:var(--color-neutral-600)]">
-                Redirecting to courses in{" "}
-                <span className="font-semibold">{redirectCountdown}</span>{" "}
-                second{redirectCountdown === 1 ? "" : "s"}.
-              </p>
+              <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-[color:var(--color-neutral-100)] px-4 py-2 text-sm text-[color:var(--color-neutral-700)]">
+                <span>Redirecting in</span>
+                <span className="inline-flex min-w-7 justify-center rounded-full bg-white px-2 py-0.5 font-semibold text-[color:var(--color-primary-700)] border border-[color:var(--color-neutral-200)]">
+                  {redirectCountdown}
+                </span>
+                <span>second{redirectCountdown === 1 ? "" : "s"}</span>
+              </div>
+              <div className="mt-6">
+                <Button onClick={() => router.replace("/courses")}>
+                  Browse courses now
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </Container>
@@ -124,12 +184,17 @@ export default function CheckoutContent() {
   return (
     <main>
       <Container className="py-5 md:py-10">
-        <h1
-          className="text-xl md:text-2xl font-semibold mb-6"
-          style={{ fontFamily: "var(--font-heading-sans)" }}
-        >
-          Checkout
-        </h1>
+        <div className="mb-6">
+          <h1
+            className="text-xl md:text-2xl font-semibold"
+            style={{ fontFamily: "var(--font-heading-sans)" }}
+          >
+            Checkout
+          </h1>
+          <p className="hidden sm:block text-sm text-[color:var(--color-neutral-600)]">
+            Review your details and complete payment securely
+          </p>
+        </div>
         <div className="grid lg:grid-cols-[1fr_420px] gap-6 items-start">
           {/* Form */}
           <section>
@@ -191,8 +256,10 @@ export default function CheckoutContent() {
                   <PaymentSection />
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button className="w-full">Confirm enrollment</Button>
+              <CardFooter className="sm:flex sm:justify-end">
+                <Button className="w-full sm:w-auto sm:min-w-56">
+                  Confirm enrollment
+                </Button>
               </CardFooter>
             </Card>
           </section>
@@ -202,26 +269,71 @@ export default function CheckoutContent() {
             <Card>
               <CardContent className="py-5">
                 <h2 className="text-base font-semibold mb-3">Order summary</h2>
-                <div className="flex items-center justify-between text-sm py-2 border-b border-[color:var(--color-neutral-200)]">
-                  <span>{courseTitle}</span>
-                  <span>
-                    {isLoadingCourse
-                      ? "—"
-                      : `Rs ${orderTotal.toLocaleString()}`}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm py-2">
-                  <span>Total</span>
-                  <span className="font-semibold text-[color:var(--color-primary-700)]">
-                    {isLoadingCourse
-                      ? "—"
-                      : `Rs ${orderTotal.toLocaleString()}`}
-                  </span>
-                </div>
-                <p className="text-xs text-[color:var(--color-neutral-600)] mt-2">
-                  A confirmation email with course links will be sent after
-                  enrollment.
-                </p>
+                {isLoadingCourse ? (
+                  <div className="space-y-3 animate-pulse">
+                    <div className="grid grid-cols-[1fr_auto] items-start gap-x-3 py-2 border-b border-[color:var(--color-neutral-200)]">
+                      <div className="h-4 rounded bg-[color:var(--color-neutral-200)]" />
+                      <div className="h-4 w-16 rounded bg-[color:var(--color-neutral-200)]" />
+                    </div>
+                    <div className="py-2 border-b border-[color:var(--color-neutral-200)] space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="h-3 w-24 rounded bg-[color:var(--color-neutral-200)]" />
+                        <div className="h-3 w-14 rounded bg-[color:var(--color-neutral-200)]" />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="h-3 w-20 rounded bg-[color:var(--color-neutral-200)]" />
+                        <div className="h-3 w-14 rounded bg-[color:var(--color-neutral-200)]" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between py-2">
+                      <div className="h-4 w-10 rounded bg-[color:var(--color-neutral-200)]" />
+                      <div className="h-4 w-16 rounded bg-[color:var(--color-neutral-200)]" />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="h-3 w-full rounded bg-[color:var(--color-neutral-200)]" />
+                      <div className="h-3 w-4/5 rounded bg-[color:var(--color-neutral-200)]" />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-[1fr_auto] items-start gap-x-3 text-sm py-2 border-b border-[color:var(--color-neutral-200)]">
+                      <span className="min-w-0 break-words">{courseTitle}</span>
+                      <span className="font-medium whitespace-nowrap">
+                        {`Rs ${orderTotal.toLocaleString()}`}
+                      </span>
+                    </div>
+                    {course?.isDiscountApplied && (
+                      <div className="py-2 border-b border-[color:var(--color-neutral-200)] space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-[color:var(--color-neutral-600)]">
+                            Original price
+                          </span>
+                          <span className="line-through text-[color:var(--color-neutral-500)]">
+                            Rs {markedPrice.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-[color:var(--color-green-700)]">
+                            Discount ({discountPercent}%)
+                          </span>
+                          <span className="font-medium text-[color:var(--color-green-700)]">
+                            - Rs {discountAmount.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between text-sm py-2">
+                      <span>Total</span>
+                      <span className="font-semibold text-[color:var(--color-primary-700)]">
+                        {`Rs ${orderTotal.toLocaleString()}`}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[color:var(--color-neutral-600)] mt-2">
+                      A confirmation email with course links will be sent after
+                      enrollment.
+                    </p>
+                  </>
+                )}
               </CardContent>
             </Card>
           </aside>
