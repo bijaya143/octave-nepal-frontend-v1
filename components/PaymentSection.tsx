@@ -6,7 +6,16 @@ import Button from "./ui/Button";
 import { CircleCheck, X } from "lucide-react";
 import Carousel from "./ui/Carousel";
 
-type PaymentMethod = "qr" | "bank";
+import { PaymentMethod } from "@/lib/services/admin";
+
+interface PaymentSectionProps {
+  method: PaymentMethod;
+  setMethod: (method: PaymentMethod) => void;
+  selectedFiles: File[];
+  setSelectedFiles: (files: File[] | ((prev: File[]) => File[])) => void;
+  transactionId: string;
+  setTransactionId: (id: string) => void;
+}
 
 const qrOptions = [
   { id: "esewa", name: "eSewa", src: "/images/payments/qrs/qr2.jpg" },
@@ -21,10 +30,15 @@ const bankDetails = {
   swiftCode: "NARBNPKA",
 };
 
-export default function PaymentSection() {
-  const [method, setMethod] = React.useState<PaymentMethod>("qr");
+export default function PaymentSection({
+  method,
+  setMethod,
+  selectedFiles,
+  setSelectedFiles,
+  transactionId,
+  setTransactionId,
+}: PaymentSectionProps) {
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-  const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
 
   function getFileKey(file: File) {
     return `${file.name}-${file.size}-${file.lastModified}`;
@@ -36,7 +50,9 @@ export default function PaymentSection() {
     if (files.length === 0) return;
     setSelectedFiles((prev) => {
       const existingKeys = new Set(prev.map(getFileKey));
-      const newUniqueFiles = files.filter((file) => !existingKeys.has(getFileKey(file)));
+      const newUniqueFiles = files.filter(
+        (file) => !existingKeys.has(getFileKey(file)),
+      );
       return [...prev, ...newUniqueFiles];
     });
     // Allow choosing the same file again in a later selection.
@@ -44,7 +60,9 @@ export default function PaymentSection() {
   }
 
   function removeSelectedFile(indexToRemove: number) {
-    setSelectedFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
+    setSelectedFiles((prev) =>
+      prev.filter((_, index) => index !== indexToRemove),
+    );
   }
 
   function clearSelectedFiles() {
@@ -61,46 +79,58 @@ export default function PaymentSection() {
           type="button"
           className={
             "h-11 inline-flex items-center justify-center gap-2 rounded-lg border text-sm font-medium shadow-xs transition-all " +
-            (method === "qr"
+            (method === PaymentMethod.QR
               ? "border-[color:var(--color-primary-400)] bg-[color:var(--color-primary-50)] text-[color:var(--color-primary-700)]"
               : "border-[color:var(--color-neutral-200)] bg-white hover:bg-[color:var(--color-neutral-50)]")
           }
-          onClick={() => setMethod("qr")}
-          aria-pressed={method === "qr"}
+          onClick={() => setMethod(PaymentMethod.QR)}
+          aria-pressed={method === PaymentMethod.QR}
         >
-          {method === "qr" && <CircleCheck className="h-4 w-4" aria-hidden />}
+          {method === PaymentMethod.QR && (
+            <CircleCheck className="h-4 w-4" aria-hidden />
+          )}
           <span>QR Payment</span>
         </button>
         <button
           type="button"
           className={
             "h-11 inline-flex items-center justify-center gap-2 rounded-lg border text-sm font-medium shadow-xs transition-all " +
-            (method === "bank"
+            (method === PaymentMethod.BANK_TRANSFER
               ? "border-[color:var(--color-primary-400)] bg-[color:var(--color-primary-50)] text-[color:var(--color-primary-700)]"
               : "border-[color:var(--color-neutral-200)] bg-white hover:bg-[color:var(--color-neutral-50)]")
           }
-          onClick={() => setMethod("bank")}
-          aria-pressed={method === "bank"}
+          onClick={() => setMethod(PaymentMethod.BANK_TRANSFER)}
+          aria-pressed={method === PaymentMethod.BANK_TRANSFER}
         >
-          {method === "bank" && <CircleCheck className="h-4 w-4" aria-hidden />}
+          {method === PaymentMethod.BANK_TRANSFER && (
+            <CircleCheck className="h-4 w-4" aria-hidden />
+          )}
           <span>Bank Transfer</span>
         </button>
       </div>
 
-      {method === "qr" ? (
+      {method === PaymentMethod.QR ? (
         <div className="space-y-3">
-          <p className="text-sm text-[color:var(--color-neutral-700)]">Scan any of the QR codes below:</p>
+          <p className="text-sm text-[color:var(--color-neutral-700)]">
+            Scan any of the QR codes below:
+          </p>
           {/* Mobile: carousel */}
           <div className="sm:hidden">
-            <Carousel auto={false} showArrows={true} >
+            <Carousel auto={false} showArrows={true}>
               {qrOptions.map((qr) => (
                 <div key={qr.id} className="px-1">
                   <Card>
                     <CardContent className="py-4">
                       <div className="w-full flex items-center justify-center">
-                        <img src={qr.src} alt={`${qr.name} QR`} className="h-48 w-auto rounded-md object-contain" />
+                        <img
+                          src={qr.src}
+                          alt={`${qr.name} QR`}
+                          className="h-48 w-auto rounded-md object-contain"
+                        />
                       </div>
-                      <p className="mt-2 text-center text-xs text-[color:var(--color-neutral-600)]">{qr.name}</p>
+                      <p className="mt-2 text-center text-xs text-[color:var(--color-neutral-600)]">
+                        {qr.name}
+                      </p>
                     </CardContent>
                   </Card>
                 </div>
@@ -113,28 +143,41 @@ export default function PaymentSection() {
               <Card key={qr.id}>
                 <CardContent className="py-4">
                   <div className="w-full flex items-center justify-center">
-                    <img src={qr.src} alt={`${qr.name} QR`} className="h-56 w-auto rounded-md object-contain" />
+                    <img
+                      src={qr.src}
+                      alt={`${qr.name} QR`}
+                      className="h-56 w-auto rounded-md object-contain"
+                    />
                   </div>
-                  <p className="mt-2 text-center text-xs text-[color:var(--color-neutral-600)]">{qr.name}</p>
+                  <p className="mt-2 text-center text-xs text-[color:var(--color-neutral-600)]">
+                    {qr.name}
+                  </p>
                 </CardContent>
               </Card>
             ))}
           </div>
           <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-4 text-sm text-[color:var(--color-neutral-700)]">
-            After payment, please upload the receipt below so we can verify and confirm your enrollment.
+            After payment, please upload the receipt below so we can verify and
+            confirm your enrollment.
           </div>
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-sm text-[color:var(--color-neutral-700)]">Transfer to the following bank account:</p>
+          <p className="text-sm text-[color:var(--color-neutral-700)]">
+            Transfer to the following bank account:
+          </p>
           <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-4 text-sm">
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
               <div>
-                <dt className="text-[color:var(--color-neutral-600)]">Account name</dt>
+                <dt className="text-[color:var(--color-neutral-600)]">
+                  Account name
+                </dt>
                 <dd className="font-medium">{bankDetails.accountName}</dd>
               </div>
               <div>
-                <dt className="text-[color:var(--color-neutral-600)]">Account number</dt>
+                <dt className="text-[color:var(--color-neutral-600)]">
+                  Account number
+                </dt>
                 <dd className="font-medium">{bankDetails.accountNumber}</dd>
               </div>
               <div>
@@ -142,7 +185,9 @@ export default function PaymentSection() {
                 <dd className="font-medium">{bankDetails.bankName}</dd>
               </div>
               <div>
-                <dt className="text-[color:var(--color-neutral-600)]">Branch</dt>
+                <dt className="text-[color:var(--color-neutral-600)]">
+                  Branch
+                </dt>
                 <dd className="font-medium">{bankDetails.branch}</dd>
               </div>
               <div>
@@ -152,13 +197,19 @@ export default function PaymentSection() {
             </dl>
           </div>
           <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] p-3 text-xs text-[color:var(--color-neutral-700)]">
-            After transferring, please upload the receipt below so we can verify and confirm your enrollment faster.
+            After transferring, please upload the receipt below so we can verify
+            and confirm your enrollment faster.
           </div>
         </div>
       )}
 
       <div className="space-y-2">
-        <h4 className="text-sm font-medium">Upload payment receipt <span className="ml-1 text-red-600" aria-hidden>*</span></h4>
+        <h4 className="text-sm font-medium">
+          Upload payment receipt{" "}
+          <span className="ml-1 text-red-600" aria-hidden>
+            *
+          </span>
+        </h4>
         <div className="space-y-2">
           <input
             ref={fileInputRef}
@@ -210,13 +261,18 @@ export default function PaymentSection() {
               </ul>
             </div>
           ) : (
-            <p className="text-xs text-[color:var(--color-neutral-600)]">No files chosen</p>
+            <p className="text-xs text-[color:var(--color-neutral-600)]">
+              No files chosen
+            </p>
           )}
         </div>
-        <Input label="Reference/Transaction ID (optional)" placeholder="e.g. TXN-123456" />
+        <Input
+          label="Reference/Transaction ID (optional)"
+          placeholder="e.g. TXN-123456"
+          value={transactionId}
+          onChange={(e) => setTransactionId(e.target.value)}
+        />
       </div>
     </div>
   );
 }
-
-

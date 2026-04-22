@@ -6,10 +6,19 @@ import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Container from "@/components/Container";
 import PaymentSection from "@/components/PaymentSection";
-import { PhoneInput } from "react-international-phone";
+import { PhoneInput, usePhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { guestCourseService } from "@/lib/services/guest";
-import { CourseDiscountType, type Course } from "@/lib/services/admin";
+import {
+  CourseDiscountType,
+  PaymentMethod,
+  type Course,
+} from "@/lib/services/admin";
+import { guestEnrollmentService } from "@/lib/services/guest/enrollment";
+import { toast } from "sonner";
+import { CircleCheck } from "lucide-react";
+import { SITE_NAME } from "@/lib/constant";
+import { useStudentAuth } from "@/lib/hooks/useStudentAuth";
 
 function toAmount(value: unknown): number {
   const parsed = Number(value);
@@ -43,6 +52,11 @@ export default function CheckoutContent() {
   const [isLoadingCourse, setIsLoadingCourse] = useState(true);
   const [notFoundMessage, setNotFoundMessage] = useState("");
   const [redirectCountdown, setRedirectCountdown] = useState(10);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
+  const { user: studentUser, isAuthenticated: isStudentAuthenticated } =
+    useStudentAuth();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -50,6 +64,39 @@ export default function CheckoutContent() {
     email: "",
     phone: "",
   });
+
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    PaymentMethod.QR,
+  );
+  const [receipts, setReceipts] = useState<File[]>([]);
+  const [transactionId, setTransactionId] = useState("");
+
+  const { phone, country } = usePhoneInput({
+    defaultCountry: "np",
+    value: formData.phone,
+    onChange: (data) => {
+      setFormData((prev) => ({ ...prev, phone: data.phone }));
+    },
+  });
+
+  useEffect(() => {
+    if (isStudentAuthenticated && studentUser) {
+      const phoneCountryCode = studentUser.phoneCountryCode || "";
+      const phoneNumber = studentUser.phoneNumber || "";
+      const fullPhone =
+        phoneCountryCode && phoneNumber
+          ? `${phoneCountryCode}${phoneNumber}`
+          : "";
+
+      setFormData((prev) => ({
+        ...prev,
+        firstName: studentUser.firstName || prev.firstName,
+        lastName: studentUser.lastName || prev.lastName,
+        email: studentUser.email || prev.email,
+        phone: fullPhone || prev.phone,
+      }));
+    }
+  }, [isStudentAuthenticated, studentUser]);
 
   useEffect(() => {
     if (!courseSlug) {
@@ -94,7 +141,9 @@ export default function CheckoutContent() {
 
   const unavailableMessage =
     notFoundMessage ||
-    (isEnrollmentClosed ? "Enrollment for this course is currently closed." : "");
+    (isEnrollmentClosed
+      ? "Enrollment for this course is currently closed."
+      : "");
 
   useEffect(() => {
     if (!unavailableMessage) return;
@@ -141,6 +190,149 @@ export default function CheckoutContent() {
     if (!course?.isDiscountApplied) return 0;
     return Math.max(markedPrice - orderTotal, 0);
   }, [course, markedPrice, orderTotal]);
+
+  const handleEnrollmentConfirm = async () => {
+    if (!course) return;
+
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.phone
+    ) {
+      toast.error("Please fill in all student information fields.");
+      return;
+    }
+
+    if (receipts.length === 0) {
+      toast.error("Please upload at least one payment receipt.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Extract country code and number from phone using usePhoneInput metadata
+      const phoneCountryCode = `+${country.dialCode}`;
+      const phoneNumber = phone
+        .replace(phoneCountryCode, "")
+        .replace(/\D/g, "");
+
+      const res = await guestEnrollmentService.create({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phoneNumber: phoneNumber,
+        phoneCountryCode: phoneCountryCode,
+        courseId: course.id,
+        paymentMethod: paymentMethod,
+        transactionId: transactionId,
+        receipts: receipts,
+      });
+
+      if (res.success) {
+        toast.success(
+          res.message || "Enrollment request submitted successfully!",
+        );
+        setIsEnrolled(true);
+      } else {
+        toast.error(
+          res.error.message || "Failed to submit enrollment request.",
+        );
+      }
+    } catch (error) {
+      toast.error("An error occurred during enrollment. Please try again.");
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isEnrolled) {
+    return (
+      <main>
+        <Container className="py-8 md:py-12">
+          <Card className="max-w-2xl mx-auto border border-[color:var(--color-primary-200)] bg-[color:var(--color-primary-50)] shadow-sm">
+            <CardContent className="py-10 md:py-12 text-center">
+              <div className="hidden sm:flex mx-auto mb-5 h-16 w-16 items-center justify-center rounded-full bg-[color:var(--color-primary-100)] border border-[color:var(--color-primary-200)]">
+                <CircleCheck className="h-8 w-8 text-[color:var(--color-primary-600)]" />
+              </div>
+              <h1
+                className="text-2xl md:text-3xl font-semibold tracking-tight text-[color:var(--color-primary-900)]"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
+              >
+                Enrollment Submitted!
+              </h1>
+              <p className="mx-auto mt-4 max-w-xl text-sm md:text-base leading-relaxed text-[color:var(--color-primary-800)]">
+                Thank you for choosing {SITE_NAME}. Your enrollment request for{" "}
+                <span className="font-semibold">{courseTitle}</span> has been
+                received.
+              </p>
+              <div className="mt-8 rounded-lg bg-white p-5 border border-[color:var(--color-primary-200)] text-left shadow-xs">
+                <h3 className="text-sm font-semibold text-[color:var(--color-neutral-900)] mb-2">
+                  What happens next?
+                </h3>
+                <ul className="text-sm space-y-2 text-[color:var(--color-neutral-700)]">
+                  <li className="flex gap-2">
+                    <span className="text-[color:var(--color-primary-600)] font-bold">
+                      1.
+                    </span>
+                    <span>Our team will verify your payment receipt.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[color:var(--color-primary-600)] font-bold">
+                      2.
+                    </span>
+                    <span>
+                      You will receive a confirmation email or SMS once
+                      verified.
+                    </span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[color:var(--color-primary-600)] font-bold">
+                      3.
+                    </span>
+                    <span>
+                      Course materials and links will be shared in your
+                      dashboard.
+                    </span>
+                  </li>
+                </ul>
+                <div className="mt-4 pt-4 border-t border-[color:var(--color-neutral-100)]">
+                  <div className="p-3 rounded-lg bg-red-50 border border-red-100">
+                    <p className="text-xs text-red-800 leading-relaxed">
+                      <span className="font-semibold text-red-700">
+                        Important Note:
+                      </span>{" "}
+                      If this is your first time with us, your login credentials
+                      will be sent to your email. If you already have an
+                      account, simply log in or go to your dashboard to start
+                      learning once verified.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button
+                  className="w-full sm:w-auto"
+                  onClick={() => router.push("/courses")}
+                >
+                  Browse courses
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="w-full sm:w-auto"
+                  onClick={() => router.push("/dashboard")}
+                >
+                  Go to dashboard
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </Container>
+      </main>
+    );
+  }
 
   if (unavailableMessage) {
     return (
@@ -208,6 +400,7 @@ export default function CheckoutContent() {
                     label="First name"
                     placeholder="Octave"
                     required
+                    disabled={isStudentAuthenticated}
                     value={formData.firstName}
                     onChange={(e) =>
                       setFormData({ ...formData, firstName: e.target.value })
@@ -217,6 +410,7 @@ export default function CheckoutContent() {
                     label="Last name"
                     placeholder="Nepal"
                     required
+                    disabled={isStudentAuthenticated}
                     value={formData.lastName}
                     onChange={(e) =>
                       setFormData({ ...formData, lastName: e.target.value })
@@ -229,6 +423,7 @@ export default function CheckoutContent() {
                     type="email"
                     placeholder="info@octavenepal.com"
                     required
+                    disabled={isStudentAuthenticated}
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
@@ -253,12 +448,23 @@ export default function CheckoutContent() {
                 </div>
                 <div className="mt-4">
                   <h3 className="text-sm font-medium mb-2">Payment</h3>
-                  <PaymentSection />
+                  <PaymentSection
+                    method={paymentMethod}
+                    setMethod={setPaymentMethod}
+                    selectedFiles={receipts}
+                    setSelectedFiles={setReceipts}
+                    transactionId={transactionId}
+                    setTransactionId={setTransactionId}
+                  />
                 </div>
               </CardContent>
               <CardFooter className="sm:flex sm:justify-end">
-                <Button className="w-full sm:w-auto sm:min-w-56">
-                  Confirm enrollment
+                <Button
+                  className="w-full sm:w-auto sm:min-w-56"
+                  onClick={handleEnrollmentConfirm}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Submitting..." : "Confirm enrollment"}
                 </Button>
               </CardFooter>
             </Card>
