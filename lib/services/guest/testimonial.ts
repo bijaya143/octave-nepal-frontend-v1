@@ -25,7 +25,7 @@ export const list = async (
   }
 
   const queryString = params.toString();
-  const endpoint = `/testimonial${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/guest/testimonial${queryString ? `?${queryString}` : ""}`;
 
   return api.get<GuestTestimonialOutput>(endpoint);
 };
@@ -34,7 +34,7 @@ export const list = async (
  * Get a specific testimonial by ID
  */
 export const get = async (id: string): Promise<ApiResponse<Testimonial>> => {
-  const endpoint = `/testimonial/${id}`;
+  const endpoint = `/guest/testimonial/${id}`;
   return api.get<Testimonial>(endpoint);
 };
 

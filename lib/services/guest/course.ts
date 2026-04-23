@@ -25,7 +25,7 @@ export const list = async (
   }
 
   const queryString = params.toString();
-  const endpoint = `/course${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/guest/course${queryString ? `?${queryString}` : ""}`;
 
   return api.get<GuestCourseOutput>(endpoint);
 };
@@ -34,7 +34,7 @@ export const list = async (
  * Get a specific course by ID
  */
 export const get = async (id: string): Promise<ApiResponse<Course>> => {
-  const endpoint = `/course/${id}`;
+  const endpoint = `/guest/course/${id}`;
   return api.get<Course>(endpoint);
 };
 
@@ -42,7 +42,7 @@ export const get = async (id: string): Promise<ApiResponse<Course>> => {
  * Get a specific course by slug
  */
 export const getBySlug = async (slug: string): Promise<ApiResponse<Course>> => {
-  const endpoint = `/course/slug/${slug}`;
+  const endpoint = `/guest/course/slug/${slug}`;
   return api.get<Course>(endpoint);
 };
 

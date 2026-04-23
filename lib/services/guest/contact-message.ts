@@ -23,7 +23,7 @@ export interface CreateContactMessageInput {
 export const create = async (
   input: CreateContactMessageInput,
 ): Promise<ApiResponse<GuestCommonResponseData>> => {
-  return api.post<GuestCommonResponseData>("/contact-message", input);
+  return api.post<GuestCommonResponseData>("/guest/contact-message", input);
 };
 
 /**

@@ -25,7 +25,7 @@ export const list = async (
   }
 
   const queryString = params.toString();
-  const endpoint = `/category${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/guest/category${queryString ? `?${queryString}` : ""}`;
 
   return api.get<GuestCategoryOutput>(endpoint);
 };
@@ -34,7 +34,7 @@ export const list = async (
  * Get a specific category by ID
  */
 export const get = async (id: string): Promise<ApiResponse<Category>> => {
-  const endpoint = `/category/${id}`;
+  const endpoint = `/guest/category/${id}`;
   return api.get<Category>(endpoint);
 };
 
@@ -44,7 +44,7 @@ export const get = async (id: string): Promise<ApiResponse<Category>> => {
 export const getBySlug = async (
   slug: string,
 ): Promise<ApiResponse<Category>> => {
-  const endpoint = `/category/slug/${slug}`;
+  const endpoint = `/guest/category/slug/${slug}`;
   return api.get<Category>(endpoint);
 };
 

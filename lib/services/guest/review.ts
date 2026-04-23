@@ -25,7 +25,7 @@ export const list = async (
   }
 
   const queryString = params.toString();
-  const endpoint = `/review${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/guest/review${queryString ? `?${queryString}` : ""}`;
 
   return api.get<GuestReviewOutput>(endpoint);
 };

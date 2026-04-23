@@ -21,7 +21,7 @@ export const subscribe = async (
   input: CreateNewsletterSubscriberInput,
 ): Promise<ApiResponse<GuestCommonResponseData>> => {
   return api.post<GuestCommonResponseData>(
-    "/newsletter-subscriber/subscribe",
+    "/guest/newsletter-subscriber/subscribe",
     input,
   );
 };
@@ -33,7 +33,7 @@ export const unsubscribe = async (
   input: CreateNewsletterSubscriberInput,
 ): Promise<ApiResponse<GuestCommonResponseData>> => {
   return api.post<GuestCommonResponseData>(
-    "/newsletter-subscriber/unsubscribe",
+    "/guest/newsletter-subscriber/unsubscribe",
     input,
   );
 };
