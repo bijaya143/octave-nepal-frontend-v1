@@ -98,100 +98,102 @@ export default function TeamContent() {
             </div>
 
             {/* Instructors */}
-            <div className="mt-12 md:mt-14">
-              <div className="mb-3">
-                <Badge variant="outline">Instructors</Badge>
-              </div>
-              <h2
-                className="text-xl md:text-2xl font-semibold"
-                style={{ fontFamily: "var(--font-heading-sans)" }}
-              >
-                Learn from practitioners
-              </h2>
-              <p className="mt-1 text-sm text-[color:var(--color-neutral-600)]">
-                Expert mentors with real-world experience and clear teaching
-                styles.
-              </p>
+            {instructors.length > 0 && (
+              <div className="mt-12 md:mt-14">
+                <div className="mb-3">
+                  <Badge variant="outline">Instructors</Badge>
+                </div>
+                <h2
+                  className="text-xl md:text-2xl font-semibold"
+                  style={{ fontFamily: "var(--font-heading-sans)" }}
+                >
+                  Learn from practitioners
+                </h2>
+                <p className="mt-1 text-sm text-[color:var(--color-neutral-600)]">
+                  Expert mentors with real-world experience and clear teaching
+                  styles.
+                </p>
 
-              <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
-                {instructors.map((m, i) => (
-                  <motion.div
-                    key={m.name}
-                    initial={{ opacity: 0, y: 14 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.45, delay: i * 0.05 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    className="group h-full"
-                  >
-                    <div className="relative h-full rounded-2xl p-[1px] bg-gradient-to-br from-[rgba(99,102,241,0.25)] via-[rgba(59,130,246,0.22)] to-[rgba(16,185,129,0.22)]">
-                      <Card className="h-full p-0 overflow-hidden rounded-2xl border-transparent bg-white/95 backdrop-blur-sm shadow-sm">
-                        <div className="relative h-[13.5rem] sm:h-[15.5rem] md:h-[16rem] w-full">
-                          <Image
-                            src={m.image}
-                            alt={`${m.name} portrait`}
-                            fill
-                            sizes="(max-width: 1280px) 100vw, 25vw"
-                            className="object-cover"
-                          />
-                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 opacity-50" />
-                          <div className="pointer-events-none absolute -top-10 -left-10 h-28 w-28 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.22),transparent_60%)] blur-xl" />
-                        </div>
-                        <CardContent className="px-3 sm:px-6 py-3.5 sm:py-5">
-                          <div
-                            className="text-sm sm:text-base md:text-lg font-semibold"
-                            style={{ fontFamily: "var(--font-heading-sans)" }}
-                          >
-                            {m.name}
+                <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+                  {instructors.map((m, i) => (
+                    <motion.div
+                      key={m.name}
+                      initial={{ opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.45, delay: i * 0.05 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      className="group h-full"
+                    >
+                      <div className="relative h-full rounded-2xl p-[1px] bg-gradient-to-br from-[rgba(99,102,241,0.25)] via-[rgba(59,130,246,0.22)] to-[rgba(16,185,129,0.22)]">
+                        <Card className="h-full p-0 overflow-hidden rounded-2xl border-transparent bg-white/95 backdrop-blur-sm shadow-sm">
+                          <div className="relative h-[13.5rem] sm:h-[15.5rem] md:h-[16rem] w-full">
+                            <Image
+                              src={m.image}
+                              alt={`${m.name} portrait`}
+                              fill
+                              sizes="(max-width: 1280px) 100vw, 25vw"
+                              className="object-cover"
+                            />
+                            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 opacity-50" />
+                            <div className="pointer-events-none absolute -top-10 -left-10 h-28 w-28 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.22),transparent_60%)] blur-xl" />
                           </div>
-                          <div className="text-[11px] sm:text-xs text-[color:var(--color-primary-700)] mt-0.5 sm:mt-1">
-                            {m.role}
-                          </div>
-                          {/* <div className="h-px bg-[color:var(--color-neutral-200)] my-4" /> */}
-                          <div className="mt-2.5 rounded-lg border border-[color:var(--color-neutral-200)]/70 bg-[color:var(--color-neutral-50)]/60 px-2.5 sm:px-3 py-1.5 sm:py-2 flex flex-wrap items-center gap-1.5 sm:gap-2">
-                            {m.socials?.linkedin && (
-                              <Link
-                                href={m.socials.linkedin}
-                                aria-label={`${m.name} on LinkedIn`}
-                                className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
-                              >
-                                <Linkedin className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              </Link>
-                            )}
-                            {m.socials?.twitter && (
-                              <Link
-                                href={m.socials.twitter}
-                                aria-label={`${m.name} on X/Twitter`}
-                                className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
-                              >
-                                <Twitter className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              </Link>
-                            )}
-                            {m.socials?.github && (
-                              <Link
-                                href={m.socials.github}
-                                aria-label={`${m.name} on GitHub`}
-                                className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
-                              >
-                                <Github className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              </Link>
-                            )}
-                            {m.socials?.email && (
-                              <Link
-                                href={m.socials.email}
-                                aria-label={`Email ${m.name}`}
-                                className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
-                              >
-                                <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              </Link>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </motion.div>
-                ))}
+                          <CardContent className="px-3 sm:px-6 py-3.5 sm:py-5">
+                            <div
+                              className="text-sm sm:text-base md:text-lg font-semibold"
+                              style={{ fontFamily: "var(--font-heading-sans)" }}
+                            >
+                              {m.name}
+                            </div>
+                            <div className="text-[11px] sm:text-xs text-[color:var(--color-primary-700)] mt-0.5 sm:mt-1">
+                              {m.role}
+                            </div>
+                            {/* <div className="h-px bg-[color:var(--color-neutral-200)] my-4" /> */}
+                            <div className="mt-2.5 rounded-lg border border-[color:var(--color-neutral-200)]/70 bg-[color:var(--color-neutral-50)]/60 px-2.5 sm:px-3 py-1.5 sm:py-2 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                              {m.socials?.linkedin && (
+                                <Link
+                                  href={m.socials.linkedin}
+                                  aria-label={`${m.name} on LinkedIn`}
+                                  className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                >
+                                  <Linkedin className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                </Link>
+                              )}
+                              {m.socials?.twitter && (
+                                <Link
+                                  href={m.socials.twitter}
+                                  aria-label={`${m.name} on X/Twitter`}
+                                  className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                >
+                                  <Twitter className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                </Link>
+                              )}
+                              {m.socials?.github && (
+                                <Link
+                                  href={m.socials.github}
+                                  aria-label={`${m.name} on GitHub`}
+                                  className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                >
+                                  <Github className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                </Link>
+                              )}
+                              {m.socials?.email && (
+                                <Link
+                                  href={m.socials.email}
+                                  aria-label={`Email ${m.name}`}
+                                  className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                >
+                                  <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                </Link>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* CTA */}
             <div className="mt-12 md:mt-14">
