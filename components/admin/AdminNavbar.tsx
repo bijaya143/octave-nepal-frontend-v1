@@ -1,12 +1,14 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Button from "../ui/Button";
 import Container from "../Container";
-import { Menu, X, User, Settings, LogOut, Shield, Lock } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Lock } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAdminAuth } from "@/lib/hooks/useAdminAuth";
 import { getUserType } from "@/lib/utils/auth";
+import { SITE_NAME } from "@/lib/constant";
 
 export default function AdminNavbar() {
   const [open, setOpen] = React.useState(false);
@@ -137,7 +139,15 @@ export default function AdminNavbar() {
               href={isLoggedIn ? "/admin" : "/admin/login"}
               className="flex items-center gap-2"
             >
-              <Shield className="h-6 w-6 text-[color:var(--color-primary-600)]" />
+              <div className="relative h-8 w-8">
+                <Image
+                  src="/images/logo/octave-nepal-only-logo-transparent.png"
+                  alt={`${SITE_NAME} Logo`}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
               <span
                 className="font-semibold text-lg tracking-tight"
                 style={{ fontFamily: "var(--font-heading-sans)" }}

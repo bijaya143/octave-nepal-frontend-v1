@@ -69,7 +69,15 @@ export default function Footer() {
               href="/"
               className="inline-flex items-center gap-2.5 mb-3 group"
             >
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[color:var(--color-primary-500)] to-[color:var(--color-primary-700)] shadow-sm group-hover:shadow-md transition-shadow" />
+              <div className="relative h-8 w-8">
+                <Image
+                  src="/images/logo/octave-nepal-only-logo-transparent.png"
+                  alt={`${SITE_NAME} Logo`}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
               <span
                 className="text-base font-bold tracking-tight"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
@@ -144,7 +152,10 @@ export default function Footer() {
                   href="mailto:hello@octavenepal.com"
                   className="inline-flex items-center gap-2 text-[color:var(--color-neutral-700)] hover:text-[color:var(--color-primary-700)] transition-colors break-all"
                 >
-                  <Mail className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]" aria-hidden />
+                  <Mail
+                    className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]"
+                    aria-hidden
+                  />
                   hello@octavenepal.com
                 </a>
               </li>
@@ -153,12 +164,18 @@ export default function Footer() {
                   href="tel:+9779800000000"
                   className="inline-flex items-center gap-2 text-[color:var(--color-neutral-700)] hover:text-[color:var(--color-primary-700)] transition-colors"
                 >
-                  <Phone className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]" aria-hidden />
+                  <Phone
+                    className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]"
+                    aria-hidden
+                  />
                   +977 980-0000000
                 </a>
               </li>
               <li className="inline-flex items-center gap-2 text-[color:var(--color-neutral-500)]">
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]" aria-hidden />
+                <MapPin
+                  className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]"
+                  aria-hidden
+                />
                 Jawalakhel, Lalitpur
               </li>
             </ul>

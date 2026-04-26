@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Button from "./ui/Button";
 import {
   Menu,
@@ -150,7 +151,15 @@ export default function Navbar() {
         <div className="h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6 lg:gap-10">
             <Link href="/" className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-[color:var(--color-primary-600)]"></div>
+              <div className="relative h-8 w-8">
+                <Image
+                  src="/images/logo/octave-nepal-only-logo-transparent.png"
+                  alt={`${SITE_NAME} Logo`}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
               <span
                 className="font-semibold text-lg tracking-tight"
                 style={{ fontFamily: "var(--font-heading-sans)" }}

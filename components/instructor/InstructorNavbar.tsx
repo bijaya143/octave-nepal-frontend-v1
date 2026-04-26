@@ -1,13 +1,15 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Button from "../ui/Button";
 import Container from "../Container";
-import { Menu, X, User, Settings, LogOut, School, Lock } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Lock } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useInstructorAuth } from "@/lib/hooks/useInstructorAuth";
 import { getUserType } from "@/lib/utils/auth";
 import { cn } from "@/lib/cn";
+import { SITE_NAME } from "@/lib/constant";
 
 // Will have to add annoucements and payouts in near future
 const navItems = [{ label: "Courses", href: "/instructor/courses" }];
@@ -150,7 +152,15 @@ export default function InstructorNavbar() {
               href={isLoggedIn ? "/instructor/dashboard" : "/instructor/login"}
               className="flex items-center gap-2"
             >
-              <School className="h-6 w-6 text-[color:var(--color-primary-600)]" />
+              <div className="relative h-8 w-8">
+                <Image
+                  src="/images/logo/octave-nepal-only-logo-transparent.png"
+                  alt={`${SITE_NAME} Logo`}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
               <span
                 className="font-semibold text-lg tracking-tight"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
