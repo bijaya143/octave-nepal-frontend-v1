@@ -1,4 +1,4 @@
-import { Hammer, Users, Wallet } from "lucide-react";
+import { BrainCircuit, Hammer, Star, Users, Wallet } from "lucide-react";
 import Container from "../../components/Container";
 import Card, { CardContent } from "../../components/ui/Card";
 import { SITE_NAME } from "@/lib/constant";
@@ -22,8 +22,8 @@ export default function PostHeroBanner() {
                 Learn with Community, Build with Mentors, Grow with Confidence
               </h2>
               <p className="mt-2 text-sm text-[color:var(--color-neutral-600)]">
-                Live cohorts, project‑first learning and local payment support.
-                Made for ambitious learners in Nepal.
+                Live cohorts, AI-Powered course recommendations and local
+                payment support. Made for ambitious learners in Nepal.
               </p>
             </div>
             <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-5 text-sm">
@@ -32,21 +32,21 @@ export default function PostHeroBanner() {
                   size={16}
                   className="text-[color:var(--color-primary-700)]"
                 />
-                <span>Community support</span>
+                <span>Community Support</span>
               </div>
               <div className="flex items-center justify-center gap-2 rounded-lg border border-black/5 bg-white/80 backdrop-blur px-4 py-2">
-                <Hammer
+                <BrainCircuit
                   size={16}
                   className="text-[color:var(--color-primary-700)]"
                 />
-                <span>Project‑first learning</span>
+                <span>AI-Powered Learning</span>
               </div>
               <div className="flex items-center justify-center gap-2 rounded-lg border border-black/5 bg-white/80 backdrop-blur px-4 py-2">
                 <Wallet
                   size={16}
                   className="text-[color:var(--color-primary-700)]"
                 />
-                <span>Easy local payments</span>
+                <span>Easy Local Payments</span>
               </div>
             </div>
           </CardContent>

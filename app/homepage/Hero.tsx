@@ -16,14 +16,22 @@ export default function Hero() {
               style={{ fontFamily: "var(--font-heading-sans)" }}
             >
               <span className="block sm:hidden">
-                Turn Curiosity into a Career
+                Nepal's First <span className="gradient-text">AI-Powered</span>{" "}
+                Online Learning Platform
               </span>
-              <div className="hidden sm:block">
+              <span className="hidden md:block lg:hidden text-xl md:text-2xl lg:text-3xl">
+                Nepal's First <span className="gradient-text">AI-Powered</span>{" "}
+                Online Learning Platform.
+              </span>
+              <div className="hidden lg:block">
                 <span className="block">
-                  Real <span className="gradient-text">Mentors</span>.
+                  Nepal's First{" "}
+                  <span className="gradient-text">AI-Powered</span> Online
+                  Learning Platform.
                 </span>
                 <span className="block">
-                  Real <span className="gradient-text">Deadlines</span>.
+                  Personalized{" "}
+                  <span className="gradient-text">AI Guidance</span>.
                 </span>
                 <span className="block">
                   Real <span className="gradient-text">Results</span>.
@@ -55,7 +63,7 @@ export default function Hero() {
           <div>
             <Card className="p-0 overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1600&q=80"
+                src="/images/hero/hero.png"
                 alt="Learning hero"
                 width={1600}
                 height={900}
@@ -65,7 +73,7 @@ export default function Hero() {
               />
               <CardContent className="py-5">
                 <p className="text-sm text-[color:var(--color-neutral-600)]">
-                  Trusted by 10k+ learners worldwide
+                  Trusted by 1k+ learners worldwide
                 </p>
               </CardContent>
             </Card>
