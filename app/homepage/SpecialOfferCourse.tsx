@@ -200,7 +200,7 @@ export default function SpecialOfferCourse() {
                         fill
                         sizes="(max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 16vw"
                         className="object-cover"
-                        unoptimized
+                        // unoptimized
                       />
                       {course.isDiscountApplied && discountPercent > 0 && (
                         <div className="absolute left-3 top-3">

@@ -95,7 +95,7 @@ export default function FeaturedTestimonial() {
                         width={40}
                         height={40}
                         className="h-10 w-10 rounded-full object-cover"
-                        unoptimized
+                        // unoptimized
                       />
                       <div>
                         <div className="text-sm font-medium">{t.fullName}</div>

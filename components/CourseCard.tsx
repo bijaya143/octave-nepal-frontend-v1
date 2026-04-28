@@ -43,7 +43,7 @@ export default function CourseCard({ course }: { course: Course }) {
           fill
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
           className="object-cover"
-          unoptimized
+          // unoptimized
           onError={(e) => {
             e.currentTarget.src = "/images/thumb-3.svg";
           }}
@@ -71,7 +71,7 @@ export default function CourseCard({ course }: { course: Course }) {
                 width={18}
                 height={18}
                 className="h-[18px] w-[18px] rounded-full object-cover"
-                unoptimized
+                // unoptimized
                 onError={(e) => {
                   e.currentTarget.src = "/images/thumb-3.svg";
                 }}

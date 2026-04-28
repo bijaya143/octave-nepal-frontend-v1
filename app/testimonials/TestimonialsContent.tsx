@@ -120,7 +120,7 @@ function SimpleTestimonials({
                     width={44}
                     height={44}
                     className="h-11 w-11 rounded-full object-cover"
-                    unoptimized
+                    // unoptimized
                   />
                   <div className="flex flex-col">
                     <span className="text-sm font-medium">{t.fullName}</span>

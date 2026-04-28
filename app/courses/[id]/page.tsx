@@ -251,7 +251,7 @@ export default function CourseDetailPage() {
                   width={24}
                   height={24}
                   className="h-6 w-6 rounded-full object-cover border border-[color:var(--color-neutral-200)]"
-                  unoptimized
+                  // unoptimized
                 />
                 By {instructorName}
               </span>
@@ -348,7 +348,7 @@ export default function CourseDetailPage() {
                   fill
                   sizes="(min-width: 1024px) 66vw, 100vw"
                   className="object-cover"
-                  unoptimized
+                  // unoptimized
                 />
               </div>
             </Card>
@@ -669,7 +669,7 @@ export default function CourseDetailPage() {
                                   width={36}
                                   height={36}
                                   className="h-9 w-9 rounded-full object-cover shrink-0"
-                                  unoptimized
+                                  // unoptimized
                                 />
                                 <span className="text-sm font-semibold text-[color:var(--color-neutral-900)] truncate">
                                   {studentName}

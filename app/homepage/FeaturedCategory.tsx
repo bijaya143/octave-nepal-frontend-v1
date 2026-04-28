@@ -83,7 +83,7 @@ export default function FeaturedCategory() {
                             alt={`${cat.name} icon`}
                             width={24}
                             height={24}
-                            unoptimized
+                            // unoptimized
                           />
                         </div>
                         <span className="text-sm font-medium text-white/95 px-2 py-0.5 rounded bg-black/35">
