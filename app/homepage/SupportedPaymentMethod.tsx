@@ -5,41 +5,51 @@ export default function SupportPaymentMethod() {
   return (
     <section id="payments" className="mt-12 md:mt-16 mb-20">
       <Container>
-        <div className="flex items-end justify-between mb-4">
-          <h2
-            className="text-xl md:text-2xl font-semibold"
-            style={{ fontFamily: "var(--font-heading-sans)" }}
-          >
-            Supported payment methods
-          </h2>
-          <span className="hidden sm:inline text-sm text-[color:var(--color-neutral-600)]">
-            Secure payments powered by trusted providers
-          </span>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-8">
+          <div>
+            <h2
+              className="text-2xl md:text-3xl font-bold tracking-tight text-foreground"
+              style={{ fontFamily: "var(--font-heading-sans)" }}
+            >
+              Supported payment methods
+            </h2>
+            <p className="text-sm text-foreground/70 mt-1">
+              Secure payments powered by trusted providers
+            </p>
+          </div>
+          <div className="hidden md:block">
+            <p className="text-xs font-medium text-foreground/50 uppercase tracking-wider">
+              100% Secure Transaction
+            </p>
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 justify-items-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {[
             { name: "eSewa", src: "/images/payments/esewa.png" },
             { name: "Khalti", src: "/images/payments/khalti.png" },
             { name: "Fonepay", src: "/images/payments/fonepay.png" },
-            { name: "Visa", src: "/images/payments/visa.png" },
-            { name: "Mastercard", src: "/images/payments/mastercard.png" },
+            {
+              name: "Bank Transfer",
+              src: "/images/payments/bank-transfer.png",
+            },
           ].map((m) => (
             <div
               key={m.name}
-              className="flex h-16 w-full items-center justify-center rounded-lg border border-black/5 bg-white/95 backdrop-blur-sm px-3 py-2 hover:shadow-sm transition"
+              className="flex h-20 w-full items-center justify-center rounded-xl border border-neutral-100 bg-white p-4"
             >
               <Image
                 src={m.src}
                 alt={`${m.name} logo`}
-                width={96}
-                height={32}
-                className="h-8 w-auto object-contain"
+                width={120}
+                height={40}
+                className="h-10 w-auto object-contain"
               />
             </div>
           ))}
         </div>
-        <p className="text-xs text-[color:var(--color-neutral-600)] mt-3">
-          We support local wallets and international cards.
+        <p className="text-sm text-foreground/70 mt-6 text-center md:text-left">
+          We support major local wallets, bank transfers, and international
+          cards for your convenience.
         </p>
       </Container>
     </section>

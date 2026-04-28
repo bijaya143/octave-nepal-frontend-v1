@@ -13,7 +13,8 @@ import { Testimonial } from "@/lib/services/admin";
 function SkeletonCard() {
   return (
     <Card className="relative overflow-hidden p-0 border border-black/5 bg-white/95 backdrop-blur-sm animate-pulse">
-      <CardContent className="py-5">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.08),transparent_60%)]" />
+      <CardContent className="relative py-5">
         <div className="flex items-center gap-3 mb-3">
           <div className="h-10 w-10 rounded-full bg-[color:var(--color-neutral-200)]" />
           <div className="flex-1">
@@ -81,7 +82,8 @@ export default function FeaturedTestimonial() {
                   key={t.id}
                   className="relative overflow-hidden p-0 border border-black/5 bg-white/95 backdrop-blur-sm transition-shadow hover:shadow-lg"
                 >
-                  <CardContent className="py-5">
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.08),transparent_60%)]" />
+                  <CardContent className="relative py-5">
                     <div className="flex items-center gap-3 mb-3">
                       <Image
                         src={
@@ -106,7 +108,7 @@ export default function FeaturedTestimonial() {
                       </div>
                     </div>
                     <Rating value={t.rating} />
-                    <p className="text-sm leading-relaxed mt-3">
+                    <p className="text-sm leading-relaxed mt-3 italic">
                       {t.message ? `“${t.message}”` : ""}
                     </p>
                   </CardContent>
