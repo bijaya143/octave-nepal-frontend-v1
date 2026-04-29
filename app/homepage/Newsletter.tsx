@@ -37,7 +37,7 @@ export default function Newsletter() {
   }
 
   return (
-    <section id="newsletter" className="mt-6 md:mt-10 mb-8">
+    <section id="newsletter" className="mt-12 md:mt-16 mb-8">
       <Container>
         <Card className="relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.08),transparent_60%)]" />

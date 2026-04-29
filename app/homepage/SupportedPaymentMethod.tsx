@@ -3,17 +3,17 @@ import Container from "../../components/Container";
 
 export default function SupportPaymentMethod() {
   return (
-    <section id="payments" className="mt-12 md:mt-16 mb-20">
+    <section id="payments" className="mt-12 md:mt-16">
       <Container>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-4">
           <div>
             <h2
-              className="text-2xl md:text-3xl font-bold tracking-tight text-foreground"
+              className="text-xl md:text-2xl font-semibold"
               style={{ fontFamily: "var(--font-heading-sans)" }}
             >
               Supported payment methods
             </h2>
-            <p className="text-sm text-foreground/70 mt-1">
+            <p className="hidden sm:block text-sm text-foreground/70 mt-1">
               Secure payments powered by trusted providers
             </p>
           </div>
@@ -42,7 +42,7 @@ export default function SupportPaymentMethod() {
                 alt={`${m.name} logo`}
                 width={120}
                 height={40}
-                className="h-10 w-auto object-contain"
+                className="h-6 md:h-8 lg:h-8 w-auto object-contain"
               />
             </div>
           ))}

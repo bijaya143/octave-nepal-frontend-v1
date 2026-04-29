@@ -58,7 +58,7 @@ export default function FeaturedCategory() {
           className="text-xl md:text-2xl font-semibold mb-4"
           style={{ fontFamily: "var(--font-heading-sans)" }}
         >
-          Popular categories
+          Popular Categories
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {loading

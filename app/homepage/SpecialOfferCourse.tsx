@@ -142,7 +142,7 @@ export default function SpecialOfferCourse() {
               className="text-xl md:text-2xl font-semibold"
               style={{ fontFamily: "var(--font-heading-sans)" }}
             >
-              Special offers
+              Special Offers
             </h2>
             <p className="hidden sm:block text-sm text-[color:var(--color-neutral-600)] mt-1">
               Live cohorts starting soon · Limited seats

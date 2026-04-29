@@ -9,7 +9,12 @@ type CarouselProps = {
   showArrows?: boolean;
 };
 
-export default function Carousel({ children, auto = true, intervalMs = 4000, showArrows = true }: CarouselProps) {
+export default function Carousel({
+  children,
+  auto = true,
+  intervalMs = 4000,
+  showArrows = true,
+}: CarouselProps) {
   const [index, setIndex] = React.useState(0);
   const count = React.Children.count(children);
   const go = (i: number) => setIndex((prev) => (i + count) % count);
@@ -75,8 +80,20 @@ export default function Carousel({ children, auto = true, intervalMs = 4000, sho
               className="absolute left-2 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full border border-black/10 bg-white/90 backdrop-blur text-[color:var(--color-primary-700)] shadow hover:bg-white focus:outline-none"
             >
               {/* Left arrow */}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15 18l-6-6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
             <button
@@ -86,28 +103,42 @@ export default function Carousel({ children, auto = true, intervalMs = 4000, sho
               className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full border border-black/10 bg-white/90 backdrop-blur text-[color:var(--color-primary-700)] shadow hover:bg-white focus:outline-none"
             >
               {/* Right arrow */}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 6l6 6-6 6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           </>
         )}
       </div>
-      <div className="mt-3 flex items-center justify-center gap-2">
-        {Array.from({ length: count }).map((_, i) => (
-          <button
-            key={i}
-            className={cn(
-              "h-2.5 w-2.5 rounded-full border border-[color:var(--color-primary-300)]",
-              i === index ? "bg-[color:var(--color-primary-500)]" : "bg-white"
-            )}
-            onClick={() => go(i)}
-            aria-label={`Slide ${i + 1}`}
-          />
-        ))}
-      </div>
+      {count > 1 && (
+        <div className="mt-3 flex items-center justify-center gap-2">
+          {Array.from({ length: count }).map((_, i) => (
+            <button
+              key={i}
+              className={cn(
+                "h-2.5 w-2.5 rounded-full border border-[color:var(--color-primary-300)]",
+                i === index
+                  ? "bg-[color:var(--color-primary-500)]"
+                  : "bg-white",
+              )}
+              onClick={() => go(i)}
+              aria-label={`Slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
-
-

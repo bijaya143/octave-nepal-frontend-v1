@@ -120,7 +120,7 @@ export default function FeaturedCourse() {
             className="text-xl md:text-2xl font-semibold"
             style={{ fontFamily: "var(--font-heading-sans)" }}
           >
-            Featured courses
+            Featured Courses
           </h2>
           <Link
             href="/courses"

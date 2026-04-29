@@ -61,7 +61,7 @@ export default function FeaturedTestimonial() {
   }
 
   return (
-    <section id="testimonials" className="mt-12 md:mt-16 mb-16">
+    <section id="testimonials" className="mt-12 md:mt-16">
       <Container>
         <div className="flex items-end justify-between mb-4">
           <h2
