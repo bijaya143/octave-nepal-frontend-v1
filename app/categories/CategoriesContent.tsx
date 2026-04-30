@@ -40,10 +40,10 @@ function CategorySkeleton() {
         <div className="flex items-start">
           <div className="h-5 w-1/2 rounded bg-[color:var(--color-neutral-200)]" />
         </div>
-        <div className="mt-4 grid grid-cols-3 gap-1.5 lg:gap-2">
-          <div className="h-12 lg:h-20 rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
-          <div className="h-12 lg:h-20 rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
-          <div className="h-12 lg:h-20 rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
+        <div className="mt-4 grid grid-cols-3 gap-1.5 md:gap-2 lg:gap-2">
+          <div className="h-14 md:h-12 lg:h-20 rounded-lg md:rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
+          <div className="h-14 md:h-12 lg:h-20 rounded-lg md:rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
+          <div className="h-14 md:h-12 lg:h-20 rounded-lg md:rounded-lg lg:rounded-xl border border-black/5 bg-[color:var(--color-neutral-100)]" />
         </div>
         <div className="mt-3 flex flex-wrap gap-1.5">
           <div className="h-6 w-12 rounded bg-[color:var(--color-neutral-200)]" />
@@ -282,46 +282,45 @@ export default function CategoriesContent() {
                       </div>
                     </div>
 
-                    {/* Quick Stats */}
                     {/* Quick Stats Grid - Responsive Layout */}
-                    <div className="mt-4 grid grid-cols-3 gap-1.5 lg:gap-2">
-                      <div className="flex flex-row lg:flex-col items-center gap-2 lg:gap-1 p-1.5 lg:p-2.5 rounded-lg lg:rounded-xl bg-blue-50 border border-blue-100 group/stat hover:bg-blue-100/50 transition-colors duration-300">
-                        <div className="flex-shrink-0 h-6 w-6 lg:h-7 lg:w-7 rounded-md lg:rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs lg:shadow-sm lg:mb-1">
-                          <BookOpen className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                    <div className="mt-4 grid grid-cols-3 gap-1.5 md:gap-2 lg:gap-2">
+                      <div className="flex flex-col md:flex-row lg:flex-col items-center md:gap-2 lg:gap-1 p-2 md:p-2.5 lg:p-2.5 rounded-lg md:rounded-lg lg:rounded-xl bg-blue-50 border border-blue-100 group/stat hover:bg-blue-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-7 w-7 md:h-6 md:w-6 lg:h-7 lg:w-7 rounded-lg md:rounded-md lg:rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs md:shadow-xs lg:shadow-sm md:mb-0 lg:mb-1">
+                          <BookOpen className="w-3.5 h-3.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5" />
                         </div>
-                        <div className="flex flex-col min-w-0 lg:items-center lg:text-center">
-                          <span className="text-[11px] lg:text-xs font-bold text-blue-900 leading-none truncate">
+                        <div className="flex flex-col items-center md:items-start lg:items-center text-center md:text-left lg:text-center min-w-0 mt-1 md:mt-0 lg:mt-0">
+                          <span className="text-xs md:text-[11px] lg:text-xs font-bold text-blue-900 leading-none truncate">
                             {c.courseCount || 0}
                           </span>
-                          <span className="text-[8px] lg:text-[9px] font-semibold text-blue-700 uppercase tracking-tight truncate mt-0.5">
+                          <span className="text-[9px] md:text-[8px] lg:text-[9px] font-semibold text-blue-700 uppercase tracking-tight truncate mt-0.5">
                             Courses
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex flex-row lg:flex-col items-center gap-2 lg:gap-1 p-1.5 lg:p-2.5 rounded-lg lg:rounded-xl bg-emerald-50 border border-emerald-100 group/stat hover:bg-emerald-100/50 transition-colors duration-300">
-                        <div className="flex-shrink-0 h-6 w-6 lg:h-7 lg:w-7 rounded-md lg:rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs lg:shadow-sm lg:mb-1">
-                          <Tag className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                      <div className="flex flex-col md:flex-row lg:flex-col items-center md:gap-2 lg:gap-1 p-2 md:p-2.5 lg:p-2.5 rounded-lg md:rounded-lg lg:rounded-xl bg-emerald-50 border border-emerald-100 group/stat hover:bg-emerald-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-7 w-7 md:h-6 md:w-6 lg:h-7 lg:w-7 rounded-lg md:rounded-md lg:rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs md:shadow-xs lg:shadow-sm md:mb-0 lg:mb-1">
+                          <Tag className="w-3.5 h-3.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5" />
                         </div>
-                        <div className="flex flex-col min-w-0 lg:items-center lg:text-center">
-                          <span className="text-[11px] lg:text-xs font-bold text-emerald-900 leading-none truncate">
+                        <div className="flex flex-col items-center md:items-start lg:items-center text-center md:text-left lg:text-center min-w-0 mt-1 md:mt-0 lg:mt-0">
+                          <span className="text-xs md:text-[11px] lg:text-xs font-bold text-emerald-900 leading-none truncate">
                             {c.categoryToTags?.length || 0}
                           </span>
-                          <span className="text-[8px] lg:text-[9px] font-semibold text-emerald-700 uppercase tracking-tight truncate mt-0.5">
+                          <span className="text-[9px] md:text-[8px] lg:text-[9px] font-semibold text-emerald-700 uppercase tracking-tight truncate mt-0.5">
                             Tags
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex flex-row lg:flex-col items-center gap-2 lg:gap-1 p-1.5 lg:p-2.5 rounded-lg lg:rounded-xl bg-violet-50 border border-violet-100 group/stat hover:bg-violet-100/50 transition-colors duration-300">
-                        <div className="flex-shrink-0 h-6 w-6 lg:h-7 lg:w-7 rounded-md lg:rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center shadow-xs lg:shadow-sm lg:mb-1">
-                          <TrendingUp className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                      <div className="flex flex-col md:flex-row lg:flex-col items-center md:gap-2 lg:gap-1 p-2 md:p-2.5 lg:p-2.5 rounded-lg md:rounded-lg lg:rounded-xl bg-violet-50 border border-violet-100 group/stat hover:bg-violet-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-7 w-7 md:h-6 md:w-6 lg:h-7 lg:w-7 rounded-lg md:rounded-md lg:rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center shadow-xs md:shadow-xs lg:shadow-sm md:mb-0 lg:mb-1">
+                          <TrendingUp className="w-3.5 h-3.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5" />
                         </div>
-                        <div className="flex flex-col min-w-0 lg:items-center lg:text-center">
-                          <span className="text-[11px] lg:text-xs font-bold text-violet-900 leading-none truncate">
+                        <div className="flex flex-col items-center md:items-start lg:items-center text-center md:text-left lg:text-center min-w-0 mt-1 md:mt-0 lg:mt-0">
+                          <span className="text-xs md:text-[11px] lg:text-xs font-bold text-violet-900 leading-none truncate">
                             {formatCompact(c.popularityCount || 0)}
                           </span>
-                          <span className="text-[8px] lg:text-[9px] font-semibold text-violet-700 uppercase tracking-tight truncate mt-0.5">
+                          <span className="text-[9px] md:text-[8px] lg:text-[9px] font-semibold text-violet-700 uppercase tracking-tight truncate mt-0.5">
                             Popular
                           </span>
                         </div>
@@ -370,21 +369,25 @@ export default function CategoriesContent() {
         {!isLoading && filtered.length === 0 && (
           <div className="mt-12 mb-20 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="h-20 w-20 rounded-full bg-[color:var(--color-neutral-50)] border border-[color:var(--color-neutral-100)] flex items-center justify-center mb-6 shadow-sm">
-              <SearchX size={32} className="text-[color:var(--color-neutral-400)]" />
+              <SearchX
+                size={32}
+                className="text-[color:var(--color-neutral-400)]"
+              />
             </div>
-            <h3 
+            <h3
               className="text-xl font-semibold text-[color:var(--color-neutral-900)] mb-2"
               style={{ fontFamily: "var(--font-heading-sans)" }}
             >
               No categories found
             </h3>
             <p className="text-sm text-[color:var(--color-neutral-600)] max-w-sm mb-8 leading-relaxed">
-              We couldn't find any categories matching {query ? `"${query}"` : "your criteria"}. 
-              Try adjusting your search or clearing all filters.
+              We couldn't find any categories matching{" "}
+              {query ? `"${query}"` : "your criteria"}. Try adjusting your
+              search or clearing all filters.
             </p>
             {query && (
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 onClick={() => setQuery("")}
                 className="inline-flex items-center gap-2"
               >

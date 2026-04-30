@@ -27,7 +27,7 @@ export default function AboutPage() {
       <section className="py-5 md:py-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.08),transparent_60%)]" />
         <Container>
-          <div className="relative grid md:grid-cols-2 items-center gap-6 md:gap-12">
+          <div className="relative grid lg:grid-cols-2 items-center gap-6 lg:gap-12">
             <div>
               <div className="mb-3">
                 <Badge variant="outline">Our story</Badge>
@@ -89,7 +89,7 @@ export default function AboutPage() {
         <Container>
           <Card className="relative overflow-hidden p-0 border border-black/5 bg-white/95 backdrop-blur-sm">
             <CardContent className="py-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {/* Learners */}
                 <div className="rounded-lg border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-4">
                   <div className="flex flex-col items-center text-center">
@@ -178,7 +178,7 @@ export default function AboutPage() {
               Principles that shape our courses and community
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
+          <div className="grid lg:grid-cols-3 gap-4 md:gap-5">
             <Card className="relative overflow-hidden p-0 border border-black/5 bg-white/95 backdrop-blur-sm">
               <CardContent className="py-6">
                 <div className="h-10 w-10 rounded-full bg-[rgba(59,130,246,0.08)] text-[color:var(--color-primary-700)] flex items-center justify-center">
@@ -241,7 +241,7 @@ export default function AboutPage() {
           <Card className="relative overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.10),transparent_60%)]" />
             <CardContent className="relative py-8 md:py-10">
-              <div className="grid md:grid-cols-2 items-center gap-6 md:gap-10">
+              <div className="grid lg:grid-cols-2 items-center gap-6 lg:gap-10">
                 <div>
                   <h3
                     className="text-lg md:text-xl font-semibold"

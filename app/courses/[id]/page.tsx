@@ -763,7 +763,7 @@ export default function CourseDetailPage() {
                   <span className="w-1.5 h-6 bg-[color:var(--color-primary-600)] rounded-full" />
                   Related courses
                 </h3>
-                <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
                   {relatedCourses.map((r) => (
                     <CourseCard key={r.id} course={r} />
                   ))}
