@@ -283,45 +283,45 @@ export default function CategoriesContent() {
                     </div>
 
                     {/* Quick Stats Grid - Responsive Layout */}
-                    <div className="mt-4 grid grid-cols-3 gap-1.5 md:gap-2 lg:gap-2">
-                      <div className="flex flex-col md:flex-row lg:flex-col items-center md:gap-2 lg:gap-1 p-2 md:p-2.5 lg:p-2.5 rounded-lg md:rounded-lg lg:rounded-xl bg-blue-50 border border-blue-100 group/stat hover:bg-blue-100/50 transition-colors duration-300">
-                        <div className="flex-shrink-0 h-7 w-7 md:h-6 md:w-6 lg:h-7 lg:w-7 rounded-lg md:rounded-md lg:rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs md:shadow-xs lg:shadow-sm md:mb-0 lg:mb-1">
-                          <BookOpen className="w-3.5 h-3.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5" />
+                    <div className="mt-4 grid grid-cols-3 gap-1.5 md:gap-2">
+                      <div className="flex flex-col items-center p-2 md:p-2.5 rounded-lg md:rounded-xl bg-blue-50 border border-blue-100 group/stat hover:bg-blue-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-7 w-7 md:h-8 md:w-8 rounded-lg md:rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs md:shadow-sm mb-1">
+                          <BookOpen className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         </div>
-                        <div className="flex flex-col items-center md:items-start lg:items-center text-center md:text-left lg:text-center min-w-0 mt-1 md:mt-0 lg:mt-0">
-                          <span className="text-xs md:text-[11px] lg:text-xs font-bold text-blue-900 leading-none truncate">
+                        <div className="flex flex-col items-center text-center min-w-0">
+                          <span className="text-xs md:text-sm font-bold text-blue-900 leading-none truncate">
                             {c.courseCount || 0}
                           </span>
-                          <span className="text-[9px] md:text-[8px] lg:text-[9px] font-semibold text-blue-700 uppercase tracking-tight truncate mt-0.5">
+                          <span className="text-[9px] md:text-[10px] font-semibold text-blue-700 uppercase tracking-tight truncate mt-0.5 md:mt-1">
                             Courses
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex flex-col md:flex-row lg:flex-col items-center md:gap-2 lg:gap-1 p-2 md:p-2.5 lg:p-2.5 rounded-lg md:rounded-lg lg:rounded-xl bg-emerald-50 border border-emerald-100 group/stat hover:bg-emerald-100/50 transition-colors duration-300">
-                        <div className="flex-shrink-0 h-7 w-7 md:h-6 md:w-6 lg:h-7 lg:w-7 rounded-lg md:rounded-md lg:rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs md:shadow-xs lg:shadow-sm md:mb-0 lg:mb-1">
-                          <Tag className="w-3.5 h-3.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5" />
+                      <div className="flex flex-col items-center p-2 md:p-2.5 rounded-lg md:rounded-xl bg-emerald-50 border border-emerald-100 group/stat hover:bg-emerald-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-7 w-7 md:h-8 md:w-8 rounded-lg md:rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs md:shadow-sm mb-1">
+                          <Tag className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         </div>
-                        <div className="flex flex-col items-center md:items-start lg:items-center text-center md:text-left lg:text-center min-w-0 mt-1 md:mt-0 lg:mt-0">
-                          <span className="text-xs md:text-[11px] lg:text-xs font-bold text-emerald-900 leading-none truncate">
+                        <div className="flex flex-col items-center text-center min-w-0">
+                          <span className="text-xs md:text-sm font-bold text-emerald-900 leading-none truncate">
                             {c.categoryToTags?.length || 0}
                           </span>
-                          <span className="text-[9px] md:text-[8px] lg:text-[9px] font-semibold text-emerald-700 uppercase tracking-tight truncate mt-0.5">
+                          <span className="text-[9px] md:text-[10px] font-semibold text-emerald-700 uppercase tracking-tight truncate mt-0.5 md:mt-1">
                             Tags
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex flex-col md:flex-row lg:flex-col items-center md:gap-2 lg:gap-1 p-2 md:p-2.5 lg:p-2.5 rounded-lg md:rounded-lg lg:rounded-xl bg-violet-50 border border-violet-100 group/stat hover:bg-violet-100/50 transition-colors duration-300">
-                        <div className="flex-shrink-0 h-7 w-7 md:h-6 md:w-6 lg:h-7 lg:w-7 rounded-lg md:rounded-md lg:rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center shadow-xs md:shadow-xs lg:shadow-sm md:mb-0 lg:mb-1">
-                          <TrendingUp className="w-3.5 h-3.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5" />
+                      <div className="flex flex-col items-center p-2 md:p-2.5 rounded-lg md:rounded-xl bg-violet-50 border border-violet-100 group/stat hover:bg-violet-100/50 transition-colors duration-300">
+                        <div className="flex-shrink-0 h-7 w-7 md:h-8 md:w-8 rounded-lg md:rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-xs md:shadow-sm mb-1">
+                          <TrendingUp className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         </div>
-                        <div className="flex flex-col items-center md:items-start lg:items-center text-center md:text-left lg:text-center min-w-0 mt-1 md:mt-0 lg:mt-0">
-                          <span className="text-xs md:text-[11px] lg:text-xs font-bold text-violet-900 leading-none truncate">
+                        <div className="flex flex-col items-center text-center min-w-0">
+                          <span className="text-xs md:text-sm font-bold text-violet-900 leading-none truncate">
                             {formatCompact(c.popularityCount || 0)}
                           </span>
-                          <span className="text-[9px] md:text-[8px] lg:text-[9px] font-semibold text-violet-700 uppercase tracking-tight truncate mt-0.5">
-                            Popular
+                          <span className="text-[9px] md:text-[10px] font-semibold text-violet-700 uppercase tracking-tight truncate mt-0.5 md:mt-1">
+                            Popularity
                           </span>
                         </div>
                       </div>

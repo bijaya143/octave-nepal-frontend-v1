@@ -32,8 +32,8 @@ export default function CareersPage() {
                 Build education with us
               </h1>
               <p className="text-[color:var(--color-neutral-600)] text-sm sm:text-base md:text-lg lg:text-xl mb-6">
-                Join a mission-driven team creating elegant learning experiences
-                for thousands of learners in Nepal.
+                Join a mission-driven team creating impactful learning
+                experiences for thousands of learners in Nepal.
               </p>
             </div>
             <div>
@@ -49,7 +49,7 @@ export default function CareersPage() {
                         />
                       </div>
                       <span className="text-[color:var(--foreground)] font-medium text-sm md:text-base">
-                        Flexible, remote-friendly
+                        Remote-friendly
                       </span>
                     </li>
                     <li className="group flex items-center gap-3 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-100/60 px-3 py-3 md:px-4 md:py-4 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">

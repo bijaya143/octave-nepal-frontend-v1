@@ -39,11 +39,12 @@ export default function AboutPage() {
                 About {SITE_NAME}
               </h1>
               <p className="text-[color:var(--color-neutral-600)] text-sm sm:text-base md:text-lg lg:text-xl mb-6">
-                We are a modern online learning platform in Nepal, focused on
-                delivering elegant, practical courses crafted by industry
-                experts. Our mission is to help learners build in-demand skills
-                through delightful user experiences and community-driven
-                learning.
+                We saw a growing gap between traditional education and the fast-paced
+                demands of the modern tech industry. That's why we built {SITE_NAME}.
+                By combining <span className="gradient-text font-medium">AI-powered</span>{" "}
+                personalized guidance with practical, expert-led cohort courses, we are
+                democratizing access to premium education and empowering learners to
+                build real-world, in-demand skills.
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <Link href="/courses" className="block w-full sm:w-auto">
@@ -65,7 +66,7 @@ export default function AboutPage() {
             <div>
               <Card className="p-0 overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1556761175-129418cb2dfe?auto=format&fit=crop&w=1600&q=80"
+                  src="/images/about/about.png"
                   alt="Students collaborating"
                   width={1600}
                   height={900}
