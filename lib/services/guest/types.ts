@@ -2,8 +2,15 @@
  * Guest service types
  */
 
-import { AdminReview, Category, Course, Testimonial } from "../admin";
+import {
+  AdminReview,
+  Category,
+  Course,
+  ManagementTeam,
+  Testimonial,
+} from "../admin";
 import { PaginationOutput } from "../common-types";
+import { Instructor } from "../instructor";
 
 /**
  * Guest course output
@@ -42,4 +49,20 @@ export interface GuestReviewOutput {
  */
 export interface GuestCommonResponseData {
   message: string;
+}
+
+/**
+ * Guest management team output
+ */
+export interface GuestManagementTeamOutput {
+  data: ManagementTeam[];
+  meta: PaginationOutput;
+}
+
+/**
+ * Guest instructor output
+ */
+export interface GuestInstructorOutput {
+  data: Instructor[];
+  meta: PaginationOutput;
 }

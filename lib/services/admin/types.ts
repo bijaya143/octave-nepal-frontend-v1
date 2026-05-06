@@ -614,3 +614,26 @@ export interface AdminContactMessageFilterInput extends PaginationInput {
   startDate?: string;
   endDate?: string;
 }
+
+export interface ManagementTeam {
+  id: string;
+  name: string;
+  email?: string;
+  position: string;
+  imageKey?: string;
+  displayOrder: number;
+  isPublished?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AdminManagementTeamOutput {
+  data: ManagementTeam[];
+  meta: PaginationOutput;
+}
+
+export interface AdminManagementTeamFilterInput extends PaginationInput {
+  isPublished?: boolean;
+  startDate?: string;
+  endDate?: string;
+}

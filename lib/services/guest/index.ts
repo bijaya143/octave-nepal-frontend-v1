@@ -11,4 +11,6 @@ export { guestNewsletterSubscriberService } from "./newsletter-subscriber";
 export { guestContactMessageService } from "./contact-message";
 export { guestReviewService } from "./review";
 export { guestEnrollmentService } from "./enrollment";
+export { guestManagementTeamService } from "./management-team";
+export { guestInstructorService } from "./instructor";
 export * from "./types";

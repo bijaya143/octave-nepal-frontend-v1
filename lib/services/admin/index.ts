@@ -17,4 +17,5 @@ export { adminEnrollmentCertificateService } from "./enrollment-certificate";
 export { adminReviewService } from "./review";
 export { adminTestimonialService } from "./testimonial";
 export { adminContactMessageService } from "./contact-message";
+export { adminManagementTeamService } from "./management-team";
 export * from "./types";
