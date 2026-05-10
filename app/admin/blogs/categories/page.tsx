@@ -5,270 +5,505 @@ import Button from "@/components/ui/Button";
 import DataTable, { DataTableColumn } from "@/components/ui/DataTable";
 import Badge from "@/components/ui/Badge";
 import Modal from "@/components/ui/Modal";
-import { CheckCircle2, XCircle, Eye, Pencil, Trash2, RotateCcw } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Eye,
+  Pencil,
+  Trash2,
+  RotateCcw,
+} from "lucide-react";
 import Image from "next/image";
-import BlogCategoryFormModal, { BlogCategoryFormValues } from "./BlogCategoryFormModal";
+import BlogCategoryFormModal, {
+  BlogCategoryFormValues,
+} from "./BlogCategoryFormModal";
 import BlogCategoryViewModal from "./BlogCategoryViewModal";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import { toast } from "sonner";
+import {
+  adminBlogCategoryService,
+  CreateBlogCategoryInput,
+  UpdateBlogCategoryInput,
+} from "@/lib/services/admin/blog-category";
+import {
+  BlogCategory as BlogCategoryType,
+  AdminBlogCategoryFilterInput,
+} from "@/lib/services/admin/types";
 
+// UI display type
 type BlogCategory = {
-	id: string;
-	name: string;
-	slug: string;
-	imageUrl: string;
-	description: string;
-	createdAt: string; // YYYY-MM-DD (UTC)
-	updatedAt: string; // YYYY-MM-DD (UTC)
-	isPublished: boolean;
-	postCount: number;
+  id: string;
+  name: string;
+  slug: string;
+  imageUrl: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  isPublished: boolean;
+  postCount: number;
 };
 
-function pad2(n: number) { return String(n).padStart(2, "0"); }
-function formatUTCDate(d: Date) { return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}-${pad2(d.getUTCDate())}`; }
 function categoryBadgeClass(isPublished: boolean): string {
-	return isPublished
-		? "bg-emerald-50 text-emerald-700 border-emerald-200"
-		: "bg-gray-50 text-gray-700 border-gray-200";
+  return isPublished
+    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+    : "bg-gray-50 text-gray-700 border-gray-200";
 }
 
 export default function AdminBlogCategoriesPage() {
-	const baseCategories = [
-		{ id: "1", name: "Technology", slug: "technology", imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475", postCount: 15 },
-		{ id: "2", name: "Web Development", slug: "web-development", imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085", postCount: 23 },
-		{ id: "3", name: "Data Science", slug: "data-science", imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71", postCount: 18 },
-		{ id: "4", name: "Mobile Development", slug: "mobile-development", imageUrl: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c", postCount: 12 },
-		{ id: "5", name: "DevOps", slug: "devops", imageUrl: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9", postCount: 9 },
-		{ id: "6", name: "AI & Machine Learning", slug: "ai-machine-learning", imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995", postCount: 14 },
-		{ id: "7", name: "Cybersecurity", slug: "cybersecurity", imageUrl: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b", postCount: 8 },
-		{ id: "8", name: "Cloud Computing", slug: "cloud-computing", imageUrl: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8", postCount: 11 },
-		{ id: "9", name: "Programming Languages", slug: "programming-languages", imageUrl: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3", postCount: 20 },
-		{ id: "10", name: "Career Advice", slug: "career-advice", imageUrl: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d", postCount: 7 },
-	];
+  const [categories, setCategories] = React.useState<BlogCategory[]>([]);
+  const [pagination, setPagination] = React.useState<{
+    page: number;
+    limit: number;
+    total: number;
+  } | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [page, setPage] = React.useState(1);
+  const pageSize = 10;
+  const [refreshKey, setRefreshKey] = React.useState(0);
+  const [query, setQuery] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState<
+    "All" | "Published" | "Unpublished"
+  >("All");
 
-	const BASE_UTC_MS = Date.UTC(2025, 9, 1); // 2025-10-01 UTC
-	const categories: BlogCategory[] = baseCategories.map((c, idx) => {
-		const created = new Date(BASE_UTC_MS - idx * 86400000);
-		const updated = new Date(BASE_UTC_MS + 86400000 - idx * 86400000);
-		return {
-			...c,
-			description: `${c.name} related blog posts and articles`,
-			createdAt: formatUTCDate(created),
-			updatedAt: formatUTCDate(updated),
-			isPublished: idx % 5 === 0 ? false : true,
-		};
-	});
+  const refreshCategories = React.useCallback(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
 
-	const [page, setPage] = React.useState(1);
-	const pageSize = 10;
-	const [query, setQuery] = React.useState("");
-	const [statusFilter, setStatusFilter] = React.useState<"All" | "Published" | "Unpublished">("All");
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const queryParams: AdminBlogCategoryFilterInput = {
+          page,
+          limit: pageSize,
+        };
 
-	const filteredCategories = React.useMemo(() => {
-		const q = query.trim().toLowerCase();
-		return categories.filter((c) => {
-			const matchesQuery = q === "" || c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q) || c.description.toLowerCase().includes(q);
-			const matchesStatus = statusFilter === "All" || (statusFilter === "Published" ? c.isPublished : !c.isPublished);
-			return matchesQuery && matchesStatus;
-		});
-	}, [categories, query, statusFilter]);
+        if (query.trim()) queryParams.keyword = query.trim();
+        if (statusFilter !== "All")
+          queryParams.isPublished = statusFilter === "Published";
 
-	const total = filteredCategories.length;
-	const pageCount = Math.max(1, Math.ceil(total / pageSize));
-	const currentPage = Math.min(Math.max(1, page), pageCount);
-	const start = (currentPage - 1) * pageSize;
-	const end = Math.min(start + pageSize, total);
-	const pagedCategories = filteredCategories.slice(start, end);
+        const response = await adminBlogCategoryService.list(queryParams);
 
-	const nextPage = () => setPage((p) => Math.min(p + 1, pageCount));
-	const prevPage = () => setPage((p) => Math.max(p - 1, 1));
-	const [selected, setSelected] = React.useState<BlogCategory | null>(null);
-	const [openCreate, setOpenCreate] = React.useState(false);
-	const [editing, setEditing] = React.useState<BlogCategory | null>(null);
-	const [pendingDelete, setPendingDelete] = React.useState<BlogCategory | null>(null);
+        if (!response.success) {
+          throw new Error(
+            response.error?.message || "Failed to fetch blog categories",
+          );
+        }
 
-	const handleCreate = React.useCallback((values: BlogCategoryFormValues) => {
-		toast.success(`Blog category created: ${values.name}`);
-		setOpenCreate(false);
-	}, []);
+        const transformedCategories: BlogCategory[] = response.data.data.map(
+          (entity: BlogCategoryType) => ({
+            id: entity.id,
+            name: entity.name,
+            slug: entity.slug,
+            imageUrl: entity.imageKey
+              ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${entity.imageKey}`
+              : `https://ui-avatars.com/api/?name=${encodeURIComponent(entity.name)}&background=random`,
+            description: entity.description || "",
+            createdAt: new Date(entity.createdAt).toISOString().split("T")[0],
+            updatedAt: new Date(entity.updatedAt).toISOString().split("T")[0],
+            isPublished: entity.isPublished ?? false,
+            postCount: entity.postCount,
+          }),
+        );
 
-	const handleEdit = React.useCallback((values: BlogCategoryFormValues) => {
-		toast.info(`Blog category updated: ${values.name}`);
-		setEditing(null);
-	}, []);
+        setCategories(transformedCategories);
+        setPagination(response.data.meta);
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch blog categories",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-	const handleDelete = React.useCallback((category: BlogCategory) => {
-		setPendingDelete(category);
-	}, []);
+    fetchCategories();
+  }, [page, query, statusFilter, pageSize, refreshKey]);
 
-	const confirmDelete = React.useCallback(() => {
-		if (!pendingDelete) return;
-		toast.error(`Blog category deleted: ${pendingDelete.name}`);
-		setPendingDelete(null);
-	}, [pendingDelete]);
+  const total = pagination?.total || 0;
+  const pageCount = pagination
+    ? Math.max(1, Math.ceil(total / pagination.limit))
+    : 1;
 
-	const cancelDelete = React.useCallback(() => {
-		setPendingDelete(null);
-	}, []);
+  const [selected, setSelected] = React.useState<BlogCategory | null>(null);
+  const [openCreate, setOpenCreate] = React.useState(false);
+  const [editing, setEditing] = React.useState<BlogCategory | null>(null);
+  const [pendingDelete, setPendingDelete] = React.useState<BlogCategory | null>(
+    null,
+  );
 
-	const columns: Array<DataTableColumn<BlogCategory>> = [
-		{ id: "name", header: "Name", accessor: "name" },
-		{ id: "imageUrl", header: "Image", accessor: (row) => (
-			<div className="h-12 w-12 overflow-hidden rounded-md">
-				<Image src={row.imageUrl} alt={row.name} width={48} height={48} className="h-full w-full object-cover" />
-			</div>
-		)},
-		{
-			id: "status",
-			header: "Status",
-			cell: (row) => (
-				<Badge variant="outline" className={categoryBadgeClass(row.isPublished)}>
-					<span className="inline-flex items-center gap-1">
-						{row.isPublished ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
-						{row.isPublished ? "Published" : "Unpublished"}
-					</span>
-				</Badge>
-			),
-			cellClassName: "whitespace-nowrap",
-		},
-		{ id: "postCount", header: "Posts", accessor: (row) => row.postCount, cellClassName: "whitespace-nowrap" },
-		{ id: "createdAt", header: "Created", accessor: (row) => row.createdAt, cellClassName: "whitespace-nowrap" },
-		{
-			id: "actions",
-			header: "Actions",
-			align: "center",
-			cell: (row) => (
-				<div className="flex items-center justify-center gap-2">
-					<Button variant="secondary" size="sm" className="gap-1 text-primary-600 border-primary-200 hover:bg-primary-50" aria-label="View" onClick={() => setSelected(row)}>
-						<Eye size={16} />
-					</Button>
-					<Button variant="secondary" size="sm" className="gap-1" aria-label="Edit" onClick={() => setEditing(row)}>
-						<Pencil size={16} />
-					</Button>
-					<Button variant="secondary" size="sm" className="gap-1 text-red-600 border-red-200 hover:bg-red-50" aria-label="Delete" onClick={() => handleDelete(row)}>
-						<Trash2 size={16} />
-					</Button>
-				</div>
-			),
-		},
-	];
+  const handleCreate = React.useCallback(
+    async (values: BlogCategoryFormValues) => {
+      if (!values.imageFile) {
+        toast.error("Image is required");
+        return;
+      }
+      setIsSubmitting(true);
+      try {
+        const payload: CreateBlogCategoryInput = {
+          name: values.name,
+          slug: values.slug,
+          description: values.description,
+          image: values.imageFile,
+          isPublished: values.isPublished,
+        };
 
-	return (
-		<div className="space-y-6">
-			<div className="flex items-center justify-between gap-3">
-				<div>
-					<h1 className="text-xl sm:text-2xl font-semibold">Blog Categories</h1>
-				</div>
-				<Button size="sm" onClick={() => setOpenCreate(true)}>Add Category</Button>
-			</div>
+        const response = await adminBlogCategoryService.create(payload);
+        if (response.success) {
+          toast.success(`Blog category created: ${values.name}`);
+          setOpenCreate(false);
+          refreshCategories();
+        } else {
+          throw new Error(
+            response.error?.message || "Failed to create blog category",
+          );
+        }
+      } catch (err) {
+        toast.error(
+          err instanceof Error ? err.message : "Failed to create blog category",
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [refreshCategories],
+  );
 
-			{/* Filters */}
-			<div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-3">
-				<div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-					<div className="md:col-span-7">
-						<label className="block text-xs text-[color:var(--color-neutral-600)] mb-1">Search</label>
-						<Input
-							placeholder="Search categories..."
-							value={query}
-							onChange={(e) => { setPage(1); setQuery(e.target.value); }}
-						/>
-					</div>
-					<div className="md:col-span-3">
-						<label className="block text-xs text-[color:var(--color-neutral-600)] mb-1">Status</label>
-						<Select value={statusFilter} onChange={(e) => { setPage(1); setStatusFilter(e.target.value as any); }}>
-							<option value="All">All statuses</option>
-							<option value="Published">Published</option>
-							<option value="Unpublished">Unpublished</option>
-						</Select>
-					</div>
-					<div className="md:col-span-2 flex md:justify-end">
-						<Button
-							variant="secondary"
-							className="w-full md:w-auto inline-flex items-center gap-2 text-primary-600 border-primary-200 hover:bg-primary-50"
-							size="md"
-							onClick={() => { setQuery(""); setStatusFilter("All"); setPage(1); }}
-						>
-							<RotateCcw size={16} /> Reset
-						</Button>
-					</div>
-				</div>
-			</div>
+  const handleEdit = React.useCallback(
+    async (values: BlogCategoryFormValues) => {
+      if (!editing) return;
+      setIsSubmitting(true);
+      try {
+        const payload: UpdateBlogCategoryInput = {
+          id: editing.id,
+          name: values.name,
+          slug: values.slug,
+          description: values.description,
+          image: values.imageFile || undefined,
+          isPublished: values.isPublished,
+        };
 
-			<Card>
-				<CardContent className="py-0">
-					<DataTable<BlogCategory>
-						data={pagedCategories}
-						columns={columns}
-						getRowKey={(row) => row.id}
-						emptyMessage="No blog categories found."
-					/>
-					<div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4">
-						<p className="text-sm text-[color:var(--color-neutral-600)]">
-							Showing {total === 0 ? 0 : start + 1}-{end} of {total}
-						</p>
-						<div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-							<Button
-								variant="secondary"
-								size="sm"
-								className="w-full sm:w-auto"
-								disabled={currentPage === 1}
-								onClick={prevPage}
-							>
-								Previous
-							</Button>
-							<div className="text-sm sm:hidden">{currentPage}/{pageCount}</div>
-							<div className="text-sm hidden sm:block">Page {currentPage} of {pageCount}</div>
-							<Button
-								variant="secondary"
-								size="sm"
-								className="w-full sm:w-auto"
-								disabled={currentPage === pageCount}
-								onClick={nextPage}
-							>
-								Next
-							</Button>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-			<Modal open={!!pendingDelete} onClose={cancelDelete} title={pendingDelete ? 'Delete Blog Category' : undefined}>
-				{pendingDelete && (
-					<div className="space-y-4 text-sm">
-						<div className="text-[color:var(--color-neutral-800)]">
-							Are you sure you want to delete
-							<span className="font-medium"> {pendingDelete.name} </span>? This will also remove this category from all associated blog posts.
-							This action cannot be undone.
-						</div>
-						<div className="flex items-center justify-end gap-2">
-							<Button variant="secondary" onClick={cancelDelete}>Cancel</Button>
-							<Button variant="secondary" className="text-red-600 border-red-200 hover:bg-red-50" onClick={confirmDelete}>Delete</Button>
-						</div>
-					</div>
-				)}
-			</Modal>
-			<BlogCategoryViewModal category={selected} onClose={() => setSelected(null)} />
-			<BlogCategoryFormModal
-				open={openCreate}
-				onClose={() => setOpenCreate(false)}
-				onSubmit={handleCreate}
-				title="Create Blog Category"
-				mode="create"
-			/>
-			<BlogCategoryFormModal
-				open={!!editing}
-				onClose={() => setEditing(null)}
-				onSubmit={handleEdit}
-				title="Edit Blog Category"
-				mode="edit"
-				initialValues={editing ? {
-					name: editing.name,
-					slug: editing.slug,
-					description: editing.description,
-					isPublished: editing.isPublished,
-				} : undefined}
-				initialImageUrl={editing ? editing.imageUrl : undefined}
-			/>
-		</div>
-	);
+        const response = await adminBlogCategoryService.update(payload);
+        if (response.success) {
+          toast.success(`Blog category updated: ${values.name}`);
+          setEditing(null);
+          refreshCategories();
+        } else {
+          throw new Error(
+            response.error?.message || "Failed to update blog category",
+          );
+        }
+      } catch (err) {
+        toast.error(
+          err instanceof Error ? err.message : "Failed to update blog category",
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [editing, refreshCategories],
+  );
+
+  const handleDelete = React.useCallback((category: BlogCategory) => {
+    setPendingDelete(category);
+  }, []);
+
+  const confirmDelete = React.useCallback(async () => {
+    if (!pendingDelete) return;
+    try {
+      const response = await adminBlogCategoryService.delete(pendingDelete.id);
+      if (response.success) {
+        toast.success(`Blog category deleted: ${pendingDelete.name}`);
+        setPendingDelete(null);
+        refreshCategories();
+      } else {
+        throw new Error(
+          response.error?.message || "Failed to delete blog category",
+        );
+      }
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete blog category",
+      );
+    }
+  }, [pendingDelete, refreshCategories]);
+
+  const cancelDelete = React.useCallback(() => {
+    setPendingDelete(null);
+  }, []);
+
+  const columns: Array<DataTableColumn<BlogCategory>> = [
+    { id: "name", header: "Name", accessor: "name" },
+    {
+      id: "imageUrl",
+      header: "Image",
+      accessor: (row) =>
+        row.imageUrl ? (
+          <Image
+            src={row.imageUrl}
+            alt={row.name}
+            width={60}
+            height={35}
+            className="rounded-md object-cover h-[35px] w-[60px]"
+            unoptimized
+          />
+        ) : (
+          <div className="h-[35px] w-[60px] bg-gray-100 rounded-md flex items-center justify-center text-xs text-gray-400">
+            No Img
+          </div>
+        ),
+    },
+    {
+      id: "status",
+      header: "Status",
+      cell: (row) => (
+        <Badge
+          variant="outline"
+          className={categoryBadgeClass(row.isPublished)}
+        >
+          <span className="inline-flex items-center gap-1">
+            {row.isPublished ? (
+              <CheckCircle2 size={14} />
+            ) : (
+              <XCircle size={14} />
+            )}
+            {row.isPublished ? "Published" : "Unpublished"}
+          </span>
+        </Badge>
+      ),
+      cellClassName: "whitespace-nowrap",
+    },
+    {
+      id: "postCount",
+      header: "Posts",
+      accessor: (row) => row.postCount,
+      cellClassName: "whitespace-nowrap",
+    },
+    {
+      id: "createdAt",
+      header: "Created",
+      accessor: (row) => row.createdAt,
+      cellClassName: "whitespace-nowrap",
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      align: "center",
+      cell: (row) => (
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="gap-1 text-primary-600 border-primary-200 hover:bg-primary-50"
+            aria-label="View"
+            onClick={() => setSelected(row)}
+          >
+            <Eye size={16} />
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="gap-1"
+            aria-label="Edit"
+            onClick={() => setEditing(row)}
+          >
+            <Pencil size={16} />
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="gap-1 text-red-600 border-red-200 hover:bg-red-50"
+            aria-label="Delete"
+            onClick={() => handleDelete(row)}
+          >
+            <Trash2 size={16} />
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-semibold">Blog Categories</h1>
+        </div>
+        <Button size="sm" onClick={() => setOpenCreate(true)}>
+          Add Category
+        </Button>
+      </div>
+
+      {/* Filters */}
+      <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-3">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+          <div className="md:col-span-7">
+            <label className="block text-xs text-[color:var(--color-neutral-600)] mb-1">
+              Search
+            </label>
+            <Input
+              placeholder="Search categories..."
+              value={query}
+              onChange={(e) => {
+                setPage(1);
+                setQuery(e.target.value);
+              }}
+            />
+          </div>
+          <div className="md:col-span-3">
+            <label className="block text-xs text-[color:var(--color-neutral-600)] mb-1">
+              Status
+            </label>
+            <Select
+              value={statusFilter}
+              onChange={(e) => {
+                setPage(1);
+                setStatusFilter(
+                  e.target.value as "All" | "Published" | "Unpublished",
+                );
+              }}
+            >
+              <option value="All">All statuses</option>
+              <option value="Published">Published</option>
+              <option value="Unpublished">Unpublished</option>
+            </Select>
+          </div>
+          <div className="md:col-span-2 flex md:justify-end">
+            <Button
+              variant="secondary"
+              className="w-full md:w-auto inline-flex items-center gap-2 text-primary-600 border-primary-200 hover:bg-primary-50"
+              size="md"
+              onClick={() => {
+                setQuery("");
+                setStatusFilter("All");
+                setPage(1);
+              }}
+            >
+              <RotateCcw size={16} /> Reset
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      <Card>
+        <CardContent className="py-0">
+          <DataTable<BlogCategory>
+            data={categories}
+            columns={columns}
+            getRowKey={(row) => row.id}
+            emptyMessage={
+              isLoading ? "Loading..." : "No blog categories found."
+            }
+          />
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4">
+            <p className="text-sm text-[color:var(--color-neutral-600)]">
+              Showing {total === 0 ? 0 : (page - 1) * pageSize + 1}–
+              {Math.min(page * pageSize, total)} of {total}
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-full sm:w-auto"
+                disabled={page === 1 || isLoading}
+                onClick={() => setPage(page - 1)}
+              >
+                Previous
+              </Button>
+              <div className="text-sm sm:hidden">
+                {page}/{pageCount}
+              </div>
+              <div className="text-sm hidden sm:block">
+                Page {page} of {pageCount}
+              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-full sm:w-auto"
+                disabled={page === pageCount || isLoading}
+                onClick={() => setPage(page + 1)}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Modal
+        open={!!pendingDelete}
+        onClose={cancelDelete}
+        title={pendingDelete ? "Delete Blog Category" : undefined}
+      >
+        {pendingDelete && (
+          <div className="space-y-4 text-sm">
+            <div className="text-[color:var(--color-neutral-800)]">
+              Are you sure you want to delete
+              <span className="font-medium"> {pendingDelete.name} </span>? This
+              will also remove this category from all associated blog posts.
+              This action cannot be undone.
+            </div>
+            <div className="flex items-center justify-end gap-2">
+              <Button variant="secondary" onClick={cancelDelete}>
+                Cancel
+              </Button>
+              <Button
+                variant="secondary"
+                className="text-red-600 border-red-200 hover:bg-red-50"
+                onClick={confirmDelete}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      <BlogCategoryViewModal
+        category={selected}
+        onClose={() => setSelected(null)}
+      />
+
+      <BlogCategoryFormModal
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        onSubmit={handleCreate}
+        title="Create Blog Category"
+        mode="create"
+        isLoading={isSubmitting}
+      />
+
+      <BlogCategoryFormModal
+        open={!!editing}
+        onClose={() => setEditing(null)}
+        onSubmit={handleEdit}
+        title="Edit Blog Category"
+        mode="edit"
+        isLoading={isSubmitting}
+        initialValues={
+          editing
+            ? {
+                name: editing.name,
+                slug: editing.slug,
+                description: editing.description,
+                isPublished: editing.isPublished,
+              }
+            : undefined
+        }
+        initialImageUrl={editing ? editing.imageUrl : undefined}
+      />
+    </div>
+  );
 }

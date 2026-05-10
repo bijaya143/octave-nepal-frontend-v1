@@ -31,6 +31,7 @@ type BlogCategoryFormModalProps = {
 	mode?: "create" | "edit";
 	initialValues?: Partial<BlogCategoryFormValues>;
 	initialImageUrl?: string; // for edit preview
+	isLoading?: boolean;
 };
 
 const DEFAULTS: BlogCategoryFormValues = {
@@ -41,22 +42,41 @@ const DEFAULTS: BlogCategoryFormValues = {
 	isPublished: true,
 };
 
-export default function BlogCategoryFormModal({ open, onClose, onSubmit, title, mode = "create", initialValues, initialImageUrl }: BlogCategoryFormModalProps) {
+export default function BlogCategoryFormModal({
+	open,
+	onClose,
+	onSubmit,
+	title,
+	mode = "create",
+	initialValues,
+	initialImageUrl,
+	isLoading = false,
+}: BlogCategoryFormModalProps) {
 	const [values, setValues] = React.useState<BlogCategoryFormValues>({ ...DEFAULTS, ...initialValues });
 	const [previewUrl, setPreviewUrl] = React.useState<string>(initialImageUrl || "");
 	const fileInputRef = React.useRef<HTMLInputElement>(null);
 	const [activeTab, setActiveTab] = React.useState<"details" | "media" | "visibility">("details");
+
 	const tabs = React.useMemo(() => ([
 		{ key: "details", label: "Details" },
 		{ key: "media", label: "Media" },
 		{ key: "visibility", label: "Visibility" },
 	] as const), []);
 
+	// Reset tab when modal opens
 	React.useEffect(() => {
-		setValues({ ...DEFAULTS, ...initialValues });
-		setPreviewUrl(initialImageUrl || "");
-		setActiveTab("details");
-	}, [initialValues, initialImageUrl, open]);
+		if (open) {
+			setActiveTab("details");
+		}
+	}, [open]);
+
+	// Update values and preview when modal opens or initialValues change
+	React.useEffect(() => {
+		if (open) {
+			setValues({ ...DEFAULTS, ...initialValues });
+			setPreviewUrl(initialImageUrl || "");
+		}
+	}, [open, initialValues, initialImageUrl]);
 
 	React.useEffect(() => {
 		return () => {
@@ -78,9 +98,14 @@ export default function BlogCategoryFormModal({ open, onClose, onSubmit, title, 
 
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0] || null;
-		handleChange("imageFile", file);
-		if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
-		setPreviewUrl(file ? URL.createObjectURL(file) : "");
+		if (file) {
+			handleChange("imageFile", file);
+			const url = URL.createObjectURL(file);
+			setPreviewUrl((prev) => {
+				if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
+				return url;
+			});
+		}
 	}
 
 	function clearImage() {
@@ -90,7 +115,9 @@ export default function BlogCategoryFormModal({ open, onClose, onSubmit, title, 
 		if (fileInputRef.current) fileInputRef.current.value = "";
 	}
 
-	function handleFormSubmit(e: React.FormEvent) { e.preventDefault(); }
+	function handleFormSubmit(e: React.FormEvent) {
+		e.preventDefault();
+	}
 
 	const disabled = !values.name || !values.slug;
 
@@ -98,22 +125,25 @@ export default function BlogCategoryFormModal({ open, onClose, onSubmit, title, 
 	const currentTabIndex = currentTabIndexRaw < 0 ? 0 : currentTabIndexRaw;
 	const isFirstTab = currentTabIndex <= 0;
 	const isLastTab = currentTabIndex >= tabs.length - 1;
+
 	function goNextTab() {
 		if (!isLastTab) {
 			const next = tabs[currentTabIndex + 1]?.key || tabs[tabs.length - 1].key;
-			setActiveTab(next as typeof activeTab);
+			setActiveTab(next);
 		}
 	}
+
 	function goPrevTab() {
 		if (!isFirstTab) {
 			const prev = tabs[currentTabIndex - 1]?.key || tabs[0].key;
-			setActiveTab(prev as typeof activeTab);
+			setActiveTab(prev);
 		}
 	}
 
 	return (
-		<Modal open={open} onClose={onClose} title={title ?? (mode === "edit" ? "Edit Blog Category" : "Create Blog Category") }>
+		<Modal open={open} onClose={onClose} title={title ?? (mode === "edit" ? "Edit Blog Category" : "Create Blog Category")}>
 			<form onSubmit={handleFormSubmit} noValidate className="space-y-5 text-sm">
+				{/* Tabs */}
 				<div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-1">
 					<div className="grid grid-cols-3 gap-1">
 						{tabs.map((t) => (
@@ -129,37 +159,32 @@ export default function BlogCategoryFormModal({ open, onClose, onSubmit, title, 
 					</div>
 				</div>
 
+				{/* Tab: Details */}
 				{activeTab === "details" && (
 					<div className="space-y-3">
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+							<Input label="Name" value={values.name} onChange={handleNameChange} placeholder="Category name" required />
 							<div>
-								<label className="block text-xs text-[color:var(--color-neutral-600)] mb-1">Name</label>
-								<Input value={values.name} onChange={handleNameChange} placeholder="Category name" required />
-							</div>
-							<div>
-								<label className="block text-xs text-[color:var(--color-neutral-600)] mb-1">Slug</label>
-								<Input value={values.slug} onChange={(e) => handleChange("slug", e.target.value)} placeholder="category-slug" required />
+								<Input label="Slug" value={values.slug} onChange={(e) => handleChange("slug", e.target.value)} placeholder="category-slug" required />
 								<div className="mt-1 inline-flex items-center gap-1 rounded-md border border-[color:var(--color-neutral-200)] bg-white px-2 py-0.5 font-mono text-[11px] text-[color:var(--color-neutral-700)]">/{values.slug || "your-slug"}</div>
 							</div>
 						</div>
 						<div className="space-y-2">
-							<div>
-								<label className="block text-xs text-[color:var(--color-neutral-600)] mb-1">Description</label>
-								<Textarea value={values.description} onChange={(e) => handleChange("description", e.target.value)} placeholder="Short description of the blog category" rows={3} />
-								<p className="mt-1 text-[10px] text-[color:var(--color-neutral-500)]">Describe what type of blog posts belong in this category.</p>
-							</div>
+							<Textarea label="Description" value={values.description} onChange={(e) => handleChange("description", e.target.value)} placeholder="Short description of the blog category" rows={3} />
 						</div>
 					</div>
 				)}
 
+				{/* Tab: Media */}
 				{activeTab === "media" && (
 					<div className="space-y-3">
 						<div className="rounded-lg border border-dashed border-[color:var(--color-neutral-300)] bg-[color:var(--color-neutral-50)] p-3">
+							<label htmlFor="category-image-input" className="block text-xs text-[color:var(--color-neutral-600)] mb-2">Category Image</label>
 							<div className="flex items-center gap-3">
 								{previewUrl ? (
-									<img src={previewUrl} alt="Preview" className="h-20 w-20 rounded-md object-cover ring-1 ring-[color:var(--color-neutral-200)]" />
+									<img src={previewUrl} alt="Preview" className="h-20 w-20 rounded-lg object-cover ring-1 ring-[color:var(--color-neutral-200)]" />
 								) : (
-									<div className="h-20 w-20 flex items-center justify-center rounded-md bg-white text-[color:var(--color-neutral-400)] ring-1 ring-[color:var(--color-neutral-200)]">No image</div>
+									<div className="h-20 w-20 flex items-center justify-center rounded-lg bg-white text-[color:var(--color-neutral-400)] ring-1 ring-[color:var(--color-neutral-200)]">No image</div>
 								)}
 								<div className="flex-1">
 									<p className="text-xs text-[color:var(--color-neutral-600)]">Upload a cover image for this blog category.</p>
@@ -177,17 +202,19 @@ export default function BlogCategoryFormModal({ open, onClose, onSubmit, title, 
 					</div>
 				)}
 
+				{/* Tab: Visibility */}
 				{activeTab === "visibility" && (
 					<div className="space-y-3">
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-							<div>
-								<label className="block text-xs text-[color:var(--color-neutral-600)] mb-1">Status</label>
-								<Select value={values.isPublished ? "Published" : "Unpublished"} onChange={(e) => handleChange("isPublished", e.target.value === "Published") }>
-									<option value="Published">Published</option>
-									<option value="Unpublished">Unpublished</option>
-								</Select>
-								<p className="mt-1 text-[10px] text-[color:var(--color-neutral-500)]">Controls whether this category is visible to users when creating blog posts.</p>
-							</div>
+							<Select
+								label="Status"
+								hint="Controls whether this category is visible to users when creating blog posts."
+								value={values.isPublished ? "Published" : "Unpublished"}
+								onChange={(e) => handleChange("isPublished", e.target.value === "Published")}
+							>
+								<option value="Published">Published</option>
+								<option value="Unpublished">Unpublished</option>
+							</Select>
 						</div>
 					</div>
 				)}
@@ -208,9 +235,15 @@ export default function BlogCategoryFormModal({ open, onClose, onSubmit, title, 
 								};
 								onSubmit(cleaned);
 							}}
-							disabled={disabled}
+							disabled={disabled || isLoading}
 						>
-							{mode === "edit" ? "Save changes" : "Create"}
+							{isLoading
+								? mode === "edit"
+									? "Saving..."
+									: "Creating..."
+								: mode === "edit"
+									? "Save changes"
+									: "Create"}
 						</Button>
 					)}
 				</div>

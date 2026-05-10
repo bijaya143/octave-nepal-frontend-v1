@@ -637,3 +637,60 @@ export interface AdminManagementTeamFilterInput extends PaginationInput {
   startDate?: string;
   endDate?: string;
 }
+
+export interface BlogCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  imageKey?: string;
+  isPublished?: boolean;
+  postCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AdminBlogCategoryOutput {
+  data: BlogCategory[];
+  meta: PaginationOutput;
+}
+
+export interface AdminBlogCategoryFilterInput extends PaginationInput {
+  keyword?: string;
+  isPublished?: boolean;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  author?: string;
+  authorImageKey?: string;
+  blogCategory?: BlogCategory | null;
+  content: string;
+  estimatedReadTime?: number;
+  imageKey?: string;
+  isPublished?: boolean;
+  isFeatured?: boolean;
+  excerpt?: string;
+  tags?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AdminBlogPostOutput {
+  data: BlogPost[];
+  meta: PaginationOutput;
+}
+export interface AdminBlogPostFilterInput extends PaginationInput {
+  keyword?: string;
+  isPublished?: boolean;
+  blogCategoryId?: string;
+  startDate?: string;
+  endDate?: string;
+}

@@ -18,4 +18,6 @@ export { adminReviewService } from "./review";
 export { adminTestimonialService } from "./testimonial";
 export { adminContactMessageService } from "./contact-message";
 export { adminManagementTeamService } from "./management-team";
+export { adminBlogCategoryService } from "./blog-category";
+export { adminBlogPostService } from "./blog-post";
 export * from "./types";

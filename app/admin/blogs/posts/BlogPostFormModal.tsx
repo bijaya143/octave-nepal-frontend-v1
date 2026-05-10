@@ -19,15 +19,19 @@ function slugify(input: string): string {
 
 export type BlogPostFormValues = {
 	title: string;
-	slug: string;
 	excerpt: string;
 	content: string;
 	featuredImageFile?: File | null;
+	authorImageFile?: File | null;
 	status: "unpublished" | "published";
 	isFeatured: boolean;
 	categoryId: string;
 	author: string;
 	tags: string[];
+	estimatedReadTime: number | "";
+	metaTitle: string;
+	metaDescription: string;
+	metaKeywords: string;
 };
 
 type BlogCategory = {
@@ -43,20 +47,26 @@ type BlogPostFormModalProps = {
 	mode?: "create" | "edit";
 	initialValues?: Partial<BlogPostFormValues>;
 	initialImageUrl?: string;
+	initialAuthorImageUrl?: string;
 	availableCategories: BlogCategory[];
+	isLoading?: boolean;
 };
 
 const DEFAULTS: BlogPostFormValues = {
 	title: "",
-	slug: "",
 	excerpt: "",
 	content: "",
 	featuredImageFile: null,
+	authorImageFile: null,
 	status: "unpublished",
 	isFeatured: false,
 	categoryId: "",
 	author: "Team Octave",
 	tags: [],
+	estimatedReadTime: "",
+	metaTitle: "",
+	metaDescription: "",
+	metaKeywords: "",
 };
 
 export default function BlogPostFormModal({
@@ -67,43 +77,53 @@ export default function BlogPostFormModal({
 	mode = "create",
 	initialValues,
 	initialImageUrl,
+	initialAuthorImageUrl,
 	availableCategories,
+	isLoading = false,
 }: BlogPostFormModalProps) {
 	const [values, setValues] = React.useState<BlogPostFormValues>({ ...DEFAULTS, ...initialValues });
 	const [previewUrl, setPreviewUrl] = React.useState<string>(initialImageUrl || "");
+	const [authorPreviewUrl, setAuthorPreviewUrl] = React.useState<string>(initialAuthorImageUrl || "");
 	const fileInputRef = React.useRef<HTMLInputElement>(null);
-	const [activeTab, setActiveTab] = React.useState<"details" | "content" | "summary" | "media" | "settings">("details");
+	const authorFileInputRef = React.useRef<HTMLInputElement>(null);
+	const [activeTab, setActiveTab] = React.useState<"details" | "content" | "summary" | "media" | "status" | "seo">("details");
 	const [tagInput, setTagInput] = React.useState("");
 	const tabs = React.useMemo(() => ([
 		{ key: "details", label: "Details" },
 		{ key: "content", label: "Content" },
 		{ key: "summary", label: "Summary" },
 		{ key: "media", label: "Media" },
-		{ key: "settings", label: "Settings" },
+		{ key: "status", label: "Status" },
+		{ key: "seo", label: "SEO" },
 	] as const), []);
 
 	React.useEffect(() => {
-		setValues({ ...DEFAULTS, ...initialValues });
-		setPreviewUrl(initialImageUrl || "");
-		setActiveTab("details");
-	}, [initialValues, initialImageUrl, open]);
+		if (open) {
+			setActiveTab("details");
+		}
+	}, [open]);
+
+	React.useEffect(() => {
+		if (open) {
+			setValues({ ...DEFAULTS, ...initialValues });
+			setPreviewUrl(initialImageUrl || "");
+			setAuthorPreviewUrl(initialAuthorImageUrl || "");
+		}
+	}, [initialValues, initialImageUrl, initialAuthorImageUrl, open]);
 
 	React.useEffect(() => {
 		return () => {
 			if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+			if (authorPreviewUrl?.startsWith("blob:")) URL.revokeObjectURL(authorPreviewUrl);
 		};
-	}, [previewUrl]);
+	}, [previewUrl, authorPreviewUrl]);
 
 	function handleChange<K extends keyof BlogPostFormValues>(key: K, value: BlogPostFormValues[K]) {
 		setValues((prev) => ({ ...prev, [key]: value }));
 	}
 
 	function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-		const title = e.target.value;
-		handleChange("title", title);
-		if (!initialValues?.slug) {
-			handleChange("slug", slugify(title));
-		}
+		handleChange("title", e.target.value);
 	}
 
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -118,6 +138,20 @@ export default function BlogPostFormModal({
 		if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
 		setPreviewUrl("");
 		if (fileInputRef.current) fileInputRef.current.value = "";
+	}
+
+	function handleAuthorFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+		const file = e.target.files?.[0] || null;
+		handleChange("authorImageFile", file);
+		if (authorPreviewUrl?.startsWith("blob:")) URL.revokeObjectURL(authorPreviewUrl);
+		setAuthorPreviewUrl(file ? URL.createObjectURL(file) : "");
+	}
+
+	function clearAuthorImage() {
+		handleChange("authorImageFile", null);
+		if (authorPreviewUrl?.startsWith("blob:")) URL.revokeObjectURL(authorPreviewUrl);
+		setAuthorPreviewUrl("");
+		if (authorFileInputRef.current) authorFileInputRef.current.value = "";
 	}
 
 	function handleTagToggle(tagName: string) {
@@ -153,7 +187,7 @@ export default function BlogPostFormModal({
 
 	function handleFormSubmit(e: React.FormEvent) { e.preventDefault(); }
 
-	const disabled = !values.title || !values.slug || !values.categoryId || !values.author;
+	const disabled = !values.title || !values.categoryId || !values.author;
 
 	const currentTabIndexRaw = tabs.findIndex((t) => t.key === activeTab);
 	const currentTabIndex = currentTabIndexRaw < 0 ? 0 : currentTabIndexRaw;
@@ -173,10 +207,15 @@ export default function BlogPostFormModal({
 	}
 
 	return (
-		<Modal open={open} onClose={onClose} title={title ?? (mode === "edit" ? "Edit Blog Post" : "Create Blog Post") }>
+		<Modal 
+			open={open} 
+			onClose={onClose} 
+			title={title ?? (mode === "edit" ? "Edit Blog Post" : "Create Blog Post")}
+			panelClassName="max-w-3xl md:max-w-4xl lg:max-w-5xl max-h-[90vh]"
+		>
 			<form onSubmit={handleFormSubmit} noValidate className="space-y-5 text-sm">
 				<div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-1">
-					<div className="grid grid-cols-5 gap-1">
+					<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
 						{tabs.map((t) => (
 							<button
 								key={t.key}
@@ -196,10 +235,6 @@ export default function BlogPostFormModal({
 							<div className="sm:col-span-2">
 								<Input value={values.title} onChange={handleTitleChange} placeholder="Blog post title" label="Title" required />
 							</div>
-							<div className="sm:col-span-2">
-								<Input value={values.slug} onChange={(e) => handleChange("slug", e.target.value)} placeholder="blog-post-slug" label="Slug" required />
-								<div className="mt-1 inline-flex items-center gap-1 rounded-md border border-[color:var(--color-neutral-200)] bg-white px-2 py-0.5 font-mono text-[11px] text-[color:var(--color-neutral-700)]">/{values.slug || "your-post-slug"}</div>
-							</div>
 							<div>
 								<Select value={values.categoryId} onChange={(e) => handleChange("categoryId", e.target.value)} label="Category" required>
 									<option value="">Select category</option>
@@ -211,34 +246,50 @@ export default function BlogPostFormModal({
 							<div>
 								<Input value={values.author} onChange={(e) => handleChange("author", e.target.value)} placeholder="Author name" label="Author" required />
 							</div>
+							<div>
+								<Input 
+									value={values.estimatedReadTime} 
+									onChange={(e) => handleChange("estimatedReadTime", e.target.value === "" ? "" : Number(e.target.value))} 
+									type="number" 
+									min={1} 
+									placeholder="e.g. 5" 
+									label="Estimated read time (mins)" 
+								/>
+							</div>
 						</div>
 					</div>
 				)}
 
 				{activeTab === "content" && (
 					<div className="space-y-3">
-						<div>
+						<div className="grid grid-cols-1 gap-3">
 							<Textarea
 								value={values.content}
 								onChange={(e) => handleChange("content", e.target.value)}
 								placeholder="Write your blog post content here..."
 								label="Content"
+								hint="Use Markdown formatting for rich content."
 								rows={12}
 								className="font-mono text-sm"
 							/>
-							<p className="mt-1 text-[10px] text-[color:var(--color-neutral-500)]">Use Markdown formatting for rich content.</p>
 						</div>
 					</div>
 				)}
 
 				{activeTab === "summary" && (
 					<div className="space-y-3">
-						<div>
-							<Textarea value={values.excerpt} onChange={(e) => handleChange("excerpt", e.target.value)} placeholder="Brief description of the post" label="Excerpt" rows={3} />
-							<p className="mt-1 text-[10px] text-[color:var(--color-neutral-500)]">This will be displayed in post previews and search results.</p>
+						<div className="grid grid-cols-1 gap-3">
+							<Textarea 
+								value={values.excerpt} 
+								onChange={(e) => handleChange("excerpt", e.target.value)} 
+								placeholder="Brief description of the post" 
+								label="Excerpt" 
+								hint="This will be displayed in post previews and search results."
+								rows={3} 
+							/>
 						</div>
 						<div className="space-y-2">
-							<label className="block text-sm">Tags</label>
+							<label className="block text-sm font-medium text-[color:var(--foreground)]">Tags</label>
 							{values.tags.length > 0 ? (
 								<div className="flex flex-wrap gap-1.5">
 									{values.tags.map((tag) => (
@@ -262,6 +313,7 @@ export default function BlogPostFormModal({
 							<div>
 								<Input
 									placeholder="Type tag and press Enter"
+									hint="Add relevant tags for this post."
 									value={tagInput}
 									onChange={(e) => setTagInput(capitalizeFirstAlphabet(e.target.value))}
 									onKeyDown={(e) => {
@@ -273,7 +325,6 @@ export default function BlogPostFormModal({
 									}}
 								/>
 							</div>
-							<p className="text-[10px] text-[color:var(--color-neutral-500)]">Add relevant tags for this post.</p>
 						</div>
 					</div>
 				)}
@@ -281,11 +332,12 @@ export default function BlogPostFormModal({
 				{activeTab === "media" && (
 					<div className="space-y-3">
 						<div className="rounded-lg border border-dashed border-[color:var(--color-neutral-300)] bg-[color:var(--color-neutral-50)] p-3">
+							<label htmlFor="post-image-input" className="block text-xs text-[color:var(--color-neutral-600)] mb-2">Featured Image</label>
 							<div className="flex items-center gap-3">
 								{previewUrl ? (
-									<img src={previewUrl} alt="Preview" className="h-24 w-32 rounded-md object-cover ring-1 ring-[color:var(--color-neutral-200)]" />
+									<img src={previewUrl} alt="Preview" className="h-20 w-32 rounded-md object-cover ring-1 ring-[color:var(--color-neutral-200)]" />
 								) : (
-									<div className="h-24 w-32 flex items-center justify-center rounded-md bg-white text-[color:var(--color-neutral-400)] ring-1 ring-[color:var(--color-neutral-200)]">No image</div>
+									<div className="h-20 w-32 flex items-center justify-center rounded-md bg-white text-[color:var(--color-neutral-400)] ring-1 ring-[color:var(--color-neutral-200)]">No image</div>
 								)}
 								<div className="flex-1">
 									<p className="text-xs text-[color:var(--color-neutral-600)]">Upload a featured image for this blog post.</p>
@@ -300,25 +352,86 @@ export default function BlogPostFormModal({
 								</div>
 							</div>
 						</div>
+						<div className="rounded-lg border border-dashed border-[color:var(--color-neutral-300)] bg-[color:var(--color-neutral-50)] p-3">
+							<label htmlFor="author-image-input" className="block text-xs text-[color:var(--color-neutral-600)] mb-2">Author Image</label>
+							<div className="flex items-center gap-3">
+								{authorPreviewUrl ? (
+									<img src={authorPreviewUrl} alt="Preview" className="h-16 w-16 rounded-full object-cover ring-1 ring-[color:var(--color-neutral-200)]" />
+								) : (
+									<div className="h-16 w-16 flex items-center justify-center rounded-full bg-white text-[color:var(--color-neutral-400)] ring-1 ring-[color:var(--color-neutral-200)]">No image</div>
+								)}
+								<div className="flex-1">
+									<p className="text-xs text-[color:var(--color-neutral-600)]">Upload a profile picture for the author.</p>
+									<div className="mt-2 flex items-center gap-2">
+										<input ref={authorFileInputRef} type="file" accept="image/*" onChange={handleAuthorFileChange} className="hidden" id="author-image-input" />
+										<Button type="button" variant="secondary" size="sm" onClick={() => authorFileInputRef.current?.click()}>Browse</Button>
+										{authorPreviewUrl && (
+											<Button type="button" variant="secondary" size="sm" className="text-red-600 border-red-200 hover:bg-red-50" onClick={clearAuthorImage}>Remove</Button>
+										)}
+									</div>
+									<p className="mt-1 text-[10px] text-[color:var(--color-neutral-500)]">Square PNG or JPG. Recommended: 256x256px.</p>
+								</div>
+							</div>
+						</div>
 					</div>
 				)}
 
-				{activeTab === "settings" && (
+				{activeTab === "status" && (
 					<div className="space-y-3">
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 							<div>
-								<Select value={values.status} onChange={(e) => handleChange("status", e.target.value as BlogPostFormValues["status"])} label="Status">
+								<Select 
+									value={values.status} 
+									onChange={(e) => handleChange("status", e.target.value as BlogPostFormValues["status"])} 
+									label="Status"
+									hint="Draft posts are not visible to users."
+								>
 									<option value="published">Published</option>
 									<option value="unpublished">Unpublished</option>
 								</Select>
-								<p className="mt-1 text-[10px] text-[color:var(--color-neutral-500)]">Draft posts are not visible to users.</p>
 							</div>
 							<div>
-								<Select value={values.isFeatured ? "Featured" : "Not Featured"} onChange={(e) => handleChange("isFeatured", e.target.value === "Featured")} label="Featured">
+								<Select 
+									value={values.isFeatured ? "Featured" : "Not Featured"} 
+									onChange={(e) => handleChange("isFeatured", e.target.value === "Featured")} 
+									label="Featured"
+									hint="Featured posts appear prominently on the site."
+								>
 									<option value="Not Featured">Not Featured</option>
 									<option value="Featured">Featured</option>
 								</Select>
-								<p className="mt-1 text-[10px] text-[color:var(--color-neutral-500)]">Featured posts appear prominently on the site.</p>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{activeTab === "seo" && (
+					<div className="space-y-3">
+						<div className="grid grid-cols-1 gap-3">
+							<div>
+								<Input
+									label="Meta title"
+									value={values.metaTitle}
+									onChange={(e) => handleChange("metaTitle", e.target.value)}
+									placeholder="Optional"
+								/>
+							</div>
+							<div>
+								<Textarea
+									label="Meta description"
+									value={values.metaDescription}
+									onChange={(e) => handleChange("metaDescription", e.target.value)}
+									placeholder="Optional"
+									rows={3}
+								/>
+							</div>
+							<div>
+								<Input
+									label="Meta keywords (comma separated)"
+									value={values.metaKeywords}
+									onChange={(e) => handleChange("metaKeywords", e.target.value)}
+									placeholder="keyword1, keyword2"
+								/>
 							</div>
 						</div>
 					</div>
@@ -333,16 +446,16 @@ export default function BlogPostFormModal({
 					) : (
 						<Button
 							type="button"
-							onClick={() => {
-								const cleaned: BlogPostFormValues = {
-									...values,
-									slug: values.slug || slugify(values.title),
-								};
-								onSubmit(cleaned);
-							}}
-							disabled={disabled}
+							onClick={() => onSubmit(values)}
+							disabled={disabled || isLoading}
 						>
-							{mode === "edit" ? "Save changes" : "Create"}
+							{isLoading
+								? mode === "edit"
+									? "Saving..."
+									: "Creating..."
+								: mode === "edit"
+									? "Save changes"
+									: "Create"}
 						</Button>
 					)}
 				</div>
