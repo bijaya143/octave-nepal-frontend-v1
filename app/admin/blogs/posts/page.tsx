@@ -14,8 +14,8 @@ import {
   RotateCcw,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import BlogPostFormModal, { BlogPostFormValues } from "./BlogPostFormModal";
-import BlogPostViewModal from "./BlogPostViewModal";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import { toast } from "sonner";
@@ -119,6 +119,8 @@ function transformPost(entity: BlogPostEntity): BlogPost {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AdminBlogPostsPage() {
+  const router = useRouter();
+
   // ── Data state ──────────────────────────────────────────────────────────────
   const [posts, setPosts] = React.useState<BlogPost[]>([]);
   const [pagination, setPagination] = React.useState<{
@@ -146,7 +148,6 @@ export default function AdminBlogPostsPage() {
   const [categoryFilter, setCategoryFilter] = React.useState<string>("all");
 
   // ── Modal state ──────────────────────────────────────────────────────────────
-  const [selected, setSelected] = React.useState<BlogPost | null>(null);
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editing, setEditing] = React.useState<BlogPost | null>(null);
   const [pendingDelete, setPendingDelete] = React.useState<BlogPost | null>(
@@ -442,18 +443,12 @@ export default function AdminBlogPostsPage() {
           <Button
             variant="secondary"
             size="sm"
-            className="gap-1 text-primary-600 border-primary-200 hover:bg-primary-50"
-            aria-label="View"
-            onClick={() => setSelected(row)}
-          >
-            <Eye size={16} />
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
             className="gap-1"
             aria-label="Edit"
-            onClick={() => setEditing(row)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditing(row);
+            }}
           >
             <Pencil size={16} />
           </Button>
@@ -462,7 +457,10 @@ export default function AdminBlogPostsPage() {
             size="sm"
             className="gap-1 text-red-600 border-red-200 hover:bg-red-50"
             aria-label="Delete"
-            onClick={() => handleDelete(row)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(row);
+            }}
           >
             <Trash2 size={16} />
           </Button>
@@ -560,6 +558,7 @@ export default function AdminBlogPostsPage() {
             columns={columns}
             getRowKey={(row) => row.id}
             emptyMessage={isLoading ? "Loading..." : "No blog posts found."}
+            onRowClick={(row) => router.push(`/admin/blogs/posts/${row.id}`)}
           />
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4">
             <p className="text-sm text-[color:var(--color-neutral-600)]">
@@ -625,9 +624,6 @@ export default function AdminBlogPostsPage() {
           </div>
         )}
       </Modal>
-
-      {/* View modal */}
-      <BlogPostViewModal post={selected} onClose={() => setSelected(null)} />
 
       {/* Create modal */}
       <BlogPostFormModal

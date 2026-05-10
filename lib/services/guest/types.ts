@@ -4,6 +4,8 @@
 
 import {
   AdminReview,
+  BlogCategory,
+  BlogPost,
   Category,
   Course,
   ManagementTeam,
@@ -64,5 +66,21 @@ export interface GuestManagementTeamOutput {
  */
 export interface GuestInstructorOutput {
   data: Instructor[];
+  meta: PaginationOutput;
+}
+
+/**
+ * Guest blog category output
+ */
+export interface GuestBlogCategoryOutput {
+  data: BlogCategory[];
+  meta: PaginationOutput;
+}
+
+/**
+ * Guest blog post output
+ */
+export interface GuestBlogPostOutput {
+  data: BlogPost[];
   meta: PaginationOutput;
 }

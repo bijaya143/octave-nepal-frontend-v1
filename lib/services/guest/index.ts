@@ -13,4 +13,6 @@ export { guestReviewService } from "./review";
 export { guestEnrollmentService } from "./enrollment";
 export { guestManagementTeamService } from "./management-team";
 export { guestInstructorService } from "./instructor";
+export { guestBlogPostService } from "./blog-post";
+export { guestBlogCategoryService } from "./blog-category";
 export * from "./types";
