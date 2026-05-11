@@ -22,7 +22,7 @@ const navItems = [
   { label: "Courses", href: "/courses" },
   { label: "Categories", href: "/categories" },
   { label: "Testimonials", href: "/testimonials" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 
 export default function Navbar() {

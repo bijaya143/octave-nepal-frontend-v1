@@ -238,7 +238,7 @@ export default function FaqContent() {
                       we’ll get back soon.
                     </p>
                     <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                      <Link href="/contact" className="w-full sm:w-auto">
+                      <Link href="/contact-us" className="w-full sm:w-auto">
                         <Button size="lg" className="w-full sm:w-auto">
                           Contact support
                         </Button>

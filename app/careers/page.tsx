@@ -2,7 +2,7 @@ import Link from "next/link";
 import Card, { CardContent } from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
 import Badge from "../../components/ui/Badge";
-import { CheckCircle2, Lamp, Lightbulb } from "lucide-react";
+import { CheckCircle2, Lightbulb } from "lucide-react";
 import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/constant";
 import Container from "@/components/Container";
@@ -149,7 +149,7 @@ export default function CareersPage() {
                   </p>
                 </div>
                 <div className="md:justify-end flex items-center gap-3 w-full">
-                  <Link href="/contact" className="block w-full sm:w-auto">
+                  <Link href="/contact-us" className="block w-full sm:w-auto">
                     <Button size="lg" className="w-full sm:w-auto">
                       Send your profile
                     </Button>

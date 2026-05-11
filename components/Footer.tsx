@@ -46,10 +46,10 @@ const NAV_GROUPS = [
   {
     title: "Company",
     links: [
-      { label: "About", href: "/about" },
-      { label: "Our Team", href: "/team" },
+      { label: "About Us", href: "/about-us" },
+      { label: "Our Team", href: "/our-team" },
       { label: "Careers", href: "/careers" },
-      { label: "Contact", href: "/contact" },
+      { label: "Contact Us", href: "/contact-us" },
     ],
   },
 ];

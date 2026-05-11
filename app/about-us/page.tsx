@@ -39,12 +39,13 @@ export default function AboutPage() {
                 About {SITE_NAME}
               </h1>
               <p className="text-[color:var(--color-neutral-600)] text-sm sm:text-base md:text-lg lg:text-xl mb-6">
-                We saw a growing gap between traditional education and the fast-paced
-                demands of the modern tech industry. That's why we built {SITE_NAME}.
-                By combining <span className="gradient-text font-medium">AI-powered</span>{" "}
-                personalized guidance with practical, expert-led cohort courses, we are
-                democratizing access to premium education and empowering learners to
-                build real-world, in-demand skills.
+                We saw a growing gap between traditional education and the
+                fast-paced demands of the modern tech industry. That's why we
+                built {SITE_NAME}. By combining{" "}
+                <span className="gradient-text font-medium">AI-powered</span>{" "}
+                personalized guidance with practical, expert-led cohort courses,
+                we are democratizing access to premium education and empowering
+                learners to build real-world, in-demand skills.
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <Link href="/courses" className="block w-full sm:w-auto">
@@ -261,7 +262,7 @@ export default function AboutPage() {
                       Explore courses
                     </Button>
                   </Link>
-                  <Link href="/contact" className="block w-full sm:w-auto">
+                  <Link href="/contact-us" className="block w-full sm:w-auto">
                     <Button
                       size="lg"
                       variant="secondary"

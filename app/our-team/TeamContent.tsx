@@ -439,7 +439,10 @@ export default function TeamContent() {
                           See open roles
                         </Button>
                       </Link>
-                      <Link href="/contact" className="block w-full sm:w-auto">
+                      <Link
+                        href="/contact-us"
+                        className="block w-full sm:w-auto"
+                      >
                         <Button
                           size="lg"
                           variant="secondary"
