@@ -19,12 +19,55 @@ export async function generateMetadata({
     }
 
     const blog = resp.data;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
+    const blogUrl = `${baseUrl}/blogs/${slug}`;
+    const imageUrl = blog.imageKey
+      ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${blog.imageKey}`
+      : undefined;
+
+    const title = blog.metaTitle || blog.title;
+    const description =
+      blog.metaDescription ||
+      blog.excerpt ||
+      `Read more about ${blog.title} at ${SITE_NAME}.`;
+
     return {
-      title: (blog.metaTitle || blog.title) + " - " + SITE_NAME,
-      description:
-        blog.metaDescription ||
-        blog.excerpt ||
-        `Read more about ${blog.title} at ${SITE_NAME}.`,
+      title: title + " - " + SITE_NAME,
+      description,
+      keywords: blog.metaKeywords,
+      openGraph: {
+        title,
+        description,
+        url: blogUrl,
+        siteName: SITE_NAME,
+        images: imageUrl
+          ? [
+              {
+                url: imageUrl,
+                width: 1200,
+                height: 630,
+                alt: blog.title,
+              },
+            ]
+          : undefined,
+        locale: "en_US",
+        type: "article",
+        publishedTime: blog.createdAt.toISOString(),
+        modifiedTime: blog.updatedAt.toISOString(),
+        authors: blog.author ? [blog.author] : undefined,
+        tags: blog.tags,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: imageUrl ? [imageUrl] : undefined,
+        creator: "@octavenepal",
+      },
+      alternates: {
+        canonical: blogUrl,
+      },
     };
   } catch (error) {
     return {
