@@ -39,6 +39,10 @@ export default function BlogsContent() {
   const [shareData, setShareData] = React.useState<{
     id: string;
     title: string;
+    excerpt?: string;
+    thumbnail?: string;
+    author?: string;
+    date?: string;
   } | null>(null);
 
   const allTags = React.useMemo(
@@ -321,7 +325,14 @@ export default function BlogsContent() {
                           className="hidden sm:inline inline-flex items-center gap-2"
                           aria-label="Share article"
                           onClick={() =>
-                            setShareData({ id: post.slug, title: post.title })
+                            setShareData({
+                              id: post.slug,
+                              title: post.title,
+                              excerpt: post.excerpt,
+                              thumbnail: post.thumbnail,
+                              author: post.author,
+                              date: post.date,
+                            })
                           }
                         >
                           <Share2 className="h-4 w-4" aria-hidden />
@@ -430,96 +441,129 @@ export default function BlogsContent() {
             const whatsapp = `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`;
             const messenger = `fb-messenger://share/?link=${encodedUrl}`;
             return (
-              <div>
-                <p className="text-sm text-[color:var(--color-neutral-600)]">
-                  Choose a platform to share:
-                </p>
-                <div className="mt-3 flex items-center gap-3">
-                  <a
-                    href={twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Share on X (Twitter)"
-                    className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-                  >
-                    <Image
-                      src="/images/social-medias/twitter.png"
-                      alt=""
-                      width={20}
-                      height={20}
-                      sizes="20px"
-                      className="object-contain"
-                      aria-hidden
-                    />
-                  </a>
-                  <a
-                    href={facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Share on Facebook"
-                    className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-                  >
-                    <Image
-                      src="/images/social-medias/facebook.png"
-                      alt=""
-                      width={20}
-                      height={20}
-                      sizes="20px"
-                      className="object-contain"
-                      aria-hidden
-                    />
-                  </a>
-                  <a
-                    href={linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Share on LinkedIn"
-                    className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-                  >
-                    <Image
-                      src="/images/social-medias/linkedin.png"
-                      alt=""
-                      width={20}
-                      height={20}
-                      sizes="20px"
-                      className="object-contain"
-                      aria-hidden
-                    />
-                  </a>
-                  <a
-                    href={whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Share on WhatsApp"
-                    className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-                  >
-                    <Image
-                      src="/images/social-medias/whatsapp.png"
-                      alt=""
-                      width={20}
-                      height={20}
-                      sizes="20px"
-                      className="object-contain"
-                      aria-hidden
-                    />
-                  </a>
-                  <a
-                    href={messenger}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Share on Messenger"
-                    className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
-                  >
-                    <Image
-                      src="/images/social-medias/messenger.png"
-                      alt=""
-                      width={20}
-                      height={20}
-                      sizes="20px"
-                      className="object-contain"
-                      aria-hidden
-                    />
-                  </a>
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  {shareData.thumbnail && (
+                    <div className="relative h-32 sm:h-24 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden border border-[color:var(--color-neutral-200)]">
+                      <Image
+                        src={shareData.thumbnail}
+                        alt={shareData.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 128px"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <h3
+                      className="text-base font-semibold text-[color:var(--foreground)] line-clamp-2"
+                      style={{ fontFamily: "var(--font-heading-sans)" }}
+                    >
+                      {shareData.title}
+                    </h3>
+                    {shareData.excerpt && (
+                      <p className="mt-1 text-sm text-[color:var(--color-neutral-600)] line-clamp-2">
+                        {shareData.excerpt}
+                      </p>
+                    )}
+                    <div className="mt-2 flex items-center gap-2 text-xs text-[color:var(--color-neutral-500)]">
+                      {shareData.author && <span>{shareData.author}</span>}
+                      {shareData.author && shareData.date && <span>·</span>}
+                      {shareData.date && <span>{shareData.date}</span>}
+                    </div>
+                  </div>
+                </div>
+                <div className="border-t border-[color:var(--color-neutral-200)] pt-4">
+                  <p className="text-sm text-[color:var(--color-neutral-600)]">
+                    Choose a platform to share:
+                  </p>
+                  <div className="mt-3 flex items-center gap-3">
+                    <a
+                      href={twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on X (Twitter)"
+                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
+                    >
+                      <Image
+                        src="/images/social-medias/twitter.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        sizes="20px"
+                        className="object-contain"
+                        aria-hidden
+                      />
+                    </a>
+                    <a
+                      href={facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on Facebook"
+                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
+                    >
+                      <Image
+                        src="/images/social-medias/facebook.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        sizes="20px"
+                        className="object-contain"
+                        aria-hidden
+                      />
+                    </a>
+                    <a
+                      href={linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on LinkedIn"
+                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
+                    >
+                      <Image
+                        src="/images/social-medias/linkedin.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        sizes="20px"
+                        className="object-contain"
+                        aria-hidden
+                      />
+                    </a>
+                    <a
+                      href={whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on WhatsApp"
+                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
+                    >
+                      <Image
+                        src="/images/social-medias/whatsapp.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        sizes="20px"
+                        className="object-contain"
+                        aria-hidden
+                      />
+                    </a>
+                    <a
+                      href={messenger}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on Messenger"
+                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-[color:var(--color-neutral-200)] bg-white shadow-xs hover:bg-[color:var(--color-neutral-50)]"
+                    >
+                      <Image
+                        src="/images/social-medias/messenger.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        sizes="20px"
+                        className="object-contain"
+                        aria-hidden
+                      />
+                    </a>
+                  </div>
                 </div>
               </div>
             );

@@ -102,21 +102,34 @@ export default function ContactContent() {
                     onChange={(e) => setSubject(e.target.value)}
                   />
                   <div className="sm:col-span-2 flex flex-col gap-2">
-                    <label className="text-sm font-medium text-[color:var(--foreground)]">
-                      Message
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium text-[color:var(--foreground)]">
+                        Message
+                        <span className="ml-1 text-red-600" aria-hidden>
+                          *
+                        </span>
+                      </label>
+                      <span
+                        className={`text-xs font-medium ${message.length >= 250 ? "text-[color:var(--color-error-500)]" : "text-[color:var(--color-neutral-500)]"}`}
+                      >
+                        {message.length} / 250
+                      </span>
+                    </div>
                     <textarea
                       placeholder="Write your message..."
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       required
+                      maxLength={250}
                       className="min-h-32 rounded-lg bg-white border border-[color:var(--color-neutral-200)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--color-neutral-400)] shadow-xs focus:border-[color:var(--color-primary-400)] focus:shadow-sm transition-all"
                     />
                   </div>
-                  <div className="sm:col-span-2 flex items-center justify-end gap-3 pt-1">
+                  <div className="sm:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 pt-1">
                     <Button
                       type="submit"
                       size="lg"
+                      block
+                      className="sm:w-auto"
                       disabled={loading || !name || !email || !message}
                     >
                       <Send className="h-4 w-4 mr-2" />
