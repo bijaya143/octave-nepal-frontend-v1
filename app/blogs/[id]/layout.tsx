@@ -12,13 +12,22 @@ export async function generateMetadata({
   try {
     const resp = await guestBlogPostService.getBySlug(slug);
 
-    if (!resp.success || !resp.data) {
+    if (!resp.success) {
+      console.error("Blog fetch failed:", resp);
       return {
         title: "Blog Not Found - " + SITE_NAME,
       };
     }
 
     const blog = resp.data;
+
+    if (!blog) {
+      console.error("Blog data is missing:", resp);
+      return {
+        title: "Blog Not Found - " + SITE_NAME,
+      };
+    }
+
     const baseUrl =
       process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
     const blogUrl = `${baseUrl}/blogs/${slug}`;
@@ -53,8 +62,8 @@ export async function generateMetadata({
           : undefined,
         locale: "en_US",
         type: "article",
-        publishedTime: blog.createdAt.toISOString(),
-        modifiedTime: blog.updatedAt.toISOString(),
+        publishedTime: new Date(blog.createdAt).toISOString(),
+        modifiedTime: new Date(blog.updatedAt).toISOString(),
         authors: blog.author ? [blog.author] : undefined,
         tags: blog.tags,
       },
@@ -70,6 +79,7 @@ export async function generateMetadata({
       },
     };
   } catch (error) {
+    console.error("Error generating metadata:", error);
     return {
       title: "Blog Not Found - " + SITE_NAME,
     };
