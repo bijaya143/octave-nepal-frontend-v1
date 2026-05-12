@@ -345,7 +345,7 @@ export default function BlogPostDetailPage() {
                           ? post.authorImageKey.startsWith("http")
                             ? post.authorImageKey
                             : `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${post.authorImageKey}`
-                          : `/images/logo/octave-nepal-only-logo.png`
+                          : `/images/logo/octave-nepal-only-logo-dark.png`
                       }
                       alt={post.author || "Author"}
                       fill

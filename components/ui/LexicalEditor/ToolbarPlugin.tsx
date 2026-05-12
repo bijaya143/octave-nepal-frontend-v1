@@ -160,7 +160,11 @@ export default function ToolbarPlugin() {
     if (!isLink) {
       const url = prompt("Enter URL:", "https://");
       if (url) {
-        editor.dispatchCommand(TOGGLE_LINK_COMMAND, url);
+        editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
+          url,
+          target: "_blank",
+          rel: "noopener noreferrer",
+        });
       }
     } else {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);

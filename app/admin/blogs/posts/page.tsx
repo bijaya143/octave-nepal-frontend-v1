@@ -5,14 +5,7 @@ import Button from "@/components/ui/Button";
 import DataTable, { DataTableColumn } from "@/components/ui/DataTable";
 import Badge from "@/components/ui/Badge";
 import Modal from "@/components/ui/Modal";
-import {
-  CheckCircle2,
-  XCircle,
-  Eye,
-  Pencil,
-  Trash2,
-  RotateCcw,
-} from "lucide-react";
+import { CheckCircle2, XCircle, Pencil, Trash2, RotateCcw } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import BlogPostFormModal, { BlogPostFormValues } from "./BlogPostFormModal";
@@ -95,7 +88,7 @@ function transformPost(entity: BlogPostEntity): BlogPost {
     author: entity.author || "",
     authorImageUrl: entity.authorImageKey
       ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${entity.authorImageKey}`
-      : `/images/logo/octave-nepal-only-logo.png`,
+      : `/images/logo/octave-nepal-only-logo-dark.png`,
     category: entity.blogCategory
       ? { id: entity.blogCategory.id, name: entity.blogCategory.name }
       : { id: "", name: "Uncategorized" },

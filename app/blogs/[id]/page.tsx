@@ -10,6 +10,7 @@ import Card, { CardContent } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Container from "@/components/Container";
 import { SearchX, ArrowLeft } from "lucide-react";
+import ShareButtons from "@/components/ui/ShareButtons";
 
 interface MappedPost {
   id: string;
@@ -79,7 +80,7 @@ export default function BlogDetailPage() {
         author: b.author || "Admin",
         authorAvatar: b.authorImageKey
           ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${b.authorImageKey}`
-          : "/images/logo/octave-nepal-only-logo.png",
+          : "/images/logo/octave-nepal-only-logo-dark.png",
         date: new Date(b.createdAt).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
@@ -237,107 +238,17 @@ export default function BlogDetailPage() {
                   ? window.location.origin
                   : process.env.NEXT_PUBLIC_SITE_URL || "";
               const shareUrl = `${baseUrl}/blogs/${blog.slug}`;
-              const encodedUrl = encodeURIComponent(shareUrl);
-              const encodedTitle = encodeURIComponent(blog.title);
-              const twitter = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
-              const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-              const linkedin = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}`;
-              const whatsapp = `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`;
-              const messenger = `fb-messenger://share/?link=${encodedUrl}`;
+
               return (
-                <section className="mt-10 border-t border-neutral-200 pt-6">
+                <section className="mt-10 border-t border-[color:var(--color-neutral-200)] pt-6">
                   <h3
                     className="text-sm font-medium"
                     style={{ fontFamily: "var(--font-heading-sans)" }}
                   >
                     Share this article
                   </h3>
-                  <div className="mt-3 flex items-center gap-3">
-                    <a
-                      href={twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Share on X (Twitter)"
-                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-neutral-200 bg-white shadow-xs hover:bg-neutral-50"
-                    >
-                      <Image
-                        src="/images/social-medias/twitter.png"
-                        alt=""
-                        width={20}
-                        height={20}
-                        sizes="20px"
-                        className="object-contain"
-                        aria-hidden
-                      />
-                    </a>
-                    <a
-                      href={facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Share on Facebook"
-                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-neutral-200 bg-white shadow-xs hover:bg-neutral-50"
-                    >
-                      <Image
-                        src="/images/social-medias/facebook.png"
-                        alt=""
-                        width={20}
-                        height={20}
-                        sizes="20px"
-                        className="object-contain"
-                        aria-hidden
-                      />
-                    </a>
-                    <a
-                      href={linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Share on LinkedIn"
-                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-neutral-200 bg-white shadow-xs hover:bg-neutral-50"
-                    >
-                      <Image
-                        src="/images/social-medias/linkedin.png"
-                        alt=""
-                        width={20}
-                        height={20}
-                        sizes="20px"
-                        className="object-contain"
-                        aria-hidden
-                      />
-                    </a>
-                    <a
-                      href={whatsapp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Share on WhatsApp"
-                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-neutral-200 bg-white shadow-xs hover:bg-neutral-50"
-                    >
-                      <Image
-                        src="/images/social-medias/whatsapp.png"
-                        alt=""
-                        width={20}
-                        height={20}
-                        sizes="20px"
-                        className="object-contain"
-                        aria-hidden
-                      />
-                    </a>
-                    <a
-                      href={messenger}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Share on Messenger"
-                      className="h-10 w-10 rounded-full inline-flex items-center justify-center border border-neutral-200 bg-white shadow-xs hover:bg-neutral-50"
-                    >
-                      <Image
-                        src="/images/social-medias/messenger.png"
-                        alt=""
-                        width={20}
-                        height={20}
-                        sizes="20px"
-                        className="object-contain"
-                        aria-hidden
-                      />
-                    </a>
+                  <div className="mt-3">
+                    <ShareButtons url={shareUrl} title={blog.title} />
                   </div>
                 </section>
               );

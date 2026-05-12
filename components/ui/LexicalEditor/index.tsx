@@ -113,7 +113,9 @@ export default function LexicalEditor({
           />
           <HistoryPlugin />
           <ListPlugin />
-          <LinkPlugin />
+          <LinkPlugin
+            attributes={{ target: "_blank", rel: "noopener noreferrer" }}
+          />
           <InitialHtmlPlugin html={initialValue} />
           {onChange && <HtmlOnChangePlugin onChange={onChange} />}
         </div>
