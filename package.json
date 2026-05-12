@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@lexical/code": "^0.44.0",
     "@lexical/html": "^0.44.0",
     "@lexical/link": "^0.44.0",
     "@lexical/list": "^0.44.0",

@@ -28,7 +28,7 @@ import {
   $createQuoteNode,
   $isHeadingNode,
 } from "@lexical/rich-text";
-import { $createCodeNode, $isCodeNode } from "@lexical/code";
+
 import {
   Strikethrough,
   Subscript,
@@ -93,9 +93,7 @@ export default function ToolbarPlugin() {
         } else {
           const type = $isHeadingNode(element)
             ? element.getTag()
-            : $isCodeNode(element)
-              ? "code"
-              : element.getType();
+            : element.getType();
           setBlockType(type);
         }
       }
@@ -194,8 +192,6 @@ export default function ToolbarPlugin() {
           $setBlocksType(selection, () => $createHeadingNode(type as any));
         } else if (type === "quote") {
           $setBlocksType(selection, () => $createQuoteNode());
-        } else if (type === "code") {
-          $setBlocksType(selection, () => $createCodeNode());
         }
       }
     });
@@ -232,9 +228,12 @@ export default function ToolbarPlugin() {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (aaRef.current && !aaRef.current.contains(e.target as Node)) setIsAaOpen(false);
-      if (blockRef.current && !blockRef.current.contains(e.target as Node)) setIsBlockOpen(false);
-      if (alignRef.current && !alignRef.current.contains(e.target as Node)) setIsAlignOpen(false);
+      if (aaRef.current && !aaRef.current.contains(e.target as Node))
+        setIsAaOpen(false);
+      if (blockRef.current && !blockRef.current.contains(e.target as Node))
+        setIsBlockOpen(false);
+      if (alignRef.current && !alignRef.current.contains(e.target as Node))
+        setIsAlignOpen(false);
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -269,7 +268,6 @@ export default function ToolbarPlugin() {
     quote: "Quote",
     ul: "Bulleted List",
     ol: "Numbered List",
-    code: "Code Block",
   };
 
   const blockTypeToIcon: Record<string, any> = {
@@ -283,7 +281,6 @@ export default function ToolbarPlugin() {
     quote: <Quote size={16} />,
     ul: <List size={16} />,
     ol: <ListOrdered size={16} />,
-    code: <Code size={16} />,
   };
 
   return (
@@ -315,7 +312,9 @@ export default function ToolbarPlugin() {
         >
           <div className="flex items-center gap-2 truncate">
             {blockTypeToIcon[blockType] || <Type size={16} />}
-            <span className="truncate">{blockTypeToName[blockType] || "Normal"}</span>
+            <span className="truncate">
+              {blockTypeToName[blockType] || "Normal"}
+            </span>
           </div>
           <ChevronDown size={14} className="shrink-0" />
         </button>
@@ -440,28 +439,40 @@ export default function ToolbarPlugin() {
         {isAlignOpen && (
           <div className="absolute top-full right-0 mt-1 min-w-[140px] bg-white border border-[color:var(--color-neutral-200)] rounded-md shadow-lg flex flex-col z-20 py-1">
             <DropdownItem
-              onClick={() => { editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left"); setAlign("left"); }}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
+                setAlign("left");
+              }}
               active={align === "left"}
               icon={<AlignLeft size={16} />}
               label="Left Align"
               closeMenu={() => setIsAlignOpen(false)}
             />
             <DropdownItem
-              onClick={() => { editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center"); setAlign("center"); }}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
+                setAlign("center");
+              }}
               active={align === "center"}
               icon={<AlignCenter size={16} />}
               label="Center Align"
               closeMenu={() => setIsAlignOpen(false)}
             />
             <DropdownItem
-              onClick={() => { editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right"); setAlign("right"); }}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
+                setAlign("right");
+              }}
               active={align === "right"}
               icon={<AlignRight size={16} />}
               label="Right Align"
               closeMenu={() => setIsAlignOpen(false)}
             />
             <DropdownItem
-              onClick={() => { editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify"); setAlign("justify"); }}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
+                setAlign("justify");
+              }}
               active={align === "justify"}
               icon={<AlignJustify size={16} />}
               label="Justify Align"

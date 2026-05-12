@@ -11,7 +11,6 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { ListItemNode, ListNode } from "@lexical/list";
-import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
@@ -21,6 +20,7 @@ import { $getRoot, $insertNodes } from "lexical";
 
 import theme from "./theme";
 import ToolbarPlugin from "./ToolbarPlugin";
+import FloatingLinkPlugin from "./FloatingLinkPlugin";
 
 function HtmlOnChangePlugin({
   onChange,
@@ -42,20 +42,21 @@ function HtmlOnChangePlugin({
 
 function InitialHtmlPlugin({ html }: { html: string }) {
   const [editor] = useLexicalComposerContext();
-  const [isInitialized, setIsInitialized] = React.useState(false);
+  const isInitializedRef = React.useRef(false);
 
   useEffect(() => {
-    if (!html || isInitialized) return;
+    if (!html || isInitializedRef.current) return;
 
     editor.update(() => {
+      const root = $getRoot();
+      root.clear();
       const parser = new DOMParser();
       const dom = parser.parseFromString(html, "text/html");
       const nodes = $generateNodesFromDOM(editor, dom);
-      $getRoot().select();
       $insertNodes(nodes);
     });
-    setIsInitialized(true);
-  }, [editor, html, isInitialized]);
+    isInitializedRef.current = true;
+  }, [editor, html]);
 
   return null;
 }
@@ -79,8 +80,6 @@ const editorConfig = {
     ListNode,
     ListItemNode,
     QuoteNode,
-    CodeNode,
-    CodeHighlightNode,
     AutoLinkNode,
     LinkNode,
   ],
@@ -95,11 +94,14 @@ export default function LexicalEditor({
   value = "",
   onChange,
 }: LexicalEditorProps) {
+  const [initialValue] = React.useState(value);
+
   return (
     <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white overflow-hidden flex flex-col focus-within:ring-2 focus-within:ring-[color:var(--color-primary-200)] focus-within:border-[color:var(--color-primary-400)] transition-shadow relative">
       <LexicalComposer initialConfig={editorConfig}>
         <ToolbarPlugin />
-        <div className="relative flex-1 min-h-[300px]">
+        <div className="relative min-h-[300px] max-h-[500px] overflow-y-auto">
+          <FloatingLinkPlugin />
           <RichTextPlugin
             contentEditable={
               <ContentEditable className="min-h-[300px] outline-none p-4 text-sm text-[color:var(--color-neutral-800)]" />
@@ -112,7 +114,7 @@ export default function LexicalEditor({
           <HistoryPlugin />
           <ListPlugin />
           <LinkPlugin />
-          <InitialHtmlPlugin html={value} />
+          <InitialHtmlPlugin html={initialValue} />
           {onChange && <HtmlOnChangePlugin onChange={onChange} />}
         </div>
       </LexicalComposer>
