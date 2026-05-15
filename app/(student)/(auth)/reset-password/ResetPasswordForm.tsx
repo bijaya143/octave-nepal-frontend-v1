@@ -16,28 +16,28 @@ type ResetState = {
 
 type ResetPasswordFormProps = {
   onSubmit: (otp: string, password: string, confirmPassword: string) => void;
+  onClearError: (field: "otp" | "password" | "confirmPassword") => void;
   state: ResetState;
   isLoading: boolean;
 };
 
 export default function ResetPasswordForm({
   onSubmit,
+  onClearError,
   state,
   isLoading,
 }: ResetPasswordFormProps) {
+  const [otp, setOtp] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const otp = String(formData.get("otp") || "").trim();
-    const password = String(formData.get("password") || "");
-    const confirmPassword = String(formData.get("confirmPassword") || "");
-
-    onSubmit(otp, password, confirmPassword);
+    onSubmit(otp.trim(), password, confirmPassword);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {state?.message && (
         <div
           className={`rounded-md border px-3 py-2 text-sm ${
@@ -55,6 +55,11 @@ export default function ResetPasswordForm({
         name="otp"
         required
         placeholder="Enter 6-digit code"
+        value={otp}
+        onChange={(e) => {
+          setOtp(e.target.value);
+          onClearError("otp");
+        }}
         error={state?.fieldErrors?.otp || null}
         disabled={isLoading}
         maxLength={6}
@@ -65,6 +70,11 @@ export default function ResetPasswordForm({
         name="password"
         required
         placeholder="••••••••"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          onClearError("password");
+        }}
         error={state?.fieldErrors?.password || null}
         disabled={isLoading}
       />
@@ -73,6 +83,11 @@ export default function ResetPasswordForm({
         name="confirmPassword"
         required
         placeholder="••••••••"
+        value={confirmPassword}
+        onChange={(e) => {
+          setConfirmPassword(e.target.value);
+          onClearError("confirmPassword");
+        }}
         error={state?.fieldErrors?.confirmPassword || null}
         disabled={isLoading}
       />

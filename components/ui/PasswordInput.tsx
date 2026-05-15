@@ -9,28 +9,44 @@ type PasswordInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   hint?: string;
 };
 
-export default function PasswordInput({ className, error, label, hint, id, ...props }: PasswordInputProps) {
+export default function PasswordInput({
+  className,
+  error,
+  label,
+  hint,
+  id,
+  required,
+  ...props
+}: PasswordInputProps) {
   const inputId = id || React.useId();
   const [visible, setVisible] = React.useState(false);
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-[color:var(--foreground)]">
+        <label
+          htmlFor={inputId}
+          className="text-sm font-medium text-[color:var(--foreground)]"
+        >
           {label}
-          {props.required && <span className="ml-1 text-red-600" aria-hidden>*</span>}
+          {required && (
+            <span className="ml-1 text-red-600" aria-hidden>
+              *
+            </span>
+          )}
         </label>
       )}
       <div className="relative">
         <input
           id={inputId}
+          aria-required={required}
           {...props}
           type={visible ? "text" : "password"}
           className={cn(
             "h-11 w-full px-4 pr-11 rounded-lg bg-white border text-[color:var(--foreground)] placeholder:text-[color:var(--color-neutral-400)]",
             "border-[color:var(--color-neutral-200)] focus:border-[color:var(--color-primary-400)]",
             "shadow-xs focus:shadow-sm transition-all",
-            error && "border-red-400 focus:border-red-500 focus:shadow-sm"
+            error && "border-red-400 focus:border-red-500 focus:shadow-sm",
           )}
         />
         <button

@@ -2,11 +2,11 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Card, { CardContent } from "../../../../components/ui/Card";
-import Button from "../../../../components/ui/Button";
 import ResetPasswordForm from "./ResetPasswordForm";
 import { useStudentAuth } from "@/lib/hooks/useStudentAuth";
 import { studentAuthService } from "@/lib/services";
 import { ApiError } from "@/lib/api";
+import { toast } from "sonner";
 
 type ResetState = {
   ok: boolean;
@@ -67,7 +67,7 @@ function ResetPasswordFormComponent() {
   const handleResetPassword = async (
     otp: string,
     password: string,
-    confirmPassword: string
+    confirmPassword: string,
   ) => {
     setIsLoading(true);
 
@@ -109,9 +109,11 @@ function ResetPasswordFormComponent() {
     ) {
       setState({
         ok: false,
-        message: "Please fix the errors below.",
         fieldErrors,
       });
+      // Show the first error as a toast
+      // const firstError = Object.values(fieldErrors)[0];
+      // if (firstError) toast.error(firstError);
       setIsLoading(false);
       return;
     }
@@ -215,6 +217,17 @@ function ResetPasswordFormComponent() {
             onSubmit={handleResetPassword}
             state={state}
             isLoading={isLoading}
+            onClearError={(field) => {
+              if (state.fieldErrors?.[field]) {
+                setState((prev) => ({
+                  ...prev,
+                  fieldErrors: {
+                    ...prev.fieldErrors,
+                    [field]: undefined,
+                  },
+                }));
+              }
+            }}
           />
           <div className="mt-8 pt-6 border-t border-[color:var(--color-neutral-200)]">
             <div className="text-sm text-muted-foreground text-center">

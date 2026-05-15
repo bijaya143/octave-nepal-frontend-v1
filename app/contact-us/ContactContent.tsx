@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { cn } from "@/lib/cn";
 import Card, { CardContent } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -15,13 +16,31 @@ export default function ContactContent() {
   const [message, setMessage] = React.useState("");
   const [submitted, setSubmitted] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [errors, setErrors] = React.useState<{
+    name?: string;
+    email?: string;
+    message?: string;
+  }>({});
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name || !email || !message) {
-      toast.error("Please fill in all required fields.");
+    const newErrors: typeof errors = {};
+    if (!name.trim()) newErrors.name = "Full name is required";
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    if (!message.trim()) newErrors.message = "Message is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      const firstError = Object.values(newErrors)[0];
+      toast.error(firstError);
       return;
     }
+
+    setErrors({});
 
     setLoading(true);
     try {
@@ -77,13 +96,19 @@ export default function ContactContent() {
               <CardContent className="relative py-6">
                 <form
                   onSubmit={handleSubmit}
+                  noValidate
                   className="grid sm:grid-cols-2 gap-4"
                 >
                   <Input
                     label="Full name"
                     placeholder="Your name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    error={errors.name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      if (errors.name)
+                        setErrors((prev) => ({ ...prev, name: "" }));
+                    }}
                     required
                   />
                   <Input
@@ -91,7 +116,12 @@ export default function ContactContent() {
                     type="email"
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    error={errors.email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email)
+                        setErrors((prev) => ({ ...prev, email: "" }));
+                    }}
                     required
                   />
                   <Input
@@ -118,11 +148,22 @@ export default function ContactContent() {
                     <textarea
                       placeholder="Write your message..."
                       value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      required
+                      onChange={(e) => {
+                        setMessage(e.target.value);
+                        if (errors.message)
+                          setErrors((prev) => ({ ...prev, message: "" }));
+                      }}
                       maxLength={250}
-                      className="min-h-32 rounded-lg bg-white border border-[color:var(--color-neutral-200)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--color-neutral-400)] shadow-xs focus:border-[color:var(--color-primary-400)] focus:shadow-sm transition-all"
+                      className={cn(
+                        "min-h-32 rounded-lg bg-white border px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--color-neutral-400)] shadow-xs transition-all",
+                        errors.message
+                          ? "border-red-400 focus:border-red-500 focus:shadow-sm"
+                          : "border-[color:var(--color-neutral-200)] focus:border-[color:var(--color-primary-400)] focus:shadow-sm",
+                      )}
                     />
+                    {errors.message && (
+                      <p className="text-xs text-red-600">{errors.message}</p>
+                    )}
                   </div>
                   <div className="sm:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 pt-1">
                     <Button
@@ -130,7 +171,7 @@ export default function ContactContent() {
                       size="lg"
                       block
                       className="sm:w-auto"
-                      disabled={loading || !name || !email || !message}
+                      disabled={loading}
                     >
                       <Send className="h-4 w-4 mr-2" />
                       {loading ? "Sending..." : "Send message"}

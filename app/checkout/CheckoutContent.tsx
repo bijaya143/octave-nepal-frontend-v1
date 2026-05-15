@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
+import { cn } from "@/lib/cn";
 import { useRouter, useSearchParams } from "next/navigation";
 import Card, { CardContent, CardFooter } from "../../components/ui/Card";
 import Input from "../../components/ui/Input";
@@ -70,6 +71,13 @@ export default function CheckoutContent() {
   );
   const [receipts, setReceipts] = useState<File[]>([]);
   const [transactionId, setTransactionId] = useState("");
+  const [errors, setErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    receipts?: string;
+  }>({});
 
   const { phone, country } = usePhoneInput({
     defaultCountry: "np",
@@ -194,20 +202,30 @@ export default function CheckoutContent() {
   const handleEnrollmentConfirm = async () => {
     if (!course) return;
 
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.phone
-    ) {
-      toast.error("Please fill in all student information fields.");
+    const newErrors: typeof errors = {};
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    if (!formData.phone.trim() || formData.phone.length < 7) {
+      newErrors.phone = "A valid phone number is required";
+    }
+    if (receipts.length === 0) {
+      newErrors.receipts = "At least one payment receipt is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      // Show the first error as a toast for immediate feedback
+      const firstError = Object.values(newErrors)[0];
+      toast.error(firstError);
       return;
     }
 
-    if (receipts.length === 0) {
-      toast.error("Please upload at least one payment receipt.");
-      return;
-    }
+    setErrors({});
 
     setIsSubmitting(true);
 
@@ -402,9 +420,12 @@ export default function CheckoutContent() {
                     required
                     disabled={isStudentAuthenticated}
                     value={formData.firstName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, firstName: e.target.value })
-                    }
+                    error={errors.firstName}
+                    onChange={(e) => {
+                      setFormData({ ...formData, firstName: e.target.value });
+                      if (errors.firstName)
+                        setErrors((prev) => ({ ...prev, firstName: "" }));
+                    }}
                   />
                   <Input
                     label="Last name"
@@ -412,9 +433,12 @@ export default function CheckoutContent() {
                     required
                     disabled={isStudentAuthenticated}
                     value={formData.lastName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, lastName: e.target.value })
-                    }
+                    error={errors.lastName}
+                    onChange={(e) => {
+                      setFormData({ ...formData, lastName: e.target.value });
+                      if (errors.lastName)
+                        setErrors((prev) => ({ ...prev, lastName: "" }));
+                    }}
                   />
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4 mt-4 text-left">
@@ -425,9 +449,12 @@ export default function CheckoutContent() {
                     required
                     disabled={isStudentAuthenticated}
                     value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
+                    error={errors.email}
+                    onChange={(e) => {
+                      setFormData({ ...formData, email: e.target.value });
+                      if (errors.email)
+                        setErrors((prev) => ({ ...prev, email: "" }));
+                    }}
                   />
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-medium text-[color:var(--foreground)]">
@@ -436,14 +463,30 @@ export default function CheckoutContent() {
                     <PhoneInput
                       defaultCountry="np"
                       value={formData.phone}
-                      onChange={(phone) => setFormData({ ...formData, phone })}
+                      onChange={(phone) => {
+                        setFormData({ ...formData, phone });
+                        if (errors.phone)
+                          setErrors((prev) => ({ ...prev, phone: "" }));
+                      }}
                       className="flex items-stretch"
-                      inputClassName="!h-11 !w-full !rounded-r-lg !rounded-l-none !border !border-[color:var(--color-neutral-200)] !px-4 !text-[color:var(--foreground)] !text-base md:!text-sm !transition-all !shadow-xs focus:!shadow-sm"
+                      inputClassName={cn(
+                        "!h-11 !w-full !rounded-r-lg !rounded-l-none !border !px-4 !text-[color:var(--foreground)] !text-base md:!text-sm !transition-all !shadow-xs focus:!shadow-sm",
+                        errors.phone
+                          ? "!border-red-400 focus:!border-red-500"
+                          : "!border-[color:var(--color-neutral-200)] focus:!border-[color:var(--color-primary-400)]",
+                      )}
                       countrySelectorStyleProps={{
-                        buttonClassName:
-                          "!h-11 !rounded-l-lg !rounded-r-none !border !border-r-0 !border-[color:var(--color-neutral-200)] !bg-white !px-3 hover:!bg-[color:var(--color-neutral-50)] !transition-all",
+                        buttonClassName: cn(
+                          "!h-11 !rounded-l-lg !rounded-r-none !border !border-r-0 !bg-white !px-3 hover:!bg-[color:var(--color-neutral-50)] !transition-all",
+                          errors.phone
+                            ? "!border-red-400"
+                            : "!border-[color:var(--color-neutral-200)]",
+                        ),
                       }}
                     />
+                    {errors.phone && (
+                      <p className="text-xs text-red-600">{errors.phone}</p>
+                    )}
                   </div>
                 </div>
                 <div className="mt-4">
@@ -452,10 +495,19 @@ export default function CheckoutContent() {
                     method={paymentMethod}
                     setMethod={setPaymentMethod}
                     selectedFiles={receipts}
-                    setSelectedFiles={setReceipts}
+                    setSelectedFiles={(files) => {
+                      setReceipts(files);
+                      if (errors.receipts)
+                        setErrors((prev) => ({ ...prev, receipts: "" }));
+                    }}
                     transactionId={transactionId}
                     setTransactionId={setTransactionId}
                   />
+                  {errors.receipts && (
+                    <p className="mt-2 text-xs text-red-600">
+                      {errors.receipts}
+                    </p>
+                  )}
                 </div>
               </CardContent>
               <CardFooter className="sm:flex sm:justify-end">

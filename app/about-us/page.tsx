@@ -53,7 +53,7 @@ export default function AboutPage() {
                     Browse Courses
                   </Button>
                 </Link>
-                <Link href="/contact" className="block w-full sm:w-auto">
+                <Link href="/contact-us" className="block w-full sm:w-auto">
                   <Button
                     size="lg"
                     variant="secondary"

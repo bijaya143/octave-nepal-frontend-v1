@@ -13,6 +13,7 @@ export default function Input({
   label,
   hint,
   id,
+  required,
   ...props
 }: InputProps) {
   const inputId = id || React.useId();
@@ -24,7 +25,7 @@ export default function Input({
           className="text-sm font-medium text-[color:var(--foreground)]"
         >
           {label}
-          {props.required && (
+          {required && (
             <span className="ml-1 text-red-600" aria-hidden>
               *
             </span>
@@ -40,6 +41,7 @@ export default function Input({
           "disabled:bg-[color:var(--color-neutral-50)] disabled:text-[color:var(--color-neutral-500)] disabled:cursor-not-allowed",
           error && "border-red-400 focus:border-red-500 focus:shadow-sm",
         )}
+        aria-required={required}
         {...props}
       />
       {hint && !error && (

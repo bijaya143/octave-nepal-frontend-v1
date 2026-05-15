@@ -63,7 +63,7 @@ export default function Newsletter() {
                 ) : (
                   <form
                     onSubmit={handleSubmit}
-                    className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+                    className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3"
                   >
                     <Input
                       type="email"

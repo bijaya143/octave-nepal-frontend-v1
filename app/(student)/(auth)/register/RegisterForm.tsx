@@ -17,27 +17,28 @@ type RegisterState = {
 
 type RegisterFormProps = {
   onSubmit: (email: string, password: string) => void;
+  onClearError: (field: "email" | "password") => void;
   state: RegisterState;
   isLoading: boolean;
 };
 
 export default function RegisterForm({
   onSubmit,
+  onClearError,
   state,
   isLoading,
 }: RegisterFormProps) {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const email = String(formData.get("email") || "").trim();
-    const password = String(formData.get("password") || "");
-
-    onSubmit(email, password);
+    onSubmit(email.trim(), password);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {state?.message && (
         <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.message}
@@ -49,6 +50,11 @@ export default function RegisterForm({
         name="email"
         required
         placeholder="you@example.com"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          onClearError("email");
+        }}
         error={state?.fieldErrors?.email || null}
         disabled={isLoading}
       />
@@ -57,6 +63,11 @@ export default function RegisterForm({
         name="password"
         required
         placeholder="••••••••"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          onClearError("password");
+        }}
         error={state?.fieldErrors?.password || null}
         disabled={isLoading}
       />

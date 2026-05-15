@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Card, { CardContent } from "../../../../components/ui/Card";
 import RegisterForm from "./RegisterForm";
 import { useStudentAuth } from "@/lib/hooks/useStudentAuth";
+import { toast } from "sonner";
 
 type RegisterState = {
   ok: boolean;
@@ -55,9 +56,11 @@ export default function RegisterPage() {
     if (fieldErrors.email || fieldErrors.password) {
       setState({
         ok: false,
-        message: "Please fix the errors below.",
         fieldErrors,
       });
+      // Show the first error as a toast
+      // const firstError = Object.values(fieldErrors)[0];
+      // if (firstError) toast.error(firstError);
       return;
     }
 
@@ -91,6 +94,17 @@ export default function RegisterPage() {
             onSubmit={handleRegister}
             state={state}
             isLoading={isLoading}
+            onClearError={(field) => {
+              if (state.fieldErrors?.[field]) {
+                setState((prev) => ({
+                  ...prev,
+                  fieldErrors: {
+                    ...prev.fieldErrors,
+                    [field]: undefined,
+                  },
+                }));
+              }
+            }}
           />
         </CardContent>
       </Card>
