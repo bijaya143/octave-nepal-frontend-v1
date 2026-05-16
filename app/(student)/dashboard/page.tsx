@@ -111,6 +111,26 @@ export default function StudentDashboardPage() {
   >(null);
   const router = useRouter();
 
+  function computeCourseProgress(startDate: string, endDate: string): number {
+    const startMs = new Date(startDate).getTime();
+    const endMs = new Date(endDate).getTime();
+    const nowMs = Date.now();
+    if (!isFinite(startMs) || !isFinite(endMs) || endMs <= startMs) return 0;
+    const ratio = (nowMs - startMs) / (endMs - startMs);
+    const pct = Math.round(ratio * 100);
+    return Math.max(0, Math.min(100, pct));
+  }
+
+  function formatReadableDate(isoDate: string): string {
+    const dt = new Date(isoDate);
+    if (!isFinite(dt.getTime())) return isoDate;
+    return dt.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
   const [enrollments, setEnrollments] = React.useState<Enrollment[]>([]);
   const [loadingEnrollments, setLoadingEnrollments] =
     React.useState<boolean>(true);
@@ -184,7 +204,10 @@ export default function StudentDashboardPage() {
             {loadingDashboardCounts ? (
               <>
                 {[0, 1, 2].map((i) => (
-                  <Card key={`stat-skeleton-${i}`} className="relative overflow-hidden animate-pulse">
+                  <Card
+                    key={`stat-skeleton-${i}`}
+                    className="relative overflow-hidden animate-pulse"
+                  >
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.06),transparent_60%)]" />
                     <CardContent className="relative py-4">
                       <div className="flex items-center justify-between gap-3">
@@ -206,7 +229,9 @@ export default function StudentDashboardPage() {
                   <CardContent className="relative py-4" title="Coming soon">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-xs text-[color:var(--color-neutral-600)]">Octave Points</div>
+                        <div className="text-xs text-[color:var(--color-neutral-600)]">
+                          Octave Points
+                        </div>
                         <div
                           className="mt-1 text-lg font-semibold text-[color:var(--color-neutral-500)]"
                           style={{ fontFamily: "var(--font-heading-sans)" }}
@@ -405,19 +430,49 @@ export default function StudentDashboardPage() {
                         </div>
                         <div className="mt-6">
                           <div className="flex items-center justify-between text-[11px] mb-2 font-bold uppercase tracking-wider text-[color:var(--color-neutral-500)]">
-                            <span>Course Progress</span>
+                            <span>Course Duration Progress</span>
                             <span className="text-[color:var(--color-primary-600)]">
-                              {enrollment.progressPercentage || 0}%
+                              {enrollment.course?.startDate &&
+                              enrollment.course?.endDate
+                                ? computeCourseProgress(
+                                    enrollment.course.startDate,
+                                    enrollment.course.endDate,
+                                  )
+                                : 0}
+                              %
                             </span>
                           </div>
                           <div className="h-1.5 w-full rounded-full bg-[color:var(--color-neutral-100)] overflow-hidden shadow-inner flex items-center">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-[color:var(--color-primary-400)] to-[color:var(--color-primary-600)] transition-all duration-700 ease-out"
                               style={{
-                                width: `${enrollment.progressPercentage || 0}%`,
+                                width: `${
+                                  enrollment.course?.startDate &&
+                                  enrollment.course?.endDate
+                                    ? computeCourseProgress(
+                                        enrollment.course.startDate,
+                                        enrollment.course.endDate,
+                                      )
+                                    : 0
+                                }%`,
                               }}
                             />
                           </div>
+                          {enrollment.course?.startDate &&
+                            enrollment.course?.endDate && (
+                              <div className="mt-2 flex items-center justify-between text-[10px] text-[color:var(--color-neutral-600)] font-medium">
+                                <span>
+                                  {formatReadableDate(
+                                    enrollment.course.startDate,
+                                  )}
+                                </span>
+                                <span>
+                                  {formatReadableDate(
+                                    enrollment.course.endDate,
+                                  )}
+                                </span>
+                              </div>
+                            )}
                         </div>
                       </CardContent>
                     </Card>

@@ -5,12 +5,19 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Link from "next/link";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { BookOpen, Hammer, Award, CalendarClock } from "lucide-react";
+import {
+  BookOpen,
+  Hammer,
+  Award,
+  CalendarClock,
+  CircleCheckBig,
+} from "lucide-react";
 import Image from "next/image";
 import { studentEnrollmentService } from "@/lib/services/student/enrollment";
-import { Enrollment } from "@/lib/services/admin/types";
+import { Enrollment, Course } from "@/lib/services/admin/types";
 import StudentCourseCertificateViewModal from "./StudentCourseCertificateViewModal";
 import StudentCourseReviewModal from "./StudentCourseReviewModal";
+import StudentCourseViewModal from "./StudentCourseViewModal";
 
 const getCourseLevelStyles = (level: string) => {
   switch (level?.toUpperCase()) {
@@ -98,6 +105,26 @@ const getNextSessionText = (course: any) => {
 
 export default function StudentCoursesPage() {
   const [enrollments, setEnrollments] = React.useState<Enrollment[]>([]);
+
+  function computeCourseProgress(startDate: string, endDate: string): number {
+    const startMs = new Date(startDate).getTime();
+    const endMs = new Date(endDate).getTime();
+    const nowMs = Date.now();
+    if (!isFinite(startMs) || !isFinite(endMs) || endMs <= startMs) return 0;
+    const ratio = (nowMs - startMs) / (endMs - startMs);
+    const pct = Math.round(ratio * 100);
+    return Math.max(0, Math.min(100, pct));
+  }
+
+  function formatReadableDate(isoDate: string): string {
+    const dt = new Date(isoDate);
+    if (!isFinite(dt.getTime())) return isoDate;
+    return dt.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
   const [loading, setLoading] = React.useState<boolean>(true);
   const [certificateEnrollmentId, setCertificateEnrollmentId] = React.useState<
     string | null
@@ -105,6 +132,8 @@ export default function StudentCoursesPage() {
   const [reviewEnrollmentId, setReviewEnrollmentId] = React.useState<
     string | null
   >(null);
+  const [selectedCourseView, setSelectedCourseView] =
+    React.useState<Course | null>(null);
 
   React.useEffect(() => {
     const fetchEnrollments = async () => {
@@ -129,6 +158,9 @@ export default function StudentCoursesPage() {
   const activeCourses = enrollments.filter((c) => c.status === "ACTIVE");
   const completedCourses = enrollments.filter((c) => c.status === "COMPLETED");
   const totalEnrolled = enrollments.length;
+  const certificateCount = enrollments.filter(
+    (c) => c.isCertificateCreated,
+  ).length;
 
   return (
     <>
@@ -159,7 +191,7 @@ export default function StudentCoursesPage() {
       </div>
 
       {/* Stats strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
           {
             label: "Enrolled",
@@ -176,36 +208,44 @@ export default function StudentCoursesPage() {
           {
             label: "Completed",
             value: completedCourses.length,
-            Icon: Award,
+            Icon: CircleCheckBig,
             accent: "rgba(16,185,129,0.10)",
           },
+          {
+            label: "Certificates",
+            value: certificateCount,
+            Icon: Award,
+            accent: "rgba(234,179,8,0.10)",
+          },
         ].map((s) => (
-          <Card key={s.label} className="relative overflow-hidden">
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background: `radial-gradient(ellipse at top right, ${s.accent}, transparent 60%)`,
-              }}
-            />
-            <CardContent className="relative py-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-xs text-[color:var(--color-neutral-600)]">
-                    {s.label}
+          <div key={s.label} className="flex">
+            <Card className="relative overflow-hidden w-full">
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background: `radial-gradient(ellipse at top right, ${s.accent}, transparent 60%)`,
+                }}
+              />
+              <CardContent className="relative py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs text-[color:var(--color-neutral-600)]">
+                      {s.label}
+                    </div>
+                    <div
+                      className="mt-1 text-lg font-semibold"
+                      style={{ fontFamily: "var(--font-heading-sans)" }}
+                    >
+                      {s.value}
+                    </div>
                   </div>
-                  <div
-                    className="mt-1 text-lg font-semibold"
-                    style={{ fontFamily: "var(--font-heading-sans)" }}
-                  >
-                    {s.value}
+                  <div className="h-9 w-9 shrink-0 rounded-lg border border-[color:var(--color-neutral-200)] bg-white text-[color:var(--color-primary-700)] shadow-xs flex items-center justify-center">
+                    <s.Icon size={16} aria-hidden="true" />
                   </div>
                 </div>
-                <div className="h-9 w-9 shrink-0 rounded-lg border border-[color:var(--color-neutral-200)] bg-white text-[color:var(--color-primary-700)] shadow-xs flex items-center justify-center">
-                  <s.Icon size={16} aria-hidden="true" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         ))}
       </div>
 
@@ -295,23 +335,47 @@ export default function StudentCoursesPage() {
 
                     <div className="mt-6">
                       <div className="flex items-center justify-between text-[11px] mb-2 font-bold uppercase tracking-wider text-[color:var(--color-neutral-500)]">
-                        <span>Course Progress</span>
+                        <span>Course Duration Progress</span>
                         <span className="text-[color:var(--color-primary-600)]">
-                          {c.progressPercentage || 0}%
+                          {c.course?.startDate && c.course?.endDate
+                            ? computeCourseProgress(
+                                c.course.startDate,
+                                c.course.endDate,
+                              )
+                            : 0}
+                          %
                         </span>
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-[color:var(--color-neutral-100)] overflow-hidden shadow-inner flex items-center">
                         <div
                           className="h-full rounded-full bg-gradient-to-r from-[color:var(--color-primary-400)] to-[color:var(--color-primary-600)] transition-all duration-700 ease-out"
-                          style={{ width: `${c.progressPercentage || 0}%` }}
+                          style={{
+                            width: `${
+                              c.course?.startDate && c.course?.endDate
+                                ? computeCourseProgress(
+                                    c.course.startDate,
+                                    c.course.endDate,
+                                  )
+                                : 0
+                            }%`,
+                          }}
                         />
                       </div>
+                      {c.course?.startDate && c.course?.endDate && (
+                        <div className="mt-2 flex items-center justify-between text-[10px] text-[color:var(--color-neutral-600)] font-medium">
+                          <span>{formatReadableDate(c.course.startDate)}</span>
+                          <span>{formatReadableDate(c.course.endDate)}</span>
+                        </div>
+                      )}
                     </div>
 
                     <div className="mt-5 flex items-center justify-end gap-2">
-                      <Link href={`/dashboard/courses/${c.course?.id || ""}`}>
-                        <Button size="sm">View</Button>
-                      </Link>
+                      <Button
+                        size="sm"
+                        onClick={() => setSelectedCourseView(c.course)}
+                      >
+                        View
+                      </Button>
                       {primaryMeetingLink && (
                         <Button
                           size="sm"
@@ -445,6 +509,13 @@ export default function StudentCoursesPage() {
       <StudentCourseReviewModal
         enrollmentId={reviewEnrollmentId}
         onClose={() => setReviewEnrollmentId(null)}
+      />
+
+      {/* Course Detail Modal */}
+      <StudentCourseViewModal
+        open={!!selectedCourseView}
+        onClose={() => setSelectedCourseView(null)}
+        course={selectedCourseView}
       />
     </>
   );
