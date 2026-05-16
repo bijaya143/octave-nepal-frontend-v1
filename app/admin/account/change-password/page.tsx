@@ -10,6 +10,7 @@ import Card, {
 import PasswordInput from "@/components/ui/PasswordInput";
 import Button from "@/components/ui/Button";
 import { adminAuthService } from "@/lib/services/admin/auth";
+import { toast } from "sonner";
 
 export default function AdminChangePasswordPage() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -17,13 +18,11 @@ export default function AdminChangePasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<{
     currentPassword?: string | null;
     newPassword?: string | null;
     confirmPassword?: string | null;
-    form?: string | null;
   }>({});
 
   const resetErrors = () => setErrors({});
@@ -31,18 +30,30 @@ export default function AdminChangePasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     resetErrors();
-    setSuccessMessage(null);
 
     const nextErrors: typeof errors = {};
     if (!currentPassword)
       nextErrors.currentPassword = "Current password is required";
-    if (!newPassword) nextErrors.newPassword = "New password is required";
-    else if (newPassword.length < 6)
-      nextErrors.newPassword = "Password must be at least 6 characters";
+    
+    if (!newPassword) {
+      nextErrors.newPassword = "New password is required";
+    } else if (newPassword.length < 8) {
+      nextErrors.newPassword = "Password must be at least 8 characters";
+    } else if (!/[A-Z]/.test(newPassword)) {
+      nextErrors.newPassword =
+        "Password must contain at least one uppercase letter";
+    } else if (!/[0-9]/.test(newPassword)) {
+      nextErrors.newPassword = "Password must contain at least one number";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(newPassword)) {
+      nextErrors.newPassword =
+        "Password must contain at least one special character";
+    }
+
     if (!confirmPassword)
       nextErrors.confirmPassword = "Please confirm your new password";
     else if (confirmPassword !== newPassword)
       nextErrors.confirmPassword = "Passwords do not match";
+    
     if (currentPassword && newPassword && currentPassword === newPassword) {
       nextErrors.newPassword = "New password must be different from current";
     }
@@ -61,19 +72,18 @@ export default function AdminChangePasswordPage() {
       });
 
       if (response.success) {
-        setSuccessMessage("Password updated successfully.");
+        toast.success("Password updated successfully.");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       } else {
-        setErrors({
-          form:
-            response?.error?.message ||
+        toast.error(
+          response?.error?.message ||
             "Failed to update password. Please try again.",
-        });
+        );
       }
     } catch (err: any) {
-      setErrors({ form: err.message || "An unexpected error occurred." });
+      toast.error(err.message || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -113,23 +123,15 @@ export default function AdminChangePasswordPage() {
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
-              {successMessage && (
-                <div className="p-3 bg-green-50 text-green-700 text-sm rounded-md border border-green-200">
-                  {successMessage}
-                </div>
-              )}
-              {errors.form && (
-                <div className="p-3 bg-red-50 text-red-700 text-sm rounded-md border border-red-200">
-                  {errors.form}
-                </div>
-              )}
               <PasswordInput
                 label="Current password"
                 placeholder="Enter current password"
                 value={currentPassword}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setCurrentPassword(e.target.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setCurrentPassword(e.target.value);
+                  if (errors.currentPassword)
+                    setErrors((prev) => ({ ...prev, currentPassword: null }));
+                }}
                 required
                 error={errors.currentPassword || null}
                 autoComplete="current-password"
@@ -139,12 +141,14 @@ export default function AdminChangePasswordPage() {
                 label="New password"
                 placeholder="Enter new password"
                 value={newPassword}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setNewPassword(e.target.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setNewPassword(e.target.value);
+                  if (errors.newPassword)
+                    setErrors((prev) => ({ ...prev, newPassword: null }));
+                }}
                 required
                 error={errors.newPassword || null}
-                hint="At least 6 characters"
+                hint="Minimum 8 characters, with at least one uppercase letter, one number, and one special character."
                 autoComplete="new-password"
                 disabled={isSubmitting}
               />
@@ -152,9 +156,11 @@ export default function AdminChangePasswordPage() {
                 label="Confirm new password"
                 placeholder="Re-enter new password"
                 value={confirmPassword}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setConfirmPassword(e.target.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setConfirmPassword(e.target.value);
+                  if (errors.confirmPassword)
+                    setErrors((prev) => ({ ...prev, confirmPassword: null }));
+                }}
                 required
                 error={errors.confirmPassword || null}
                 autoComplete="new-password"
