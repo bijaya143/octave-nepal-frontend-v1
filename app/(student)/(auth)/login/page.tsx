@@ -1,10 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Card, { CardContent } from "../../../../components/ui/Card";
 import LoginForm from "./LoginForm";
 import { useStudentAuth } from "@/lib/hooks/useStudentAuth";
-import { toast } from "sonner";
 
 type LoginState = {
   ok: boolean;
@@ -15,7 +14,7 @@ type LoginState = {
   };
 };
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const { login, isLoading, error, clearError, isAuthenticated } =
     useStudentAuth();
@@ -65,9 +64,6 @@ export default function LoginPage() {
         ok: false,
         fieldErrors,
       });
-      // Show the first error as a toast
-      // const firstError = Object.values(fieldErrors)[0];
-      // if (firstError) toast.error(firstError);
       return;
     }
 
@@ -116,5 +112,13 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }

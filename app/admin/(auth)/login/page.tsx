@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Card, { CardContent } from "../../../../components/ui/Card";
 import LoginForm from "./LoginForm";
@@ -14,7 +14,7 @@ type LoginState = {
   };
 };
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const { login, isLoading, error, clearError, isAuthenticated } =
     useAdminAuth();
@@ -112,5 +112,13 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }
