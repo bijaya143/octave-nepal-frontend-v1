@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Card, { CardContent } from "../../../../components/ui/Card";
 import LoginForm from "./LoginForm";
 import { useInstructorAuth } from "@/lib/hooks/useInstructorAuth";
+import { toast } from "sonner";
 
 type LoginState = {
   ok: boolean;
@@ -47,14 +48,26 @@ export default function LoginPage() {
     }
     if (!password) {
       fieldErrors.password = "Password is required";
+    } else if (password.length < 8) {
+      fieldErrors.password = "Password must be at least 8 characters";
+    } else if (!/[A-Z]/.test(password)) {
+      fieldErrors.password =
+        "Password must contain at least one uppercase letter";
+    } else if (!/[0-9]/.test(password)) {
+      fieldErrors.password = "Password must contain at least one number";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      fieldErrors.password =
+        "Password must contain at least one special character";
     }
 
     if (fieldErrors.email || fieldErrors.password) {
       setState({
         ok: false,
-        message: "Please fix the errors below.",
         fieldErrors,
       });
+      // Show the first error as a toast
+      // const firstError = Object.values(fieldErrors)[0];
+      // if (firstError) toast.error(firstError);
       return;
     }
 
@@ -88,6 +101,17 @@ export default function LoginPage() {
             onSubmit={handleLogin}
             state={state}
             isLoading={isLoading}
+            onClearError={(field) => {
+              if (state.fieldErrors?.[field]) {
+                setState((prev) => ({
+                  ...prev,
+                  fieldErrors: {
+                    ...prev.fieldErrors,
+                    [field]: undefined,
+                  },
+                }));
+              }
+            }}
           />
         </CardContent>
       </Card>

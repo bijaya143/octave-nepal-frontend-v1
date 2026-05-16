@@ -6,6 +6,7 @@ import ResetPasswordForm from "./ResetPasswordForm";
 import { useInstructorAuth } from "@/lib/hooks/useInstructorAuth";
 import { instructorAuthService } from "@/lib/services";
 import { ApiError } from "@/lib/api";
+import { toast } from "sonner";
 
 type ResetState = {
   ok: boolean;
@@ -82,8 +83,16 @@ function ResetPasswordFormComponent() {
 
     if (!password) {
       fieldErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      fieldErrors.password = "Password must be at least 6 characters";
+    } else if (password.length < 8) {
+      fieldErrors.password = "Password must be at least 8 characters";
+    } else if (!/[A-Z]/.test(password)) {
+      fieldErrors.password =
+        "Password must contain at least one uppercase letter";
+    } else if (!/[0-9]/.test(password)) {
+      fieldErrors.password = "Password must contain at least one number";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      fieldErrors.password =
+        "Password must contain at least one special character";
     }
 
     if (!confirmPassword) {
@@ -108,9 +117,11 @@ function ResetPasswordFormComponent() {
     ) {
       setState({
         ok: false,
-        message: "Please fix the errors below.",
         fieldErrors,
       });
+      // Show the first error as a toast
+      // const firstError = Object.values(fieldErrors)[0];
+      // if (firstError) toast.error(firstError);
       setIsLoading(false);
       return;
     }
@@ -214,6 +225,17 @@ function ResetPasswordFormComponent() {
             onSubmit={handleResetPassword}
             state={state}
             isLoading={isLoading}
+            onClearError={(field) => {
+              if (state.fieldErrors?.[field]) {
+                setState((prev) => ({
+                  ...prev,
+                  fieldErrors: {
+                    ...prev.fieldErrors,
+                    [field]: undefined,
+                  },
+                }));
+              }
+            }}
           />
           <div className="mt-8 pt-6 border-t border-[color:var(--color-neutral-200)]">
             <div className="text-sm text-muted-foreground text-center">

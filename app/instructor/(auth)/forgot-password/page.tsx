@@ -6,6 +6,7 @@ import ForgotPasswordForm from "./ForgotPasswordForm";
 import { useInstructorAuth } from "@/lib/hooks/useInstructorAuth";
 import { instructorAuthService } from "@/lib/services";
 import { ApiError } from "@/lib/api";
+import { toast } from "sonner";
 
 type ForgotState = {
   ok: boolean;
@@ -43,9 +44,10 @@ export default function ForgotPasswordPage() {
     if (fieldErrors.email) {
       setState({
         ok: false,
-        message: "Please fix the errors below.",
         fieldErrors,
       });
+      // Show error as toast
+      // if (fieldErrors.email) toast.error(fieldErrors.email);
       setIsLoading(false);
       return;
     }
@@ -107,6 +109,17 @@ export default function ForgotPasswordPage() {
             onSubmit={handleForgotPassword}
             state={state}
             isLoading={isLoading}
+            onClearError={(field) => {
+              if (state.fieldErrors?.[field]) {
+                setState((prev) => ({
+                  ...prev,
+                  fieldErrors: {
+                    ...prev.fieldErrors,
+                    [field]: undefined,
+                  },
+                }));
+              }
+            }}
           />
         </CardContent>
       </Card>

@@ -423,7 +423,7 @@ export default function InstructorCoursesPage() {
                               >
                                 {formatLevel(c.level)}
                               </Badge>
-                              <Badge
+                              {/* <Badge
                                 variant="outline"
                                 className={cn(
                                   "shrink-0 py-0.5 px-2",
@@ -440,7 +440,7 @@ export default function InstructorCoursesPage() {
                                   )}
                                   {c.status.replace(/_/g, " ").toLowerCase()}
                                 </span>
-                              </Badge>
+                              </Badge> */}
                             </div>
                           </div>
                         </div>
@@ -550,7 +550,7 @@ export default function InstructorCoursesPage() {
         title={selectedCourse ? selectedCourse.title : undefined}
       >
         {selectedCourse && (
-          <div className="text-sm max-h-[72vh] overflow-y-auto custom-scrollbar">
+          <div className="text-sm">
             {/* Status banner */}
             <div className="flex flex-wrap items-center gap-2 mb-5 pb-4 border-b border-[color:var(--color-neutral-100)]">
               <Badge
