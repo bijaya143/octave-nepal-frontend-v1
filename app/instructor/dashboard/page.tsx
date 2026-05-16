@@ -18,9 +18,11 @@ import {
   CalendarClock,
   Lock,
   Users,
+  ShieldAlert,
 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import Image from "next/image";
+import { useInstructorAuth } from "@/lib/hooks/useInstructorAuth";
 import {
   instructorCourseService,
   instructorDashboardService,
@@ -120,6 +122,7 @@ const getNextSessionText = (course: any) => {
 export default function InstructorDashboardPage() {
   const [openModal, setOpenModal] = React.useState<OpenModalKey>(null);
   const router = useRouter();
+  const { user } = useInstructorAuth();
 
   const handleOpen = (key: Exclude<OpenModalKey, null>) => setOpenModal(key);
   const handleClose = () => setOpenModal(null);
@@ -206,6 +209,36 @@ export default function InstructorDashboardPage() {
       >
         Your Dashboard
       </h1>
+      {user?.readableTemporaryPassword && (
+        <div className="mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex gap-3 text-left">
+            <div className="hidden sm:flex h-9 w-9 shrink-0 rounded-lg bg-amber-100 items-center justify-center text-amber-600">
+              <ShieldAlert size={18} />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-amber-900 leading-none">
+                Security Warning
+              </h3>
+              <p className="text-xs text-amber-700 leading-relaxed">
+                You are currently using a temporary password. For your security,
+                please change it as soon as possible.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/instructor/account/change-password"
+            title="Change Password"
+            className="w-full sm:w-auto"
+          >
+            <Button
+              size="sm"
+              className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white border-none whitespace-nowrap gap-2"
+            >
+              Change Password
+            </Button>
+          </Link>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
         {/* Main column */}
@@ -215,7 +248,10 @@ export default function InstructorDashboardPage() {
             {loadingDashboardCounts ? (
               <>
                 {[0, 1, 2].map((i) => (
-                  <Card key={`stat-skeleton-${i}`} className="relative overflow-hidden animate-pulse">
+                  <Card
+                    key={`stat-skeleton-${i}`}
+                    className="relative overflow-hidden animate-pulse"
+                  >
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(59,130,246,0.06),transparent_60%)]" />
                     <CardContent className="relative py-4">
                       <div className="flex items-center justify-between gap-3">
@@ -237,7 +273,9 @@ export default function InstructorDashboardPage() {
                   <CardContent className="relative py-4" title="Coming soon">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-xs text-[color:var(--color-neutral-600)]">Payouts</div>
+                        <div className="text-xs text-[color:var(--color-neutral-600)]">
+                          Payouts
+                        </div>
                         <div
                           className="mt-1 text-lg font-semibold text-[color:var(--color-neutral-500)]"
                           style={{ fontFamily: "var(--font-heading-sans)" }}

@@ -45,7 +45,7 @@ function ResetPasswordFormComponent() {
   const { isAuthenticated } = useStudentAuth();
   const [state, setState] = useState<ResetState>({ ok: false });
   const [isLoading, setIsLoading] = useState(false);
-  const [resendTimer, setResendTimer] = useState(20); // 2 minutes in seconds
+  const [resendTimer, setResendTimer] = useState(0); 
   const [isResending, setIsResending] = useState(false);
   const email = searchParams.get("email");
 
@@ -56,12 +56,44 @@ function ResetPasswordFormComponent() {
     }
   }, [isAuthenticated, router]);
 
+  // Initialize timer from localStorage on mount
+  useEffect(() => {
+    const savedTimer = localStorage.getItem("studentResetPasswordCountdownEnd");
+    if (savedTimer) {
+      const endTime = parseInt(savedTimer, 10);
+      const now = Date.now();
+      if (endTime > now) {
+        setResendTimer(Math.ceil((endTime - now) / 1000));
+      } else {
+        localStorage.removeItem("studentResetPasswordCountdownEnd");
+      }
+    } else {
+      // If no timer exists, start with 2 minutes by default as per requirement
+      // OR you might want to only start it after the first request.
+      // Given the dashboard pattern, we start with 0 and it sets after resend.
+      // But reset password usually starts with a timer since you just clicked "Forgot Password" to get here.
+      // However, to strictly follow the dashboard pattern:
+      setResendTimer(0);
+    }
+  }, []);
+
   // Timer for resend OTP
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     if (resendTimer > 0) {
-      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
-      return () => clearTimeout(timer);
+      timer = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1) {
+            localStorage.removeItem("studentResetPasswordCountdownEnd");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
   }, [resendTimer]);
 
   const handleResetPassword = async (
@@ -182,7 +214,12 @@ function ResetPasswordFormComponent() {
           ok: true,
           message: "OTP sent successfully! Please check your email.",
         });
-        setResendTimer(20); // Reset timer to 2 minutes
+        const countdownSeconds = 120;
+        setResendTimer(countdownSeconds);
+        localStorage.setItem(
+          "studentResetPasswordCountdownEnd",
+          (Date.now() + countdownSeconds * 1000).toString(),
+        );
       } else {
         setState({
           ok: false,

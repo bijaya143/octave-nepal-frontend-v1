@@ -44,7 +44,7 @@ function ResetPasswordFormComponent() {
   const { isAuthenticated } = useAdminAuth();
   const [state, setState] = useState<ResetState>({ ok: false });
   const [isLoading, setIsLoading] = useState(false);
-  const [resendTimer, setResendTimer] = useState(120); // 2 minutes in seconds
+  const [resendTimer, setResendTimer] = useState(0); 
   const [isResending, setIsResending] = useState(false);
   const email = searchParams.get("email");
 
@@ -55,12 +55,39 @@ function ResetPasswordFormComponent() {
     }
   }, [isAuthenticated, router]);
 
+  // Initialize timer from localStorage on mount
+  useEffect(() => {
+    const savedTimer = localStorage.getItem("adminResetPasswordCountdownEnd");
+    if (savedTimer) {
+      const endTime = parseInt(savedTimer, 10);
+      const now = Date.now();
+      if (endTime > now) {
+        setResendTimer(Math.ceil((endTime - now) / 1000));
+      } else {
+        localStorage.removeItem("adminResetPasswordCountdownEnd");
+      }
+    } else {
+      setResendTimer(0);
+    }
+  }, []);
+
   // Timer for resend OTP
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     if (resendTimer > 0) {
-      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
-      return () => clearTimeout(timer);
+      timer = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1) {
+            localStorage.removeItem("adminResetPasswordCountdownEnd");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
   }, [resendTimer]);
 
   const handleResetPassword = async (
@@ -180,7 +207,12 @@ function ResetPasswordFormComponent() {
           ok: true,
           message: "OTP sent successfully! Please check your email.",
         });
-        setResendTimer(120); // Reset timer to 2 minutes
+        const countdownSeconds = 120;
+        setResendTimer(countdownSeconds);
+        localStorage.setItem(
+          "adminResetPasswordCountdownEnd",
+          (Date.now() + countdownSeconds * 1000).toString()
+        );
       } else {
         setState({
           ok: false,

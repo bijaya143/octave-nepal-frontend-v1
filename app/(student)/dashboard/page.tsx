@@ -10,14 +10,20 @@ import {
   Lock,
   Megaphone,
   ChevronRight,
+  ShieldAlert,
+  Mail,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
+import { useStudentAuth } from "@/lib/hooks/useStudentAuth";
+import { toast } from "sonner";
 import Modal from "../../../components/ui/Modal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   studentEnrollmentService,
   studentDashboardService,
+  studentAuthService,
   StudentDashboardCountOutput,
 } from "@/lib/services/student";
 import { Enrollment } from "@/lib/services/admin/types";
@@ -110,6 +116,72 @@ export default function StudentDashboardPage() {
     null | "assignments" | "sessions" | "announcements" | "certificates"
   >(null);
   const router = useRouter();
+  const { user } = useStudentAuth();
+  const [isResending, setIsResending] = React.useState(false);
+  const [countdown, setCountdown] = React.useState(0);
+
+  // Initialize countdown from localStorage on mount
+  React.useEffect(() => {
+    const savedCountdown = localStorage.getItem(
+      "studentResendVerificationCountdownEnd",
+    );
+    if (savedCountdown) {
+      const endTime = parseInt(savedCountdown, 10);
+      const now = Date.now();
+      if (endTime > now) {
+        setCountdown(Math.ceil((endTime - now) / 1000));
+      } else {
+        localStorage.removeItem("studentResendVerificationCountdownEnd");
+      }
+    }
+  }, []);
+
+  // Countdown timer effect
+  React.useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            localStorage.removeItem("studentResendVerificationCountdownEnd");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [countdown]);
+
+  const handleResendVerification = async () => {
+    if (countdown > 0) return;
+    try {
+      setIsResending(true);
+      const res = await studentAuthService.resendVerificationOtp();
+      if (res.success) {
+        toast.success(
+          res.data.message || "Verification link sent to your email.",
+        );
+        // Start 2 minute countdown (120 seconds)
+        const countdownSeconds = 120;
+        setCountdown(countdownSeconds);
+        localStorage.setItem(
+          "studentResendVerificationCountdownEnd",
+          (Date.now() + countdownSeconds * 1000).toString(),
+        );
+      } else {
+        toast.error(
+          res.error?.message || "Failed to resend verification link.",
+        );
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   function computeCourseProgress(startDate: string, endDate: string): number {
     const startMs = new Date(startDate).getTime();
@@ -196,6 +268,76 @@ export default function StudentDashboardPage() {
       >
         Your Dashboard
       </h1>
+
+      {user?.isVerified === false && (
+        <div className="mb-6 p-4 rounded-xl border border-[color:var(--color-primary-200)] bg-[color:var(--color-primary-50)]/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex gap-3 text-left">
+            <div className="hidden sm:flex h-9 w-9 shrink-0 rounded-lg bg-[color:var(--color-primary-100)] items-center justify-center text-[color:var(--color-primary-600)]">
+              <Mail size={18} />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-[color:var(--color-primary-900)] leading-none">
+                Verify Your Account
+              </h3>
+              <p className="text-xs text-[color:var(--color-primary-700)] leading-relaxed">
+                Please verify your email address to access all features. Didn't
+                receive the link?
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            disabled={isResending || countdown > 0}
+            onClick={handleResendVerification}
+            className="w-full sm:w-auto bg-[color:var(--color-primary-600)] hover:bg-[color:var(--color-primary-700)] text-white border-none whitespace-nowrap gap-2 disabled:opacity-70"
+          >
+            {isResending ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                Sending...
+              </>
+            ) : countdown > 0 ? (
+              <>
+                Resend in {Math.floor(countdown / 60)}:
+                {(countdown % 60).toString().padStart(2, "0")}
+              </>
+            ) : (
+              <>Resend Link</>
+            )}
+          </Button>
+        </div>
+      )}
+
+      {user?.readableTemporaryPassword && (
+        <div className="mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex gap-3 text-left">
+            <div className="hidden sm:flex h-9 w-9 shrink-0 rounded-lg bg-amber-100 items-center justify-center text-amber-600">
+              <ShieldAlert size={18} />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-amber-900 leading-none">
+                Security Warning
+              </h3>
+              <p className="text-xs text-amber-700 leading-relaxed">
+                You are currently using a temporary password. For your security,
+                please change it as soon as possible.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/account/change-password"
+            title="Change Password"
+            className="w-full sm:w-auto"
+          >
+            <Button
+              size="sm"
+              className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white border-none whitespace-nowrap gap-2"
+            >
+              Change Password
+            </Button>
+          </Link>
+        </div>
+      )}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
         {/* Main column */}
         <section className="md:col-span-2 lg:col-span-2 space-y-6">
