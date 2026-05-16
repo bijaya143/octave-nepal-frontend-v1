@@ -5,6 +5,8 @@ import PasswordInput from "../../../../components/ui/PasswordInput";
 import Button from "../../../../components/ui/Button";
 import Link from "next/link";
 
+import { useSearchParams } from "next/navigation";
+
 type LoginState = {
   ok: boolean;
   message?: string;
@@ -27,8 +29,17 @@ export default function LoginForm({
   state,
   isLoading,
 }: LoginFormProps) {
+  const searchParams = useSearchParams();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  React.useEffect(() => {
+    const emailParam = searchParams.get("email");
+    const passwordParam = searchParams.get("password");
+
+    if (emailParam) setEmail(emailParam);
+    if (passwordParam) setPassword(passwordParam);
+  }, [searchParams]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

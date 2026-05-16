@@ -43,7 +43,6 @@ export default function ForgotPasswordPage() {
     if (fieldErrors.email) {
       setState({
         ok: false,
-        message: "Please fix the errors below.",
         fieldErrors,
       });
       setIsLoading(false);
@@ -105,6 +104,17 @@ export default function ForgotPasswordPage() {
             onSubmit={handleForgotPassword}
             state={state}
             isLoading={isLoading}
+            onClearError={(field) => {
+              if (state.fieldErrors?.[field]) {
+                setState((prev) => ({
+                  ...prev,
+                  fieldErrors: {
+                    ...prev.fieldErrors,
+                    [field]: undefined,
+                  },
+                }));
+              }
+            }}
           />
         </CardContent>
       </Card>

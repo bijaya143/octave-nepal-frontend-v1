@@ -5,6 +5,8 @@ import PasswordInput from "../../../../components/ui/PasswordInput";
 import Button from "../../../../components/ui/Button";
 import Link from "next/link";
 
+import { useSearchParams } from "next/navigation";
+
 type LoginState = {
   ok: boolean;
   message?: string;
@@ -16,27 +18,37 @@ type LoginState = {
 
 type LoginFormProps = {
   onSubmit: (email: string, password: string) => void;
+  onClearError: (field: "email" | "password") => void;
   state: LoginState;
   isLoading: boolean;
 };
 
 export default function LoginForm({
   onSubmit,
+  onClearError,
   state,
   isLoading,
 }: LoginFormProps) {
+  const searchParams = useSearchParams();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  React.useEffect(() => {
+    const emailParam = searchParams.get("email");
+    const passwordParam = searchParams.get("password");
+
+    if (emailParam) setEmail(emailParam);
+    if (passwordParam) setPassword(passwordParam);
+  }, [searchParams]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const email = String(formData.get("email") || "").trim();
-    const password = String(formData.get("password") || "");
-
-    onSubmit(email, password);
+    onSubmit(email.trim(), password);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {state?.message && (
         <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.message}
@@ -48,6 +60,11 @@ export default function LoginForm({
         name="email"
         required
         placeholder="admin@example.com"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          onClearError("email");
+        }}
         error={state?.fieldErrors?.email || null}
         disabled={isLoading}
       />
@@ -56,6 +73,11 @@ export default function LoginForm({
         name="password"
         required
         placeholder="••••••••"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          onClearError("password");
+        }}
         error={state?.fieldErrors?.password || null}
         disabled={isLoading}
       />

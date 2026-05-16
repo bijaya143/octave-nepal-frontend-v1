@@ -16,28 +16,28 @@ type ResetState = {
 
 type ResetPasswordFormProps = {
   onSubmit: (token: string, password: string, confirmPassword: string) => void;
+  onClearError: (field: "token" | "password" | "confirmPassword") => void;
   state: ResetState;
   isLoading: boolean;
 };
 
 export default function ResetPasswordForm({
   onSubmit,
+  onClearError,
   state,
   isLoading,
 }: ResetPasswordFormProps) {
+  const [token, setToken] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const token = String(formData.get("token") || "").trim();
-    const password = String(formData.get("password") || "");
-    const confirmPassword = String(formData.get("confirmPassword") || "");
-
-    onSubmit(token, password, confirmPassword);
+    onSubmit(token.trim(), password, confirmPassword);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {state?.message && (
         <div
           className={`rounded-md border px-3 py-2 text-sm ${
@@ -55,8 +55,14 @@ export default function ResetPasswordForm({
         name="token"
         required
         placeholder="Enter 6-digit code"
+        value={token}
+        onChange={(e) => {
+          setToken(e.target.value);
+          onClearError("token");
+        }}
         error={state?.fieldErrors?.token || null}
         disabled={isLoading}
+        maxLength={6}
         autoComplete="one-time-code"
       />
       <PasswordInput
@@ -64,14 +70,25 @@ export default function ResetPasswordForm({
         name="password"
         required
         placeholder="••••••••"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          onClearError("password");
+        }}
         error={state?.fieldErrors?.password || null}
         disabled={isLoading}
+        hint="Minimum 8 characters, with at least one uppercase letter, one number, and one special character."
       />
       <PasswordInput
         label="Confirm New Password"
         name="confirmPassword"
         required
         placeholder="••••••••"
+        value={confirmPassword}
+        onChange={(e) => {
+          setConfirmPassword(e.target.value);
+          onClearError("confirmPassword");
+        }}
         error={state?.fieldErrors?.confirmPassword || null}
         disabled={isLoading}
       />

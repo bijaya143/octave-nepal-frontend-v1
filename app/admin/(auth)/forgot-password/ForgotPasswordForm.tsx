@@ -15,26 +15,26 @@ type ForgotState = {
 
 type ForgotPasswordFormProps = {
   onSubmit: (email: string) => void;
+  onClearError: (field: "email") => void;
   state: ForgotState;
   isLoading: boolean;
 };
 
 export default function ForgotPasswordForm({
   onSubmit,
+  onClearError,
   state,
   isLoading,
 }: ForgotPasswordFormProps) {
+  const [email, setEmail] = React.useState("");
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const email = String(formData.get("email") || "").trim();
-
-    onSubmit(email);
+    onSubmit(email.trim());
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {state?.message && (
         <div
           className={`rounded-md border px-3 py-2 text-sm ${
@@ -52,6 +52,11 @@ export default function ForgotPasswordForm({
         name="email"
         required
         placeholder="admin@example.com"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          onClearError("email");
+        }}
         error={state?.fieldErrors?.email || null}
         disabled={isLoading}
       />
