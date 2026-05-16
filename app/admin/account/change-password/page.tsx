@@ -34,7 +34,7 @@ export default function AdminChangePasswordPage() {
     const nextErrors: typeof errors = {};
     if (!currentPassword)
       nextErrors.currentPassword = "Current password is required";
-    
+
     if (!newPassword) {
       nextErrors.newPassword = "New password is required";
     } else if (newPassword.length < 8) {
@@ -53,7 +53,7 @@ export default function AdminChangePasswordPage() {
       nextErrors.confirmPassword = "Please confirm your new password";
     else if (confirmPassword !== newPassword)
       nextErrors.confirmPassword = "Passwords do not match";
-    
+
     if (currentPassword && newPassword && currentPassword === newPassword) {
       nextErrors.newPassword = "New password must be different from current";
     }
@@ -76,6 +76,17 @@ export default function AdminChangePasswordPage() {
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
+
+        // Background sync to update user data
+        try {
+          const meResponse = await adminAuthService.me();
+          if (meResponse.success && meResponse.data) {
+            localStorage.setItem("user", JSON.stringify(meResponse.data));
+            window.dispatchEvent(new Event("storage"));
+          }
+        } catch (err) {
+          console.error("Failed to sync updated user:", err);
+        }
       } else {
         toast.error(
           response?.error?.message ||

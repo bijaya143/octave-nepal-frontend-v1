@@ -22,7 +22,7 @@ export function useInstructorAuth() {
     error: null,
   });
 
-  // Initialize auth state on mount
+  // Initialize auth state on mount and listen for changes
   useEffect(() => {
     const initializeAuth = () => {
       try {
@@ -42,25 +42,38 @@ export function useInstructorAuth() {
             error: null,
           });
         } else {
-          // If userType doesn't match, let the auth guard handle it with a warning
-          // Don't automatically clear data here
           setAuthState((prev) => ({
             ...prev,
+            user: null, // Added later for listening to storage events
+            isAuthenticated: false, // Added later for listening to storage events
             isLoading: false,
           }));
         }
       } catch (error) {
         console.error("Instructor auth initialization error:", error);
-        // Clear invalid data
         clearAuthData();
         setAuthState((prev) => ({
           ...prev,
+          user: null, // Added later for listening to storage events
+          isAuthenticated: false, // Added later for listening to storage events
           isLoading: false,
         }));
       }
     };
 
+    // Listen for changes from other tabs or manual updates
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "user" || e.key === "accessToken") {
+        initializeAuth();
+      }
+    }; // Added later for listening to storage events
+
     initializeAuth();
+    window.addEventListener("storage", handleStorageChange); // Added later for listening to storage events
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    }; // Added later for listening to storage events
   }, []);
 
   const login = useCallback(
@@ -132,7 +145,7 @@ export function useInstructorAuth() {
         // Don't re-throw the error, just set the state
       }
     },
-    [router]
+    [router],
   );
 
   const logout = useCallback(async () => {

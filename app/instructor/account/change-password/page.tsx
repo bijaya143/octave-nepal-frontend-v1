@@ -71,6 +71,17 @@ export default function InstructorChangePasswordPage() {
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
+
+        // Background sync to update user data
+        try {
+          const meResponse = await instructorAuthService.me();
+          if (meResponse.success && meResponse.data) {
+            localStorage.setItem("user", JSON.stringify(meResponse.data));
+            window.dispatchEvent(new Event("storage"));
+          }
+        } catch (err) {
+          console.error("Failed to sync updated user:", err);
+        }
       } else {
         toast.error(
           response?.error?.message ||
