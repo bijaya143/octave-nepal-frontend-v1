@@ -15,6 +15,9 @@ import { UpdateStudentInput } from "@/lib/services/admin/student";
 import Select from "@/components/ui/Select";
 import { toast } from "sonner";
 import { Camera, Image as ImageIcon } from "lucide-react";
+import { PhoneInput, usePhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
+import { cn } from "@/lib/cn";
 
 type TabId = "personal" | "contact" | "address" | "billing";
 
@@ -51,7 +54,17 @@ export default function StudentEditProfilePage() {
     },
   });
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneValue, setPhoneValue] = useState("");
+
+  const { phone, country } = usePhoneInput({
+    defaultCountry: "np",
+    value: phoneValue,
+    onChange: (data) => {
+      setPhoneValue(data.phone);
+    },
+  });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("personal");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -109,6 +122,11 @@ export default function StudentEditProfilePage() {
           billingTaxId: user.billing?.billingTaxId || "",
         },
       });
+      setPhoneValue(
+        user.phoneCountryCode && user.phoneNumber
+          ? `${user.phoneCountryCode}${user.phoneNumber}`
+          : "",
+      );
     }
   }, [user]);
 
@@ -116,6 +134,16 @@ export default function StudentEditProfilePage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
+
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+
     if (name.startsWith("address.")) {
       const field = name.split(".")[1];
       setProfileData((prev) => ({
@@ -162,20 +190,64 @@ export default function StudentEditProfilePage() {
     e.preventDefault();
     if (!user?.id) return;
 
+    // Extract phone data from react-international-phone
+    const phoneCountryCode = country?.dialCode ? `+${country.dialCode}` : "";
+    const phoneNumber = phone.replace(phoneCountryCode, "").replace(/\D/g, "");
+
     // Manual Validation to prevent HTML5 hidden required blockers across tabs
-    if (!profileData.firstName || !profileData.lastName) {
-      toast.error("First Name and Last Name are required.");
-      setActiveTab("personal");
+    const newErrors: Record<string, string> = {};
+
+    // Personal Info
+    if (!profileData.firstName?.trim())
+      newErrors.firstName = "First Name is required";
+    if (!profileData.lastName?.trim())
+      newErrors.lastName = "Last Name is required";
+
+    // Contact Info (Optional, but must be valid if provided)
+    if (phoneNumber && phone.length < 7) {
+      newErrors.phone = "Enter a valid phone number";
+    }
+
+    // Billing Info (if partially filled)
+    if (
+      profileData.billing?.billingEmail &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.billing.billingEmail)
+    ) {
+      newErrors["billing.billingEmail"] = "Enter a valid billing email";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+
+      // Determine which tab to switch to based on the first error
+      const firstErrorField = Object.keys(newErrors)[0];
+      let targetTab: TabId = "personal";
+
+      if (firstErrorField.startsWith("address.")) targetTab = "address";
+      else if (firstErrorField.startsWith("billing.")) targetTab = "billing";
+      else if (
+        firstErrorField === "email" ||
+        firstErrorField === "phone" ||
+        firstErrorField === "phoneCountryCode"
+      ) {
+        targetTab = "contact";
+      }
+
+      toast.error(Object.values(newErrors)[0]);
+      setActiveTab(targetTab);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
+    setErrors({});
     setIsSubmitting(true);
 
     try {
       const payload: UpdateStudentInput = {
         id: user.id,
         ...profileData,
+        phoneNumber,
+        phoneCountryCode,
       };
 
       const response = await studentAuthService.updateProfile(payload);
@@ -372,7 +444,7 @@ export default function StudentEditProfilePage() {
 
         {/* Tab Content Area */}
         <div className="flex-1 min-w-0">
-          <form onSubmit={handleSubmit} className="w-full">
+          <form onSubmit={handleSubmit} noValidate className="w-full">
             {/* Personal Information Tab */}
             {activeTab === "personal" && (
               <Card className="overflow-hidden shadow-sm sm:rounded-xl">
@@ -443,6 +515,7 @@ export default function StudentEditProfilePage() {
                       name="firstName"
                       value={profileData.firstName || ""}
                       onChange={handleChange}
+                      error={errors.firstName}
                       required
                     />
                     <Input
@@ -450,6 +523,7 @@ export default function StudentEditProfilePage() {
                       name="lastName"
                       value={profileData.lastName || ""}
                       onChange={handleChange}
+                      error={errors.lastName}
                       required
                     />
                   </div>
@@ -460,6 +534,7 @@ export default function StudentEditProfilePage() {
                       name="middleName"
                       value={profileData.middleName || ""}
                       onChange={handleChange}
+                      error={errors.middleName}
                     />
                     <Input
                       label="Date of Birth"
@@ -467,18 +542,32 @@ export default function StudentEditProfilePage() {
                       type="date"
                       value={profileData.dateOfBirth || ""}
                       onChange={handleChange}
+                      error={errors.dateOfBirth}
                     />
                   </div>
 
-                  <Textarea
-                    label="Bio / Abstract"
-                    name="bio"
-                    placeholder="Tell us a little bit about yourself..."
-                    value={profileData.bio || ""}
-                    onChange={handleChange}
-                    rows={4}
-                    className="resize-none"
-                  />
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium text-[color:var(--color-neutral-700)]">
+                        Bio / Abstract
+                      </label>
+                      <span
+                        className={`text-xs font-medium ${(profileData.bio?.length || 0) >= 250 ? "text-red-500" : "text-[color:var(--color-neutral-500)]"}`}
+                      >
+                        {profileData.bio?.length || 0} / 250
+                      </span>
+                    </div>
+                    <Textarea
+                      name="bio"
+                      placeholder="Tell us a little bit about yourself..."
+                      value={profileData.bio || ""}
+                      onChange={handleChange}
+                      rows={4}
+                      className="resize-none"
+                      error={errors.bio}
+                      maxLength={250}
+                    />
+                  </div>
                 </CardContent>
                 <CardFooter className="border-t border-[color:var(--color-neutral-100)] flex justify-end py-4 px-4 sm:px-6 bg-[color:var(--color-neutral-50)]/50">
                   <Button
@@ -505,36 +594,54 @@ export default function StudentEditProfilePage() {
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6 py-5 bg-white">
-                  <Input
-                    label="Primary Email Address"
-                    name="email"
-                    type="email"
-                    value={profileData.email || ""}
-                    disabled
-                    hint="Contact platform support if an email change is absolutely required."
-                  />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <Input
+                      label="Primary Email Address"
+                      name="email"
+                      type="email"
+                      value={profileData.email || ""}
+                      disabled
+                      hint="Contact platform support if an email change is absolutely required."
+                    />
 
-                  <div>
-                    <label className="block text-sm font-medium text-[color:var(--color-neutral-700)] mb-2">
-                      Phone Number
-                    </label>
-                    <div className="grid grid-cols-3 gap-3 sm:gap-5">
-                      <div className="col-span-1">
-                        <Input
-                          name="phoneCountryCode"
-                          placeholder="+1"
-                          value={profileData.phoneCountryCode || ""}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <Input
-                          name="phoneNumber"
-                          placeholder="Phone number"
-                          value={profileData.phoneNumber || ""}
-                          onChange={handleChange}
-                        />
-                      </div>
+                    <div>
+                      <label className="block text-sm font-medium text-[color:var(--color-neutral-700)] mb-2">
+                        Phone Number
+                      </label>
+                      <PhoneInput
+                        defaultCountry="np"
+                        value={phoneValue}
+                        onChange={(p) => {
+                          setPhoneValue(p);
+                          if (errors.phone) {
+                            setErrors((prev) => {
+                              const newErrors = { ...prev };
+                              delete newErrors.phone;
+                              return newErrors;
+                            });
+                          }
+                        }}
+                        className="flex items-stretch group"
+                        inputClassName={cn(
+                          "!h-11 !w-full !rounded-r-lg !rounded-l-none !border !px-4 !text-[color:var(--foreground)] !text-base md:!text-sm !transition-all !shadow-xs focus:!shadow-sm",
+                          errors.phone
+                            ? "!border-red-400 group-focus-within:!border-red-500"
+                            : "!border-[color:var(--color-neutral-200)] group-focus-within:!border-[color:var(--color-primary-400)]",
+                        )}
+                        countrySelectorStyleProps={{
+                          buttonClassName: cn(
+                            "!h-11 !rounded-l-lg !rounded-r-none !border !border-r-0 !bg-white !px-3 hover:!bg-[color:var(--color-neutral-50)] !transition-all",
+                            errors.phone
+                              ? "!border-red-400 group-focus-within:!border-red-500"
+                              : "!border-[color:var(--color-neutral-200)] group-focus-within:!border-[color:var(--color-primary-400)]",
+                          ),
+                        }}
+                      />
+                      {errors.phone && (
+                        <p className="mt-1 text-xs text-red-600">
+                          {errors.phone}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -569,6 +676,7 @@ export default function StudentEditProfilePage() {
                     placeholder="Street address, P.O. box"
                     value={profileData.address?.addressLine1 || ""}
                     onChange={handleChange}
+                    error={errors["address.addressLine1"]}
                   />
                   <Input
                     label="Address Line 2"
@@ -576,6 +684,7 @@ export default function StudentEditProfilePage() {
                     placeholder="Apartment, suite, unit"
                     value={profileData.address?.addressLine2 || ""}
                     onChange={handleChange}
+                    error={errors["address.addressLine2"]}
                   />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -584,12 +693,14 @@ export default function StudentEditProfilePage() {
                       name="address.city"
                       value={profileData.address?.city || ""}
                       onChange={handleChange}
+                      error={errors["address.city"]}
                     />
                     <Input
                       label="State/Province"
                       name="address.state"
                       value={profileData.address?.state || ""}
                       onChange={handleChange}
+                      error={errors["address.state"]}
                     />
                   </div>
 
@@ -599,12 +710,14 @@ export default function StudentEditProfilePage() {
                       name="address.zipCode"
                       value={profileData.address?.zipCode || ""}
                       onChange={handleChange}
+                      error={errors["address.zipCode"]}
                     />
                     <Input
                       label="Country"
                       name="address.country"
                       value={profileData.address?.country || ""}
                       onChange={handleChange}
+                      error={errors["address.country"]}
                     />
                   </div>
                 </CardContent>
@@ -641,6 +754,7 @@ export default function StudentEditProfilePage() {
                       placeholder="Where to send invoices"
                       value={profileData.billing?.billingEmail || ""}
                       onChange={handleChange}
+                      error={errors["billing.billingEmail"]}
                     />
                     <Input
                       label="Billing Tax ID"
@@ -648,6 +762,7 @@ export default function StudentEditProfilePage() {
                       placeholder="e.g. VAT or Company Tax ID"
                       value={profileData.billing?.billingTaxId || ""}
                       onChange={handleChange}
+                      error={errors["billing.billingTaxId"]}
                     />
                   </div>
                   <Textarea
@@ -658,6 +773,7 @@ export default function StudentEditProfilePage() {
                     onChange={handleChange}
                     rows={3}
                     className="resize-none"
+                    error={errors["billing.billingAddress"]}
                   />
                 </CardContent>
                 <CardFooter className="border-t border-[color:var(--color-neutral-100)] flex justify-end py-4 px-4 sm:px-6 bg-[color:var(--color-neutral-50)]/50">

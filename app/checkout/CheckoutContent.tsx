@@ -468,19 +468,19 @@ export default function CheckoutContent() {
                         if (errors.phone)
                           setErrors((prev) => ({ ...prev, phone: "" }));
                       }}
-                      className="flex items-stretch"
+                      className="flex items-stretch group"
                       inputClassName={cn(
                         "!h-11 !w-full !rounded-r-lg !rounded-l-none !border !px-4 !text-[color:var(--foreground)] !text-base md:!text-sm !transition-all !shadow-xs focus:!shadow-sm",
                         errors.phone
-                          ? "!border-red-400 focus:!border-red-500"
-                          : "!border-[color:var(--color-neutral-200)] focus:!border-[color:var(--color-primary-400)]",
+                          ? "!border-red-400 group-focus-within:!border-red-500"
+                          : "!border-[color:var(--color-neutral-200)] group-focus-within:!border-[color:var(--color-primary-400)]",
                       )}
                       countrySelectorStyleProps={{
                         buttonClassName: cn(
                           "!h-11 !rounded-l-lg !rounded-r-none !border !border-r-0 !bg-white !px-3 hover:!bg-[color:var(--color-neutral-50)] !transition-all",
                           errors.phone
-                            ? "!border-red-400"
-                            : "!border-[color:var(--color-neutral-200)]",
+                            ? "!border-red-400 group-focus-within:!border-red-500"
+                            : "!border-[color:var(--color-neutral-200)] group-focus-within:!border-[color:var(--color-primary-400)]",
                         ),
                       }}
                     />

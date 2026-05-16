@@ -83,8 +83,14 @@ function ResetPasswordFormComponent() {
 
     if (!password) {
       fieldErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      fieldErrors.password = "Password must be at least 6 characters";
+    } else if (password.length < 8) {
+      fieldErrors.password = "Password must be at least 8 characters";
+    } else if (!/[A-Z]/.test(password)) {
+      fieldErrors.password = "Password must contain at least one uppercase letter";
+    } else if (!/[0-9]/.test(password)) {
+      fieldErrors.password = "Password must contain at least one number";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      fieldErrors.password = "Password must contain at least one special character";
     }
 
     if (!confirmPassword) {

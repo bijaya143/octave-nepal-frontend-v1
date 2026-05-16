@@ -77,6 +77,7 @@ export default function ResetPasswordForm({
         }}
         error={state?.fieldErrors?.password || null}
         disabled={isLoading}
+        hint="Minimum 8 characters, with at least one uppercase letter, one number, and one special character."
       />
       <PasswordInput
         label="Confirm New Password"

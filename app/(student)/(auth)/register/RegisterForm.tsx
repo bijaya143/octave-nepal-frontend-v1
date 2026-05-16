@@ -70,6 +70,7 @@ export default function RegisterForm({
         }}
         error={state?.fieldErrors?.password || null}
         disabled={isLoading}
+        hint="Minimum 8 characters, with at least one uppercase letter, one number, and one special character."
       />
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Creating account..." : "Create account"}

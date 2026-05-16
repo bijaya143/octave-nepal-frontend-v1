@@ -13,11 +13,19 @@ export default function Newsletter() {
   const [status, setStatus] = React.useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setStatus("error");
+    setErrorMessage(null);
+
+    if (!email.trim()) {
+      setErrorMessage("Email is required");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setErrorMessage("Please enter a valid email");
       return;
     }
     setStatus("loading");
@@ -30,9 +38,13 @@ export default function Newsletter() {
         setEmail("");
       } else {
         setStatus("error");
+        setErrorMessage(response.error?.message || "Something went wrong");
       }
     } catch (_) {
       setStatus("error");
+      setErrorMessage("Failed to subscribe. Please try again.");
+    } finally {
+      setStatus((prev) => (prev === "loading" ? "idle" : prev));
     }
   }
 
@@ -63,6 +75,7 @@ export default function Newsletter() {
                 ) : (
                   <form
                     onSubmit={handleSubmit}
+                    noValidate
                     className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3"
                   >
                     <Input
@@ -71,12 +84,11 @@ export default function Newsletter() {
                       aria-label="Email address"
                       className="flex-1"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      error={
-                        status === "error"
-                          ? "Please enter a valid email"
-                          : undefined
-                      }
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (errorMessage) setErrorMessage(null);
+                      }}
+                      error={errorMessage}
                     />
                     <Button type="submit" disabled={status === "loading"}>
                       {status === "loading" ? "Subscribing…" : "Subscribe"}

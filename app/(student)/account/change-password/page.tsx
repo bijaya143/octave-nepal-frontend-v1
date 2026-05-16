@@ -34,12 +34,22 @@ export default function StudentChangePasswordPage() {
     if (!currentPassword)
       nextErrors.currentPassword = "Current password is required";
     if (!newPassword) nextErrors.newPassword = "New password is required";
-    else if (newPassword.length < 6)
-      nextErrors.newPassword = "Password must be at least 6 characters";
+    else if (newPassword.length < 8)
+      nextErrors.newPassword = "Password must be at least 8 characters";
+    else if (!/[A-Z]/.test(newPassword))
+      nextErrors.newPassword =
+        "Password must contain at least one uppercase letter";
+    else if (!/[0-9]/.test(newPassword))
+      nextErrors.newPassword = "Password must contain at least one number";
+    else if (!/[!@#$%^&*(),.?":{}|<>]/.test(newPassword))
+      nextErrors.newPassword =
+        "Password must contain at least one special character";
+
     if (!confirmPassword)
       nextErrors.confirmPassword = "Please confirm your new password";
     else if (confirmPassword !== newPassword)
       nextErrors.confirmPassword = "Passwords do not match";
+
     if (currentPassword && newPassword && currentPassword === newPassword) {
       nextErrors.newPassword = "New password must be different from current";
     }
@@ -107,9 +117,11 @@ export default function StudentChangePasswordPage() {
               label="Current password"
               placeholder="Enter current password"
               value={currentPassword}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setCurrentPassword(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setCurrentPassword(e.target.value);
+                if (errors.currentPassword)
+                  setErrors((prev) => ({ ...prev, currentPassword: null }));
+              }}
               required
               error={errors.currentPassword || null}
               autoComplete="current-password"
@@ -119,12 +131,14 @@ export default function StudentChangePasswordPage() {
               label="New password"
               placeholder="Enter new password"
               value={newPassword}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setNewPassword(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setNewPassword(e.target.value);
+                if (errors.newPassword)
+                  setErrors((prev) => ({ ...prev, newPassword: null }));
+              }}
               required
               error={errors.newPassword || null}
-              hint="Must be at least 6 characters."
+              hint="Minimum 8 characters, with at least one uppercase letter, one number, and one special character."
               autoComplete="new-password"
               disabled={isSubmitting}
             />
@@ -132,9 +146,11 @@ export default function StudentChangePasswordPage() {
               label="Confirm new password"
               placeholder="Re-enter new password"
               value={confirmPassword}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setConfirmPassword(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setConfirmPassword(e.target.value);
+                if (errors.confirmPassword)
+                  setErrors((prev) => ({ ...prev, confirmPassword: null }));
+              }}
               required
               error={errors.confirmPassword || null}
               autoComplete="new-password"

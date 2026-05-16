@@ -8,24 +8,41 @@ type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   hint?: string;
 };
 
-export default function Textarea({ className, error, label, hint, id, rows = 5, ...props }: TextareaProps) {
+export default function Textarea({
+  className,
+  error,
+  label,
+  hint,
+  id,
+  rows = 5,
+  required,
+  ...props
+}: TextareaProps) {
   const textareaId = id || React.useId();
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       {label && (
-        <label htmlFor={textareaId} className="text-sm font-medium text-[color:var(--foreground)]">
+        <label
+          htmlFor={textareaId}
+          className="text-sm font-medium text-[color:var(--foreground)]"
+        >
           {label}
-          {props.required && <span className="ml-1 text-red-600" aria-hidden>*</span>}
+          {required && (
+            <span className="ml-1 text-red-600" aria-hidden>
+              *
+            </span>
+          )}
         </label>
       )}
       <textarea
         id={textareaId}
         rows={rows}
+        aria-required={required}
         className={cn(
           "w-full rounded-lg bg-white border px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--color-neutral-400)]",
           "border-[color:var(--color-neutral-200)] focus:border-[color:var(--color-primary-400)]",
           "shadow-xs focus:shadow-sm transition-all resize-y min-h-[120px]",
-          error && "border-red-400 focus:border-red-500 focus:shadow-sm"
+          error && "border-red-400 focus:border-red-500 focus:shadow-sm",
         )}
         {...props}
       />
