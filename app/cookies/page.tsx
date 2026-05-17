@@ -8,144 +8,158 @@ export const metadata: Metadata = {
   description:
     "Understand how " +
     SITE_NAME +
-    " uses cookies and how you can control them.",
+    " uses cookies and how you can manage your settings under prevailing privacy guidelines in Nepal.",
 };
 
 export default function CookiesPage() {
   return (
     <main>
-      <section className="py-5 md:py-10">
+      <section className="py-5 md:py-10 bg-linear-to-b from-white to-[color:var(--color-neutral-50)]/30">
         <Container className="max-w-3xl">
           <h1
-            className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight"
+            className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[color:var(--color-neutral-900)]"
             style={{ fontFamily: "var(--font-heading-sans)" }}
           >
             Cookie Policy
           </h1>
-          <p className="mt-2 text-sm text-[color:var(--color-neutral-600)]">
-            Last updated: {new Date().toLocaleDateString()}
+          <p className="mt-3 text-sm md:text-base text-[color:var(--color-neutral-500)] flex items-center gap-2">
+            <span>
+              Last updated:{" "}
+              {new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
+            <span>•</span>
+            <span>Kathmandu, Nepal</span>
           </p>
 
-          <div className="mt-8 space-y-6 leading-relaxed">
-            <p className="text-sm text-[color:var(--color-neutral-700)]">
-              This Cookie Policy explains what cookies are, how {SITE_NAME} uses
-              them, and your choices regarding cookies when you use our website
-              and services.
+          <div className="mt-10 space-y-8 leading-relaxed text-base md:text-lg text-[color:var(--color-neutral-700)]">
+            <p className="text-base md:text-[17px] leading-relaxed text-[color:var(--color-neutral-700)]">
+              This Cookie Policy describes how <strong>{SITE_NAME}</strong> uses cookies, web beacons, and similar tracking technologies on our online learning platform. By continuing to browse our site, register an account, or enroll in our digital courses, you agree to our use of tracking technologies as detailed in this policy, aligned with the <strong>Individual Privacy Act, 2075 (2018 A.D.)</strong> of Nepal.
             </p>
+
+            <div className="p-5 rounded-xl border border-[color:var(--color-neutral-200)]/80 bg-white/70 backdrop-blur-xs">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-[color:var(--color-primary-700)]">
+                Cookie Consent & Transparency Notice
+              </h2>
+              <p className="mt-2 text-sm md:text-base text-[color:var(--color-neutral-600)] leading-relaxed">
+                In compliance with Nepalese digital privacy principles, we maintain full transparency regarding our tracking mechanisms. We only store essential technical identifiers automatically. You can toggle non-essential cookie permissions directly through your browser or device controls.
+              </p>
+            </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
                 1. What Are Cookies?
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                Cookies are small text files stored on your device when you
-                visit a website. They are widely used to make websites work or
-                operate more efficiently, as well as to provide reporting
-                information.
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                Cookies are small text files composed of letters and numbers that are placed on your desktop computer, tablet, or smartphone when you visit a website. They serve as reliable memory markers, helping platforms recognize returning browsers, retain selected configurations, and coordinate seamless interactive systems.
               </p>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
                 2. How We Use Cookies
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We use cookies to enable essential site functionality, remember
-                your preferences, analyze site traffic, and improve user
-                experience.
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                Our platform utilizes cookies to make your online learning experience smooth, efficient, and personalized. These tracking tools allow us to:
               </p>
+              <ul className="mt-3 pl-6 list-disc text-base md:text-[17px] text-[color:var(--color-neutral-700)] space-y-2 leading-relaxed">
+                <li>Maintain secure authentication states so you do not have to log in repeatedly during a single session.</li>
+                <li>Process payment handshakes and direct callback sessions with local digital wallets (such as eSewa or Khalti).</li>
+                <li>Remember your filters on the course list, playback positions in cohort video lessons, and interactive chat configurations.</li>
+                <li>Analyze overall site traffic speed and diagnose technical bugs to improve overall performance.</li>
+              </ul>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
-                3. Types of Cookies We Use
+                3. Categories of Cookies We Deploy
               </h2>
-              <ul className="mt-2 list-disc space-y-2 pl-6 text-sm text-[color:var(--color-neutral-700)]">
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                We categorize the cookies operating on our platform as follows:
+              </p>
+              <ul className="mt-3 pl-6 list-disc text-base md:text-[17px] text-[color:var(--color-neutral-700)] space-y-3 leading-relaxed">
                 <li>
-                  <span className="font-medium">Essential Cookies:</span>{" "}
-                  Required for the website to function and cannot be switched
-                  off.
+                  <strong>Strictly Essential Cookies:</strong> These are technically required for our website core to function. They support account registrations, secure login dashboards, and payment checkouts. They cannot be disabled, as the site will fail to load or authenticate without them.
                 </li>
                 <li>
-                  <span className="font-medium">Performance Cookies:</span> Help
-                  us understand how visitors interact with the site by
-                  collecting anonymous analytics data.
+                  <strong>Performance & Analytics Cookies:</strong> These help us track anonymous user visits, measure which courses attract the highest engagement, and identify pages with high loading latency. We rely on trusted tools like Google Analytics to compile these metrics without gathering identifying personal data.
                 </li>
                 <li>
-                  <span className="font-medium">Functional Cookies:</span>{" "}
-                  Enable enhanced functionality and personalization.
+                  <strong>Functional Optimization Cookies:</strong> These remember your interface selections, such as theme preferences, video playback quality scales, course search queries, and grid sorting styles, preventing you from resetting them on each page visit.
                 </li>
                 <li>
-                  <span className="font-medium">Advertising Cookies:</span> May
-                  be set by us or third parties to deliver relevant content and
-                  measure campaign performance.
+                  <strong>Targeting & Advertising Cookies:</strong> These may be deployed by our third-party marketing networks to monitor user interactions with our ads and serve relevant platform highlights on external social networks.
                 </li>
               </ul>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
-                4. Third-Party Cookies
+                4. Third-Party Cookies & Widgets
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We may allow trusted third parties to set cookies to provide
-                analytics, advertising, or other services. These third parties
-                have their own privacy and cookie policies.
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                Certain modules on our platform integrate cookies managed by licensed external providers:
+              </p>
+              <ul className="mt-3 pl-6 list-disc text-base md:text-[17px] text-[color:var(--color-neutral-700)] space-y-2 leading-relaxed">
+                <li><strong>Analytics Engines:</strong> Trusted tracking frameworks to map and enhance global page performance.</li>
+                <li><strong>Digital Payment Gateways:</strong> Temporary checkout validation tracking managed by licensed Nepalese institutions (eSewa, Khalti, ConnectIPS).</li>
+                <li><strong>Student Groups & Media:</strong> Embedded widgets supporting cohort video playback and direct forum communication links (Discord, Slack, YouTube).</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
+              >
+                5. How You Can Control Cookies
+              </h2>
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                You hold the absolute right to refuse or delete cookies. Most web browsers accept cookies automatically, but you can alter your browser configuration preferences to disable cookies or receive a warning alert before a cookie is placed.
+              </p>
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                Please be aware that disabling essential cookies will immediately interrupt secure session authentication, cohort playback configurations, and online payment checkouts on {SITE_NAME}.
               </p>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
-                5. Managing Cookies
+                6. Amendments to this Policy
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                You can control and manage cookies through your browser
-                settings. Please note that disabling certain cookies may affect
-                the functionality and features of the site.
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                We reserve the right to revise this Cookie Policy at any time to align with updated browser rules, secure token methodologies, or changing digital privacy laws in Nepal. The latest copy will be uploaded directly to this page with an updated &ldquo;Last updated&rdquo; indicator.
               </p>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
-                style={{ fontFamily: "var(--font-heading-sans)" }}
-              >
-                6. Changes to This Policy
-              </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We may update this Cookie Policy periodically. Continued use of
-                our services after changes indicates your acceptance of the
-                updated policy.
-              </p>
-            </div>
-
-            <div>
-              <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
                 7. Contact Us
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                If you have questions about this Cookie Policy, please contact
-                us via the{" "}
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                If you have any questions, feedback, or concerns regarding our Cookie Policy, please reach out to our support team through our{" "}
                 <Link
-                  href="/contact"
+                  href="/contact-us"
                   className="text-[color:var(--color-primary-700)] hover:underline underline-offset-2"
                 >
                   contact page

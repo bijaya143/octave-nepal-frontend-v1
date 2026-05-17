@@ -18,20 +18,34 @@ const faqs: FaqItem[] = [
     question: "What is " + SITE_NAME + "?",
     answer: (
       <p>
-        {SITE_NAME} is a modern online learning platform built in Nepal. We
-        offer practical, project-based courses taught by industry experts with a
-        focus on clarity, community, and real-world outcomes.
+        {SITE_NAME} is an AI-powered online learning platform in Nepal. We offer
+        practical, project-based and cohort-based courses taught by industry
+        practitioners, combined with live Q&A sessions, collaborative student
+        channels, and a focus on real-world career outcomes.
       </p>
     ),
     category: "General",
   },
   {
+    question: "Are courses self-paced or live?",
+    answer: (
+      <p>
+        We use a hybrid learning model: you learn at your own pace with
+        high-quality pre-recorded modules during the week, combined with regular
+        live interactive Q&A sessions, cohort assignments, and structured weekly
+        milestones led by expert instructors.
+      </p>
+    ),
+    category: "Format",
+  },
+  {
     question: "How do I enroll in a course?",
     answer: (
       <p>
-        Visit the Courses page, choose a course, and click Enroll. You can pay
-        using popular local options like eSewa, Khalti, Fonepay, or cards. After
-        payment, you get instant access to all lessons and resources.
+        Browse our Courses page, select a course, and click Enroll. We support
+        seamless local payment options including eSewa, Khalti, Fonepay (via QR
+        scan), ConnectIPS, as well as local and international credit/debit
+        cards. Enrollment is instant upon successful payment.
       </p>
     ),
     category: "Enrollment",
@@ -40,83 +54,82 @@ const faqs: FaqItem[] = [
     question: "Do you provide certificates?",
     answer: (
       <p>
-        Yes. Upon completing all required lessons and the final project or
-        assessment, you can download a shareable certificate of completion.
+        Yes. Upon completing all required course modules, assignments, and the
+        capstone project, you will receive a verified digital certificate from{" "}
+        {SITE_NAME} that you can share on LinkedIn or include in your resume for
+        potential employers.
       </p>
     ),
     category: "Certification",
   },
   {
-    question: "Are courses self-paced or live?",
+    question: "What if I get stuck on a concept or assignment?",
     answer: (
       <p>
-        Most courses are self-paced with lifetime access. We also host periodic
-        live sessions, Q&A, and community events to support your learning.
-      </p>
-    ),
-    category: "Format",
-  },
-  {
-    question: "Can I get a refund?",
-    answer: (
-      <p>
-        We offer a 7-day refund window if the course is not a good fit and you
-        have watched less than 20% of the content. Contact support from the
-        Contact page with your order details.
-      </p>
-    ),
-    category: "Payments",
-  },
-  {
-    question: "Do you have beginner-friendly courses?",
-    answer: (
-      <p>
-        Absolutely. Many courses start from fundamentals and gradually move to
-        intermediate projects. Each course page lists prerequisites and who the
-        course is for.
-      </p>
-    ),
-    category: "Learning",
-  },
-  {
-    question: "How can I ask questions or get help?",
-    answer: (
-      <p>
-        Each course includes Q&A support. You can also reach us via the Contact
-        page or join community sessions announced via email.
+        You are never left alone! Every course has a dedicated community space
+        (on Slack or Discord) where you can collaborate with peers, ask
+        questions, get feedback on your projects, and attend live weekly office
+        hours hosted by our course instructors and teaching assistants.
       </p>
     ),
     category: "Support",
   },
   {
-    question: "Do you offer discounts for students?",
+    question: "Do courses include real-world projects?",
     answer: (
       <p>
-        We occasionally run offers and scholarships. Subscribe to the newsletter
-        on the homepage to be notified about upcoming discounts.
+        Absolutely. Our curriculum is entirely project-based. You will build
+        multiple hands-on projects throughout the course, culminating in a
+        capstone project that solves actual business problems, helping you build
+        a professional portfolio that stands out to hiring managers.
+      </p>
+    ),
+    category: "Curriculum",
+  },
+  {
+    question: "Can I join as a complete beginner?",
+    answer: (
+      <p>
+        Yes! We offer a wide range of foundational courses made specifically for
+        beginners across various fields, including business, creative arts,
+        technology, and professional skills. Prerequisites (if any) are clearly
+        listed on each individual course page so you know exactly where to
+        start.
+      </p>
+    ),
+    category: "Learning",
+  },
+  {
+    question: "Do you offer student discounts?",
+    answer: (
+      <p>
+        We occasionally run promotional discounts and offers. Subscribe to the
+        newsletter on our homepage or follow us on our social media handles to
+        stay updated on upcoming scholarships and special cohort offers.
       </p>
     ),
     category: "Pricing",
   },
   {
+    question: "Can I get a refund?",
+    answer: (
+      <p>
+        We offer a 7-day refund window if the course is not a good fit for you
+        and you have consumed less than 20% of the content. You can submit a
+        refund request through the Contact page with your purchase details.
+      </p>
+    ),
+    category: "Payments",
+  },
+  {
     question: "Can I access courses on mobile?",
     answer: (
       <p>
-        Yes. The platform is optimized for modern mobile browsers so you can
-        learn anywhere.
+        Yes. The platform is fully responsive and optimized for modern mobile
+        browsers, allowing you to learn on the go from your phone or tablet.
       </p>
     ),
     category: "Access",
-  },
-  {
-    question: "Do courses include projects?",
-    answer: (
-      <p>
-        Yes. Courses emphasize hands-on projects to help you build a portfolio
-        and real-world confidence.
-      </p>
-    ),
-    category: "Curriculum",
   },
 ];
 

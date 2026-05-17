@@ -244,7 +244,11 @@ export default function TeamContent() {
                             <CardContent className="px-3 sm:px-6 py-3.5 sm:py-5">
                               <div className="h-4 sm:h-5 bg-[color:var(--color-neutral-200)] rounded w-3/4 mb-2 animate-pulse"></div>
                               <div className="h-3 sm:h-4 bg-[color:var(--color-neutral-100)] rounded w-1/2 mb-4 animate-pulse"></div>
-                              <div className="h-8 bg-[color:var(--color-neutral-100)] rounded w-full animate-pulse"></div>
+                              <div className="mt-3 flex items-center gap-1.5 sm:gap-2">
+                                <div className="h-7 w-7 rounded-full bg-[color:var(--color-neutral-100)] animate-pulse" />
+                                <div className="h-7 w-7 rounded-full bg-[color:var(--color-neutral-100)] animate-pulse" />
+                                <div className="h-7 w-7 rounded-full bg-[color:var(--color-neutral-100)] animate-pulse" />
+                              </div>
                             </CardContent>
                           </Card>
                         </div>
@@ -284,14 +288,13 @@ export default function TeamContent() {
                                 <div className="text-[11px] sm:text-xs text-[color:var(--color-primary-700)] mt-0.5 sm:mt-1">
                                   {m.role}
                                 </div>
-                                {/* <div className="h-px bg-[color:var(--color-neutral-200)] my-4" /> */}
                                 {m.socials && (
-                                  <div className="mt-2.5 rounded-lg border border-[color:var(--color-neutral-200)]/70 bg-[color:var(--color-neutral-50)]/60 px-2.5 sm:px-3 py-1.5 sm:py-2 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                  <div className="mt-3 flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-0.5">
                                     {m.socials.website && (
                                       <Link
                                         href={m.socials.website}
                                         aria-label={`${m.name}'s Website`}
-                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50 hover:bg-[color:var(--color-neutral-100)]"
                                       >
                                         <Image
                                           src="/images/social-medias/internet.png"
@@ -306,7 +309,7 @@ export default function TeamContent() {
                                       <Link
                                         href={m.socials.linkedin}
                                         aria-label={`${m.name} on LinkedIn`}
-                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50 hover:bg-[color:var(--color-neutral-100)]"
                                       >
                                         <Image
                                           src="/images/social-medias/linkedin.png"
@@ -321,7 +324,7 @@ export default function TeamContent() {
                                       <Link
                                         href={m.socials.twitter}
                                         aria-label={`${m.name} on X/Twitter`}
-                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50 hover:bg-[color:var(--color-neutral-100)]"
                                       >
                                         <Image
                                           src="/images/social-medias/twitter.png"
@@ -336,7 +339,7 @@ export default function TeamContent() {
                                       <Link
                                         href={m.socials.facebook}
                                         aria-label={`${m.name} on Facebook`}
-                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50 hover:bg-[color:var(--color-neutral-100)]"
                                       >
                                         <Image
                                           src="/images/social-medias/facebook.png"
@@ -351,7 +354,7 @@ export default function TeamContent() {
                                       <Link
                                         href={m.socials.instagram}
                                         aria-label={`${m.name} on Instagram`}
-                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50 hover:bg-[color:var(--color-neutral-100)]"
                                       >
                                         <Image
                                           src="/images/social-medias/instagram.png"
@@ -366,7 +369,7 @@ export default function TeamContent() {
                                       <Link
                                         href={m.socials.youtube}
                                         aria-label={`${m.name} on YouTube`}
-                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50 hover:bg-[color:var(--color-neutral-100)]"
                                       >
                                         <Image
                                           src="/images/social-medias/youtube.png"
@@ -381,7 +384,7 @@ export default function TeamContent() {
                                       <Link
                                         href={m.socials.github}
                                         aria-label={`${m.name} on GitHub`}
-                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50 hover:bg-[color:var(--color-neutral-100)]"
                                       >
                                         <Image
                                           src="/images/social-medias/github.png"
@@ -396,7 +399,7 @@ export default function TeamContent() {
                                       <Link
                                         href={`mailto:${m.socials.email}`}
                                         aria-label={`Email ${m.name}`}
-                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md border border-[color:var(--color-neutral-200)] hover:bg-[color:var(--color-neutral-100)]"
+                                        className="inline-flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)]/50 hover:bg-[color:var(--color-neutral-100)]"
                                       >
                                         <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                       </Link>

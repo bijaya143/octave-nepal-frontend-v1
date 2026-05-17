@@ -8,153 +8,276 @@ export const metadata: Metadata = {
   description:
     "Learn how " +
     SITE_NAME +
-    " collects, uses, and protects your personal data.",
+    " collects, uses, and protects your personal data under the Individual Privacy Act, 2075 of Nepal.",
 };
 
 export default function PrivacyPage() {
   return (
     <main>
-      <section className="py-5 md:py-10">
+      <section className="py-5 md:py-10 bg-linear-to-b from-white to-[color:var(--color-neutral-50)]/30">
         <Container className="max-w-3xl">
           <h1
-            className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight"
+            className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[color:var(--color-neutral-900)]"
             style={{ fontFamily: "var(--font-heading-sans)" }}
           >
             Privacy Policy
           </h1>
-          <p className="mt-2 text-sm text-[color:var(--color-neutral-600)]">
-            Last updated: {new Date().toLocaleDateString()}
+          <p className="mt-3 text-sm md:text-base text-[color:var(--color-neutral-500)] flex items-center gap-2">
+            <span>
+              Last updated:{" "}
+              {new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
+            <span>•</span>
+            <span>Kathmandu, Nepal</span>
           </p>
 
-          <div className="mt-8 space-y-6 leading-relaxed">
-            <p className="text-sm text-[color:var(--color-neutral-700)]">
-              Your privacy is important to us. This Privacy Policy explains what
-              information we collect, how we use it, and your rights regarding
-              your information when you use {SITE_NAME}'s website and services.
+          <div className="mt-10 space-y-8 leading-relaxed text-base md:text-lg text-[color:var(--color-neutral-700)]">
+            <p className="text-base md:text-[17px] leading-relaxed text-[color:var(--color-neutral-700)]">
+              At <strong>{SITE_NAME}</strong>, we are committed to protecting
+              the privacy and security of our students, partners, and platform
+              users. This Privacy Policy details how we collect, store, process,
+              and protect your personal information when you register an
+              account, enroll in our courses, or interact with our platform. Our
+              data practices are strictly aligned with the{" "}
+              <strong>Individual Privacy Act, 2075 (2018 A.D.)</strong> and the{" "}
+              <strong>Electronic Transactions Act, 2063</strong> of Nepal.
             </p>
+
+            <div className="p-5 rounded-xl border border-[color:var(--color-neutral-200)]/80 bg-white/70 backdrop-blur-xs">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-[color:var(--color-primary-700)]">
+                Privacy Compliance Notice
+              </h2>
+              <p className="mt-2 text-sm md:text-base text-[color:var(--color-neutral-600)] leading-relaxed">
+                In compliance with the{" "}
+                <strong>Individual Privacy Act, 2075</strong> of Nepal, we
+                obtain your explicit consent before collecting or processing any
+                personal information. You retain full rights to access, amend,
+                retrieve, or request the erasure of your personal data at any
+                time.
+              </p>
+            </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
                 1. Information We Collect
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We may collect information that you provide directly to us, such
-                as your name, email address, phone number, and account details.
-                We may also collect usage data, device information, and
-                analytics data to improve our services. Payment information is
-                processed securely by our payment partners and is not stored on
-                our servers.
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                To provide you with our learning services, we may collect the
+                following categories of information:
               </p>
+              <ul className="mt-3 pl-6 list-disc text-base md:text-[17px] text-[color:var(--color-neutral-700)] space-y-2 leading-relaxed">
+                <li>
+                  <strong>Personal Identity Information:</strong> Your full
+                  name, email address, mobile number, physical billing address,
+                  and account login details.
+                </li>
+                <li>
+                  <strong>Course & Cohort Records:</strong> Course selections,
+                  class progress, video consumption statistics, quiz scores,
+                  project uploads, community discussion contributions (on Slack
+                  or Discord), and digital certificate records.
+                </li>
+                <li>
+                  <strong>Payment Reference Information:</strong> When you
+                  purchase courses through eSewa, Khalti, ConnectIPS, Fonepay,
+                  or bank cards, we collect transaction confirmation IDs. We{" "}
+                  <strong>do not</strong> store your passwords, credit/debit
+                  card numbers, or mobile wallet PINs on our servers; these are
+                  handled directly by secure, licensed payment service providers
+                  in compliance with Nepal Rastra Bank regulations.
+                </li>
+                <li>
+                  <strong>Technical Device Data:</strong> IP address, device
+                  type, web browser characteristics, operating system version,
+                  and general usage analytics captured via cookies.
+                </li>
+              </ul>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
                 2. How We Use Your Information
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We use your information to provide and maintain our services,
-                manage your account, process transactions, communicate with you,
-                personalize your experience, and improve functionality and
-                security. We may also use information to comply with legal
-                obligations.
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                We utilize your personal information strictly for legitimate
+                educational, operational, and customer support purposes:
+              </p>
+              <ul className="mt-3 pl-6 list-disc text-base md:text-[17px] text-[color:var(--color-neutral-700)] space-y-2 leading-relaxed">
+                <li>
+                  To manage your registration, course enrollments, and
+                  coordinate classroom access.
+                </li>
+                <li>
+                  To deliver cohort-based hybrid lectures, assignments, and
+                  facilitate group discussions.
+                </li>
+                <li>
+                  To issue verified, shareable digital certificates of
+                  completion.
+                </li>
+                <li>
+                  To safely process payment transactions and prevent payment
+                  fraud.
+                </li>
+                <li>
+                  To respond to your support queries, resolve grievances, and
+                  communicate platform announcements.
+                </li>
+                <li>
+                  To analyze aggregate platform metrics to improve site loading
+                  speeds, design interfaces, and overall content layout.
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h2
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
+              >
+                3. Consent, Data Confidentiality & Sharing Restrictions
+              </h2>
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                Your data is strictly confidential. In alignment with Nepalese
+                laws, {SITE_NAME} will <strong>never</strong> sell, rent, trade,
+                or lease your personal information to third-party advertising or
+                marketing companies for promotional purposes.
+              </p>
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                We may share your data only in the following limited
+                circumstances:
+              </p>
+              <ul className="mt-3 pl-6 list-disc text-base md:text-[17px] text-[color:var(--color-neutral-700)] space-y-2 leading-relaxed">
+                <li>
+                  With trusted service providers who help us operate our site
+                  (e.g. database hosting, secure payment processors, and
+                  analytics providers) who are legally bound to keep your data
+                  confidential.
+                </li>
+                <li>
+                  When required by the Government of Nepal or legal mandates
+                  under prevailing criminal or cybersecurity acts.
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h2
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
+              >
+                4. Cookies & Persistent Tracking
+              </h2>
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                We use cookies and similar session tracking mechanisms to
+                remember your language preferences, keep you logged into your
+                portal during a session, and gather anonymized website usage
+                statistics. You can configure your browser to block or refuse
+                cookies; however, doing so will degrade or disable essential
+                interactive functionalities of the platform.
               </p>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
-                3. Cookies and Tracking
+                5. Data Security Measures
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We use cookies and similar technologies to remember your
-                preferences and analyze site usage. You can control cookies
-                through your browser settings, but disabling them may affect
-                certain features.
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                We enforce appropriate administrative, electronic, and physical
+                security measures to safeguard personal data belonging to
+                Nepalese citizens. All digital data traffic is encrypted in
+                transit via Secure Socket Layers (SSL/HTTPS). Access to student
+                data is limited solely to authorized employees, facilitators, or
+                instructors who require it to support your learning. While we
+                use industry-standard measures to protect your information, no
+                digital network can be guaranteed 100% secure, and you share
+                information at your own discretion.
               </p>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
-                4. Third-Party Services
+                6. Your Legal Rights (Individual Privacy Act, 2075)
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We may use trusted third-party providers (e.g., analytics and
-                payment processors) to help deliver our services. These parties
-                are authorized to process your information only as necessary to
-                provide services to us and must protect it appropriately.
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                Under Section 10 and 11 of the{" "}
+                <strong>Individual Privacy Act, 2075</strong>, you possess the
+                following explicit legal rights concerning your personal
+                information:
+              </p>
+              <ul className="mt-3 pl-6 list-disc text-base md:text-[17px] text-[color:var(--color-neutral-700)] space-y-2 leading-relaxed">
+                <li>
+                  <strong>Right to Access & Review:</strong> You can request a
+                  summary of the personal information we hold about you at any
+                  time.
+                </li>
+                <li>
+                  <strong>Right to Rectification & Correction:</strong> You have
+                  the right to demand the correction or update of any
+                  inaccurate, incomplete, or obsolete personal data.
+                </li>
+                <li>
+                  <strong>
+                    Right to Data Erasure (Right to be Forgotten):
+                  </strong>{" "}
+                  You may request the permanent deletion of your platform
+                  account and the complete removal of your personal history from
+                  our servers, subject to regulatory tax audit laws.
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h2
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
+                style={{ fontFamily: "var(--font-heading-sans)" }}
+              >
+                7. Policy Amendments
+              </h2>
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                We may amend or update this Privacy Policy periodically to adapt
+                to changing legal requirements in Nepal, new course categories,
+                or platform updates. Any changes will be posted directly on this
+                page, and the &ldquo;Last updated&rdquo; timestamp will be
+                revised accordingly.
               </p>
             </div>
 
             <div>
               <h2
-                className="text-xl md:text-2xl font-semibold"
+                className="text-xl md:text-2xl font-bold text-[color:var(--color-neutral-900)]"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
-                5. Data Security
+                8. Contact Us & Privacy Officers
               </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We implement reasonable safeguards to protect your information.
-                However, no method of transmission or storage is completely
-                secure, and we cannot guarantee absolute security.
-              </p>
-            </div>
-
-            <div>
-              <h2
-                className="text-xl md:text-2xl font-semibold"
-                style={{ fontFamily: "var(--font-heading-sans)" }}
-              >
-                6. Your Rights
-              </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                You may have rights to access, update, or delete your personal
-                information, and to opt out of certain communications. To
-                exercise these rights, please contact us.
-              </p>
-            </div>
-
-            <div>
-              <h2
-                className="text-xl md:text-2xl font-semibold"
-                style={{ fontFamily: "var(--font-heading-sans)" }}
-              >
-                7. Changes to This Policy
-              </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                We may update this Privacy Policy from time to time. Continued
-                use of our services after any changes indicates your acceptance
-                of the updated policy.
-              </p>
-            </div>
-
-            <div>
-              <h2
-                className="text-xl md:text-2xl font-semibold"
-                style={{ fontFamily: "var(--font-heading-sans)" }}
-              >
-                8. Contact Us
-              </h2>
-              <p className="mt-2 text-sm text-[color:var(--color-neutral-700)]">
-                If you have questions about this Privacy Policy, please reach
-                out to us via the{" "}
+              <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
+                If you have any questions, concerns, or requests regarding this
+                Privacy Policy, your personal data, or to exercise your rights
+                under the <strong>Individual Privacy Act, 2075</strong>, please
+                reach out to us through our{" "}
                 <Link
-                  href="/contact"
+                  href="/contact-us"
                   className="text-[color:var(--color-primary-700)] hover:underline underline-offset-2"
                 >
                   contact page
-                </Link>
-                .
+                </Link>{" "}
+                or submit a direct support ticket.
               </p>
             </div>
           </div>

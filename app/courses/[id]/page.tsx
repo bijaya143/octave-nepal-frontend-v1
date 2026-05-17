@@ -142,6 +142,7 @@ export default function CourseDetailPage() {
 
       // Fetch related courses
       const relatedResp = await guestCourseService.list({
+        beforeEnrollmentDate: new Date().toISOString().split("T")[0], // For guest only
         categoryId: courseData.category.id,
         status: PublishStatusType.PUBLISHED,
         limit: 4,
