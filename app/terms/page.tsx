@@ -185,7 +185,7 @@ export default function TermsPage() {
                 source code, projects, assessments, graphics, logos, and written
                 guides, is the exclusive intellectual property of {SITE_NAME} or
                 its designated instructors, protected under the{" "}
-                <strong>Copyright Act, 2059 (2002 B.S.)</strong> of Nepal.
+                <strong>Copyright Act, 2059 (2002 A.D.)</strong> of Nepal.
               </p>
               <p className="mt-2.5 text-base md:text-[17px] text-[color:var(--color-neutral-700)] leading-relaxed">
                 You are strictly prohibited from downloading, recording,

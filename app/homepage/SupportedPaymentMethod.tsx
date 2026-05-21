@@ -35,14 +35,20 @@ export default function SupportPaymentMethod() {
           ].map((m) => (
             <div
               key={m.name}
-              className="flex h-20 w-full items-center justify-center rounded-xl border border-neutral-100 bg-white p-4"
+              className={`flex h-20 w-full items-center justify-center rounded-xl border border-neutral-100 bg-white ${
+                m.name === "Bank Transfer" ? "p-2 md:p-3" : "p-4"
+              }`}
             >
               <Image
                 src={m.src}
                 alt={`${m.name} logo`}
                 width={120}
                 height={40}
-                className="h-6 md:h-8 lg:h-8 w-auto object-contain"
+                className={`w-auto object-contain ${
+                  m.name === "Bank Transfer"
+                    ? "h-10 md:h-12 lg:h-12"
+                    : "h-6 md:h-8 lg:h-8"
+                }`}
               />
             </div>
           ))}

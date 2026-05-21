@@ -75,6 +75,23 @@ export default function RegisterForm({
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Creating account..." : "Create account"}
       </Button>
+      <p className="text-xs text-[color:var(--color-neutral-500)] leading-relaxed">
+        By creating an account, you agree to our{" "}
+        <Link
+          href="/terms"
+          className="text-[color:var(--color-primary-700)] hover:underline font-medium"
+        >
+          Terms of Service
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/privacy"
+          className="text-[color:var(--color-primary-700)] hover:underline font-medium"
+        >
+          Privacy Policy
+        </Link>
+        .
+      </p>
       <div className="text-sm text-[color:var(--color-neutral-600)]">
         <span>Already have an account?</span>{" "}
         <Link

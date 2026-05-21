@@ -29,13 +29,13 @@ export default function Hero() {
                   <span className="gradient-text">AI-Powered</span> Online
                   Learning Platform.
                 </span>
-                <span className="block">
+                {/* <span className="block">
                   Personalized{" "}
                   <span className="gradient-text">AI Guidance</span>.
                 </span>
                 <span className="block">
                   Real <span className="gradient-text">Results</span>.
-                </span>
+                </span> */}
               </div>
               <span className="pointer-events-none absolute -bottom-2 left-0 h-[3px] w-24 sm:w-28 md:w-32 rounded-full bg-gradient-to-r from-primary-600 to-indigo-500/60 blur-[0.5px] hidden sm:block"></span>
             </h1>
