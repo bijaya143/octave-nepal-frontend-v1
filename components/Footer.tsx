@@ -7,27 +7,27 @@ import Container from "./Container";
 
 const SOCIAL_LINKS = [
   {
-    href: "https://facebook.com",
+    href: "https://facebook.com/profile.php?id=61583347305419",
     label: "Facebook",
     img: "/images/social-medias/facebook.png",
   },
   {
-    href: "https://twitter.com",
+    href: "https://x.com/octave_nepal",
     label: "X (Twitter)",
     img: "/images/social-medias/twitter.png",
   },
   {
-    href: "https://linkedin.com",
+    href: "https://linkedin.com/company/octavenepal",
     label: "LinkedIn",
     img: "/images/social-medias/linkedin.png",
   },
   {
-    href: "https://instagram.com",
+    href: "https://instagram.com/octavenepal",
     label: "Instagram",
     img: "/images/social-medias/instagram.png",
   },
   {
-    href: "https://youtube.com",
+    href: "https://youtube.com/@octavenepal",
     label: "YouTube",
     img: "/images/social-medias/youtube.png",
   },
