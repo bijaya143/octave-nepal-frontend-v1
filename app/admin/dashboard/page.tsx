@@ -4,7 +4,6 @@ import React, { useMemo, useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
   BookOpen,
-  Wallet,
   BookCheck,
   GraduationCap,
   School,
@@ -23,6 +22,7 @@ import {
   Target,
   CircleCheck,
   Sparkle,
+  CreditCard,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -94,19 +94,17 @@ function statusBadge(status: string) {
 }
 
 /* ── Preset ranges ── */
-type PresetKey = "today" | "7d" | "30d" | "90d" | "this_month" | "all";
+type PresetKey = "today" | "7d" | "30d" | "90d" | "this_month";
 const PRESETS: { key: PresetKey; label: string }[] = [
   { key: "today", label: "Today" },
   { key: "7d", label: "Last 7 Days" },
   { key: "this_month", label: "This Month" },
   { key: "30d", label: "Last 30 Days" },
   { key: "90d", label: "Last 90 Days" },
-  { key: "all", label: "All Time" },
 ];
 function presetToRange(key: PresetKey): DateRangeFilter {
   const now = new Date();
   const today = toISO(now);
-  if (key === "all") return {};
   if (key === "today") return { startDate: today, endDate: today };
   if (key === "this_month") {
     const start = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -376,7 +374,7 @@ function DateRangeBar({
                 onClick={(e) => {
                   e.stopPropagation();
                   onCustomRange({ from: null, to: null });
-                  onPreset("all");
+                  onPreset("30d");
                   setPopoverOpen(false);
                 }}
               />
@@ -405,7 +403,6 @@ function DateRangeBar({
                     onChange={(e) => {
                       const from = e.target.value || null;
                       onCustomRange({ from, to: customRange.to });
-                      if (from) onPreset("all");
                     }}
                     className="h-8 w-full rounded-lg border border-[color:var(--color-neutral-200)] bg-white px-3 text-xs text-[color:var(--color-neutral-700)] focus:border-[color:var(--color-primary-400)] focus:outline-none transition-colors"
                   />
@@ -426,7 +423,6 @@ function DateRangeBar({
                     onChange={(e) => {
                       const to = e.target.value || null;
                       onCustomRange({ from: customRange.from, to });
-                      if (customRange.from) onPreset("all");
                     }}
                     className="h-8 w-full rounded-lg border border-[color:var(--color-neutral-200)] bg-white px-3 text-xs text-[color:var(--color-neutral-700)] focus:border-[color:var(--color-primary-400)] focus:outline-none transition-colors"
                   />
@@ -492,7 +488,7 @@ function SmartInsights({ stats, loading }: { stats: any; loading: boolean }) {
       stats.totalRevenue / stats.totalEnrollments > 5000
     ) {
       list.push({
-        icon: Wallet,
+        icon: CreditCard,
         iconColor: "text-fuchsia-400 bg-fuchsia-500/20",
         title: "Strong Monetization",
         text: "High average revenue per enrollment. Premium offerings are performing exceptionally well.",
@@ -929,7 +925,7 @@ function UnifiedActivityTimeline({
       {items.map((item, i) => {
         const isEnr = item.type === "enr";
         const e = item.data;
-        const Icon = isEnr ? GraduationCap : Wallet;
+        const Icon = isEnr ? GraduationCap : CreditCard;
 
         // Define styles based on type
         const ringColor = isEnr ? "ring-indigo-500/30" : "ring-emerald-500/30";
@@ -1004,7 +1000,7 @@ function UnifiedActivityTimeline({
 
 /* ── Dashboard Page ── */
 export default function AdminDashboardPage() {
-  const [preset, setPreset] = useState<PresetKey>("all");
+  const [preset, setPreset] = useState<PresetKey>("30d");
   const [customRange, setCustomRange] = useState<{
     from: string | null;
     to: string | null;
@@ -1023,7 +1019,6 @@ export default function AdminDashboardPage() {
     if (customRange.from && customRange.to)
       return `${customRange.from} → ${customRange.to}`;
     if (customRange.from) return `From ${customRange.from}`;
-    if (preset === "all") return "Showing all-time data";
     const p = PRESETS.find((p) => p.key === preset);
     if (!p) return "";
     const range = presetToRange(preset);
@@ -1087,7 +1082,7 @@ export default function AdminDashboardPage() {
         title: "Revenue",
         value: formatCurrency(stats.totalRevenue),
         subtitle: "Paid payments",
-        Icon: Wallet,
+        Icon: CreditCard,
         gradient: "bg-gradient-to-r from-rose-500 to-pink-600",
         iconBg: "bg-gradient-to-br from-rose-500 to-pink-600",
         href: "/admin/payments",

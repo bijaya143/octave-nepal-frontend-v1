@@ -16,11 +16,34 @@ export default function ContactContent() {
   const [message, setMessage] = React.useState("");
   const [submitted, setSubmitted] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState<{
-    name?: string;
-    email?: string;
-    message?: string;
-  }>({});
+  type ContactFieldError = "name" | "email" | "message";
+
+  const [errors, setErrors] = React.useState<
+    Partial<Record<ContactFieldError, string>>
+  >({});
+
+  const fieldRefs: Record<
+    ContactFieldError,
+    React.RefObject<HTMLDivElement | null>
+  > = {
+    name: React.useRef<HTMLDivElement>(null),
+    email: React.useRef<HTMLDivElement>(null),
+    message: React.useRef<HTMLDivElement>(null),
+  };
+
+  function scrollToFirstError(
+    errorMap: Partial<Record<ContactFieldError, string>>,
+  ) {
+    const firstKey = Object.keys(errorMap)[0] as ContactFieldError | undefined;
+    if (!firstKey) return;
+
+    requestAnimationFrame(() => {
+      fieldRefs[firstKey]?.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,8 +58,7 @@ export default function ContactContent() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      const firstError = Object.values(newErrors)[0];
-      toast.error(firstError);
+      scrollToFirstError(newErrors);
       return;
     }
 
@@ -99,31 +121,35 @@ export default function ContactContent() {
                   noValidate
                   className="grid sm:grid-cols-2 gap-4"
                 >
-                  <Input
-                    label="Full name"
-                    placeholder="Your name"
-                    value={name}
-                    error={errors.name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      if (errors.name)
-                        setErrors((prev) => ({ ...prev, name: "" }));
-                    }}
-                    required
-                  />
-                  <Input
-                    label="Email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    error={errors.email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (errors.email)
-                        setErrors((prev) => ({ ...prev, email: "" }));
-                    }}
-                    required
-                  />
+                  <div ref={fieldRefs.name}>
+                    <Input
+                      label="Full name"
+                      placeholder="Your name"
+                      value={name}
+                      error={errors.name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (errors.name)
+                          setErrors((prev) => ({ ...prev, name: "" }));
+                      }}
+                      required
+                    />
+                  </div>
+                  <div ref={fieldRefs.email}>
+                    <Input
+                      label="Email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      error={errors.email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (errors.email)
+                          setErrors((prev) => ({ ...prev, email: "" }));
+                      }}
+                      required
+                    />
+                  </div>
                   <Input
                     className="sm:col-span-2"
                     label="Subject (optional)"
@@ -131,7 +157,10 @@ export default function ContactContent() {
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                   />
-                  <div className="sm:col-span-2 flex flex-col gap-2">
+                  <div
+                    ref={fieldRefs.message}
+                    className="sm:col-span-2 flex flex-col gap-2"
+                  >
                     <div className="flex items-center justify-between">
                       <label className="text-sm font-medium text-[color:var(--foreground)]">
                         Message
