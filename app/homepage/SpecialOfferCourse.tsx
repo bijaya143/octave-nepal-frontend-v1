@@ -13,44 +13,26 @@ import { Clock, Calendar, Armchair, Hourglass } from "lucide-react";
 import {
   Course,
   DayType,
-  DurationUnit,
   TimeDesignator,
   CourseDiscountType,
   PublishStatusType,
 } from "@/lib/services/admin";
+import { formatDuration } from "@/lib/utils/formatDuration";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
-const DAY_SHORT: Record<DayType, string> = {
-  [DayType.SUNDAY]: "Sun",
-  [DayType.MONDAY]: "Mon",
-  [DayType.TUESDAY]: "Tue",
-  [DayType.WEDNESDAY]: "Wed",
-  [DayType.THURSDAY]: "Thu",
-  [DayType.FRIDAY]: "Fri",
-  [DayType.SATURDAY]: "Sat",
-};
-
-const UNIT_LABEL: Record<DurationUnit, string> = {
-  [DurationUnit.MINUTE]: "min",
-  [DurationUnit.HOUR]: "hr",
-  [DurationUnit.DAY]: "day",
-  [DurationUnit.WEEK]: "week",
-  [DurationUnit.MONTH]: "month",
-  [DurationUnit.YEAR]: "year",
-};
+function formatDay(day: DayType): string {
+  return day.charAt(0) + day.slice(1).toLowerCase();
+}
 
 function formatDays(from: DayType, to: DayType): string {
-  return `${DAY_SHORT[from]}–${DAY_SHORT[to]}`;
+  return from === to
+    ? formatDay(from)
+    : `${formatDay(from)} – ${formatDay(to)}`;
 }
 
 function formatTime(time: string, designator: TimeDesignator): string {
   return `${time} ${designator}`;
-}
-
-function formatDuration(val: number, unit: DurationUnit): string {
-  const label = UNIT_LABEL[unit] ?? unit.toLowerCase();
-  return `${val} ${label}${val !== 1 ? "s" : ""}`;
 }
 
 function formatStartDate(dateStr: string): string {
@@ -211,67 +193,76 @@ export default function SpecialOfferCourse() {
                     </div>
                     <CardContent className="py-4">
                       <h3
-                        className="text-base font-semibold leading-snug"
+                        className="text-base font-semibold"
                         style={{ fontFamily: "var(--font-heading-sans)" }}
                       >
                         {course.title}
                       </h3>
 
-                      <div className="mt-2 flex flex-wrap items-center gap-3 text-[11px] text-[color:var(--color-neutral-600)]">
-                        <span className="inline-flex items-center gap-1">
+                      <div className="mt-2 flex flex-col gap-1 text-xs text-[color:var(--color-neutral-600)]">
+                        <span className="inline-flex items-start gap-1.5 min-w-0">
                           <Clock
                             size={12}
-                            className="text-[color:var(--color-neutral-600)]"
+                            className="mt-0.5 shrink-0 text-[color:var(--color-neutral-600)]"
                           />
-                          {days} · {timeStart} – {timeEnd}
+                          <span className="min-w-0 break-words">
+                            {days} · {timeStart} – {timeEnd}
+                          </span>
                         </span>
-                        <span className="inline-flex items-center gap-1">
-                          <Hourglass
-                            size={12}
-                            className="text-[color:var(--color-neutral-600)]"
-                          />
-                          {duration}
-                        </span>
-                      </div>
-                      <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-[color:var(--color-neutral-600)]">
-                        <span className="inline-flex items-center gap-1">
-                          <Calendar
-                            size={12}
-                            className="text-[color:var(--color-neutral-600)]"
-                          />
-                          Starts {formatStartDate(course.startDate)}
-                        </span>
-                        <span
-                          className={`inline-flex items-center gap-1 ${
-                            limited ? "text-red-700" : "text-green-700"
-                          }`}
-                        >
-                          <Armchair
-                            size={12}
-                            className={
-                              limited ? "text-red-600" : "text-green-600"
-                            }
-                          />
-                          {limited
-                            ? `Limited seats (${seatsLeft} left)`
-                            : `Seats available (${seatsLeft} left)`}
-                        </span>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                          <span className="inline-flex items-center gap-1.5">
+                            <Hourglass
+                              size={12}
+                              className="shrink-0 text-[color:var(--color-neutral-600)]"
+                            />
+                            {duration}
+                          </span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <Calendar
+                              size={12}
+                              className="shrink-0 text-[color:var(--color-neutral-600)]"
+                            />
+                            Starts {formatStartDate(course.startDate)}
+                          </span>
+                          <span
+                            className={`inline-flex items-center gap-1.5 ${
+                              limited ? "text-red-700" : "text-green-700"
+                            }`}
+                          >
+                            <Armchair
+                              size={12}
+                              className={
+                                limited
+                                  ? "shrink-0 text-red-600"
+                                  : "shrink-0 text-green-600"
+                              }
+                            />
+                            {limited
+                              ? `Limited seats (${seatsLeft} left)`
+                              : `Seats available (${seatsLeft} left)`}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="mt-3 flex items-center justify-between gap-2">
-                        <div className="flex items-baseline gap-2 whitespace-nowrap">
-                          <span className="text-base font-semibold text-[color:var(--color-primary-700)]">
+                      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex min-w-0 flex-wrap items-baseline gap-2">
+                          <span className="text-lg font-bold text-[color:var(--color-primary-700)]">
                             Rs {price}
                           </span>
                           {course.isDiscountApplied && (
-                            <span className="text-xs text-[color:var(--color-neutral-500)] line-through">
+                            <span className="text-sm line-through text-[color:var(--color-neutral-500)]">
                               Rs {originalPrice}
                             </span>
                           )}
                         </div>
                         <div className="flex items-center gap-2">
                           <Link href={`/courses/${course.slug}`}>
-                            <Button size="sm">View Details</Button>
+                            <Button size="sm">
+                              <span className="lg:hidden">View</span>
+                              <span className="hidden lg:inline">
+                                View Details
+                              </span>
+                            </Button>
                           </Link>
                         </div>
                       </div>

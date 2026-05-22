@@ -34,6 +34,7 @@ import {
   AdminReview,
 } from "@/lib/services/admin/types";
 import Badge from "@/components/ui/Badge";
+import { formatDurationWithUnit } from "@/lib/utils/formatDuration";
 
 function getDiscountPercent(course: any): number {
   if (!course.isDiscountApplied || !course.markedPrice) return 0;
@@ -69,7 +70,7 @@ function mapToCardCourse(c: ApiCourse): CardCourse {
     discount: getDiscountPercent(c),
     thumbnail: c.thumbnailKey ? `${baseUrl}/${c.thumbnailKey}` : undefined,
     category: c.category.name,
-    duration: `${c.duration} ${c.durationUnit.toLowerCase()}`,
+    duration: formatDurationWithUnit(c.duration, c.durationUnit),
   };
 }
 
@@ -292,7 +293,10 @@ export default function CourseDetailPage() {
                     size={14}
                     className="text-[color:var(--color-primary-600)]"
                   />
-                  {course.duration} {course.durationUnit.toLowerCase()}(s)
+                  {formatDurationWithUnit(
+                    course.duration,
+                    course.durationUnit,
+                  )}
                 </span>
               </div>
 
@@ -331,7 +335,10 @@ export default function CourseDetailPage() {
                     className="text-[color:var(--color-primary-600)]"
                   />
                   <span className="text-[10px] font-semibold text-[color:var(--color-neutral-700)] text-center leading-tight">
-                    {course.duration} {course.durationUnit.toLowerCase()}(s)
+                    {formatDurationWithUnit(
+                      course.duration,
+                      course.durationUnit,
+                    )}
                   </span>
                 </div>
               </div>
@@ -496,8 +503,10 @@ export default function CourseDetailPage() {
                                   </div>
                                   {item.duration !== 0 && (
                                     <div className="text-xs text-[color:var(--color-neutral-500)]">
-                                      {item.duration}{" "}
-                                      {item.durationUnit.toLowerCase()}(s)
+                                      {formatDurationWithUnit(
+                                        item.duration,
+                                        item.durationUnit,
+                                      )}
                                     </div>
                                   )}
                                 </div>

@@ -71,13 +71,34 @@ export default function CheckoutContent() {
   );
   const [receipts, setReceipts] = useState<File[]>([]);
   const [transactionId, setTransactionId] = useState("");
-  const [errors, setErrors] = useState<{
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phone?: string;
-    receipts?: string;
-  }>({});
+  type CheckoutFieldError = "firstName" | "lastName" | "email" | "phone" | "receipts";
+
+  const [errors, setErrors] = useState<Partial<Record<CheckoutFieldError, string>>>(
+    {},
+  );
+
+  const fieldRefs: Record<
+    CheckoutFieldError,
+    React.RefObject<HTMLDivElement | null>
+  > = {
+    firstName: React.useRef<HTMLDivElement>(null),
+    lastName: React.useRef<HTMLDivElement>(null),
+    email: React.useRef<HTMLDivElement>(null),
+    phone: React.useRef<HTMLDivElement>(null),
+    receipts: React.useRef<HTMLDivElement>(null),
+  };
+
+  function scrollToFirstError(errorMap: Partial<Record<CheckoutFieldError, string>>) {
+    const firstKey = Object.keys(errorMap)[0] as CheckoutFieldError | undefined;
+    if (!firstKey) return;
+
+    requestAnimationFrame(() => {
+      fieldRefs[firstKey]?.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+  }
 
   const { phone, country } = usePhoneInput({
     defaultCountry: "np",
@@ -219,9 +240,9 @@ export default function CheckoutContent() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      // Show the first error as a toast for immediate feedback
-      const firstError = Object.values(newErrors)[0];
-      toast.error(firstError);
+      scrollToFirstError(newErrors);
+      // const firstError = Object.values(newErrors)[0];
+      // toast.error(firstError);
       return;
     }
 
@@ -414,6 +435,7 @@ export default function CheckoutContent() {
                   Student information
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-4">
+                  <div ref={fieldRefs.firstName}>
                   <Input
                     label="First name"
                     placeholder="Octave"
@@ -427,6 +449,8 @@ export default function CheckoutContent() {
                         setErrors((prev) => ({ ...prev, firstName: "" }));
                     }}
                   />
+                  </div>
+                  <div ref={fieldRefs.lastName}>
                   <Input
                     label="Last name"
                     placeholder="Nepal"
@@ -440,8 +464,10 @@ export default function CheckoutContent() {
                         setErrors((prev) => ({ ...prev, lastName: "" }));
                     }}
                   />
+                  </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4 mt-4 text-left">
+                  <div ref={fieldRefs.email}>
                   <Input
                     label="Email"
                     type="email"
@@ -456,7 +482,8 @@ export default function CheckoutContent() {
                         setErrors((prev) => ({ ...prev, email: "" }));
                     }}
                   />
-                  <div className="flex flex-col gap-2">
+                  </div>
+                  <div ref={fieldRefs.phone} className="flex flex-col gap-2">
                     <label className="text-sm font-medium text-[color:var(--foreground)]">
                       Phone number <span className="ml-1 text-red-600">*</span>
                     </label>
@@ -489,7 +516,7 @@ export default function CheckoutContent() {
                     )}
                   </div>
                 </div>
-                <div className="mt-4">
+                <div ref={fieldRefs.receipts} className="mt-4">
                   <h3 className="text-sm font-medium mb-2">Payment</h3>
                   <PaymentSection
                     method={paymentMethod}

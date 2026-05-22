@@ -1,4 +1,4 @@
-import { BrainCircuit, Hammer, Star, Users, Wallet } from "lucide-react";
+import { CreditCard,Sparkle, Users } from "lucide-react";
 import Container from "../../components/Container";
 import Card, { CardContent } from "../../components/ui/Card";
 import { SITE_NAME } from "@/lib/constant";
@@ -35,14 +35,14 @@ export default function PostHeroBanner() {
                 <span>Community Support</span>
               </div>
               <div className="flex items-center justify-center gap-2 rounded-lg border border-black/5 bg-white/80 backdrop-blur px-4 py-2">
-                <BrainCircuit
+                <Sparkle
                   size={16}
                   className="text-[color:var(--color-primary-700)]"
                 />
                 <span>AI-Powered Learning</span>
               </div>
               <div className="flex items-center justify-center gap-2 rounded-lg border border-black/5 bg-white/80 backdrop-blur px-4 py-2">
-                <Wallet
+                <CreditCard
                   size={16}
                   className="text-[color:var(--color-primary-700)]"
                 />

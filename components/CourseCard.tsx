@@ -94,7 +94,7 @@ export default function CourseCard({ course }: { course: Course }) {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 max-lg:ml-auto max-lg:basis-full max-lg:justify-end">
             <Button
               size="sm"
               onClick={(e) => {
