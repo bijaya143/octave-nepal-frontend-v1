@@ -4,6 +4,7 @@ import Image from "next/image";
 import { SITE_NAME } from "@/lib/constant";
 import { Mail, Phone, MapPin } from "lucide-react";
 import Container from "./Container";
+import CookieSettingsLink from "./CookieSettingsLink";
 
 const SOCIAL_LINKS = [
   {
@@ -208,6 +209,8 @@ export default function Footer() {
             >
               Cookies
             </Link>
+            <span aria-hidden>·</span>
+            <CookieSettingsLink />
           </div>
         </div>
       </Container>

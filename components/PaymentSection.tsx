@@ -196,7 +196,7 @@ export default function PaymentSection({
               </div>
             </dl>
           </div>
-          <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-50)] p-3 text-xs text-[color:var(--color-neutral-700)]">
+          <div className="rounded-lg border border-[color:var(--color-neutral-200)] bg-white p-4 text-sm text-[color:var(--color-neutral-700)]">
             After transferring, please upload the receipt below so we can verify
             and confirm your enrollment faster.
           </div>
