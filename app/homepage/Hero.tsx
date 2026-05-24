@@ -16,18 +16,17 @@ export default function Hero() {
               style={{ fontFamily: "var(--font-heading-sans)" }}
             >
               <span className="block sm:hidden">
-                Nepal's First <span className="gradient-text">AI-Powered</span>{" "}
-                Online Learning Platform
+                First <span className="gradient-text">AI-Powered</span> Online
+                Learning Platform in Nepal
               </span>
               <span className="hidden md:block lg:hidden text-xl md:text-2xl lg:text-3xl">
-                Nepal's First <span className="gradient-text">AI-Powered</span>{" "}
-                Online Learning Platform.
+                First <span className="gradient-text">AI-Powered</span> Online
+                Learning Platform in Nepal
               </span>
               <div className="hidden lg:block">
                 <span className="block">
-                  Nepal's First{" "}
-                  <span className="gradient-text">AI-Powered</span> Online
-                  Learning Platform.
+                  First <span className="gradient-text">AI-Powered</span> Online
+                  Learning Platform in Nepal
                 </span>
                 {/* <span className="block">
                   Personalized{" "}
