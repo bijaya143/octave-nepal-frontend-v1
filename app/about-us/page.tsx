@@ -16,7 +16,7 @@ import type { Metadata } from "next";
 import Container from "@/components/Container";
 
 export const metadata: Metadata = {
-  title: "About Us - " + SITE_NAME,
+  title: "About Us",
   description: "Learn more about " + SITE_NAME + " and our mission.",
 };
 

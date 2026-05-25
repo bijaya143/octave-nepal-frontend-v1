@@ -10,7 +10,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_PROD_SITE_URL || "https://octavenepal.c
 const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || "";
 
 export const metadata: Metadata = {
-  title: "Courses - " + SITE_NAME,
+  title: "Courses",
   description: `Browse all online courses offered by ${SITE_NAME}. Learn in-demand skills in technology, business, creative arts, and more with expert instructors.`,
   alternates: {
     canonical: `${SITE_URL}/courses`,

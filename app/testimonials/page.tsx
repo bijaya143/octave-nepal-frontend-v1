@@ -3,7 +3,7 @@ import { SITE_NAME } from "@/lib/constant";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Testimonials - " + SITE_NAME,
+  title: "Testimonials",
   description: "Read what our students say about " + SITE_NAME + ".",
 };
 

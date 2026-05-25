@@ -4,7 +4,7 @@ import Link from "next/link";
 import Container from "@/components/Container";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - " + SITE_NAME,
+  title: "Privacy Policy",
   description:
     "Learn how " +
     SITE_NAME +
