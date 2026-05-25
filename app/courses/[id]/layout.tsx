@@ -7,7 +7,7 @@ import {
 } from "@/lib/schema";
 import { formatDurationWithUnit } from "@/lib/utils/formatDuration";
 
-const SITE_URL = process.env.NEXT_PUBLIC_PROD_SITE_URL || "https://octavenepal.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
 const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || "";
 
 export async function generateMetadata({

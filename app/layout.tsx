@@ -25,7 +25,7 @@ const headingSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_PROD_SITE_URL || "https://octavenepal.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
 const SITE_DESCRIPTION =
   "AI-powered online courses with a modern learning experience for Nepalese students. Learn in-demand skills with industry experts.";
 

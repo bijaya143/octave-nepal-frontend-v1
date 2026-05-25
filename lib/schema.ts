@@ -6,7 +6,7 @@
  */
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_PROD_SITE_URL || "https://octavenepal.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Octave Nepal";
 
 // ---------------------------------------------------------------------------
