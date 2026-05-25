@@ -6,7 +6,7 @@ import { buildCourseListSchema, serializeSchema } from "@/lib/schema";
 import { guestCourseService } from "@/lib/services/guest/course";
 import { PublishStatusType } from "@/lib/services/admin/types";
 
-const SITE_URL = process.env.NEXT_PUBLIC_PROD_SITE_URL || "https://octavenepal.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
 const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || "";
 
 export const metadata: Metadata = {

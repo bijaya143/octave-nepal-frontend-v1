@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "FAQ",
   description: `Frequently asked questions about ${SITE_NAME}, courses, pricing, certificates, and more.`,
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_PROD_SITE_URL || "https://octavenepal.com"}/faq`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com"}/faq`,
   },
   openGraph: {
     title: `FAQ - ${SITE_NAME}`,
