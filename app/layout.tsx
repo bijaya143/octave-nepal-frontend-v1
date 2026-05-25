@@ -4,6 +4,11 @@ import "@/styles/globals.css";
 import AppContent from "@/components/AppContent";
 import ToasterProvider from "@/providers/ToasterProvider";
 import { SITE_NAME } from "@/lib/constant";
+import {
+  buildOrganizationSchema,
+  buildWebSiteSchema,
+  serializeSchema,
+} from "@/lib/schema";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,10 +25,66 @@ const headingSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_PROD_SITE_URL || "https://octavenepal.com";
+const SITE_DESCRIPTION =
+  "AI-powered online courses with a modern learning experience for Nepalese students. Learn in-demand skills with industry experts.";
+
 export const metadata: Metadata = {
-  title: SITE_NAME,
-  description:
-    "AI-powered online courses with a modern learning experience for Nepalese students.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} - First AI-Powered Online Learning Platform in Nepal`,
+    template: `%s - ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "online courses Nepal",
+    "e-learning Nepal",
+    "AI learning platform",
+    "online education Nepal",
+    "professional courses Nepal",
+    "cohort based courses",
+    "Octave Nepal",
+  ],
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} - First AI-Powered Online Learning Platform in Nepal`,
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: `${SITE_URL}/android-chrome-512x512.png`,
+        width: 512,
+        height: 512,
+        alt: `${SITE_NAME} logo`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} - First AI-Powered Online Learning Platform in Nepal`,
+    description: SITE_DESCRIPTION,
+    creator: "@octavenepal",
+    site: "@octavenepal",
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -58,6 +119,20 @@ export default function RootLayout({
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        />
+        {/* Organization JSON-LD — brand signals for Google Knowledge Panel & Bing */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeSchema(buildOrganizationSchema()),
+          }}
+        />
+        {/* WebSite JSON-LD — enables Google Sitelinks Search Box */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeSchema(buildWebSiteSchema()),
+          }}
         />
       </head>
       <body
