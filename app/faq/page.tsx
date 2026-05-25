@@ -5,7 +5,7 @@ import { faqs } from "@/lib/faq-data";
 import { buildFaqSchema, serializeSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: `FAQ - ${SITE_NAME}`,
+  title: "FAQ",
   description: `Frequently asked questions about ${SITE_NAME}, courses, pricing, certificates, and more.`,
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_PROD_SITE_URL || "https://octavenepal.com"}/faq`,

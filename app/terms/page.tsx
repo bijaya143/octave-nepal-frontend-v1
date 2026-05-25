@@ -4,7 +4,7 @@ import Link from "next/link";
 import Container from "@/components/Container";
 
 export const metadata: Metadata = {
-  title: "Terms & Conditions - " + SITE_NAME,
+  title: "Terms & Conditions",
   description:
     "Read the Terms & Conditions for using " +
     SITE_NAME +

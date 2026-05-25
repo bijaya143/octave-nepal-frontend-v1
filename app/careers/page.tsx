@@ -8,7 +8,7 @@ import { SITE_NAME } from "@/lib/constant";
 import Container from "@/components/Container";
 
 export const metadata: Metadata = {
-  title: "Careers - " + SITE_NAME,
+  title: "Careers",
   description:
     "Join our team and help us build a better future for " + SITE_NAME + ".",
 };

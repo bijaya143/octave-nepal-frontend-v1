@@ -22,7 +22,7 @@ export async function generateMetadata({
 
     if (!resp.success || !resp.data) {
       return {
-        title: "Course Not Found - " + SITE_NAME,
+        title: "Course Not Found",
       };
     }
 
@@ -74,7 +74,7 @@ export async function generateMetadata({
     };
   } catch {
     return {
-      title: "Course Not Found - " + SITE_NAME,
+      title: "Course Not Found",
     };
   }
 }
