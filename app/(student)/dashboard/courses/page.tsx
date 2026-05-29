@@ -49,6 +49,25 @@ const getMeetingPlatformInfo = (platform?: string) => {
 
 const getNextSessionText = (course: any) => {
   if (!course?.fromDay || !course?.startTime) return null;
+
+  if (course.startDate) {
+    const startOfCourse = new Date(course.startDate);
+    if (!isNaN(startOfCourse.getTime())) {
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      const startOfCourseDate = new Date(startOfCourse);
+      startOfCourseDate.setHours(0, 0, 0, 0);
+      if (startOfToday < startOfCourseDate) {
+        const formattedDate = startOfCourse.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          timeZone: "UTC",
+        });
+        return `Starting soon: ${formattedDate}`;
+      }
+    }
+  }
+
   const daysMap: Record<string, number> = {
     SUNDAY: 0,
     MONDAY: 1,
@@ -303,7 +322,9 @@ export default function StudentCoursesPage() {
                               variant="outline"
                               className="font-normal text-xs border-[color:var(--color-primary-200)] text-[color:var(--color-primary-700)] bg-[color:var(--color-primary-50)]"
                             >
-                              {nextSession.split(": ")[1] || nextSession}
+                              {nextSession.startsWith("Starting soon")
+                                ? nextSession
+                                : nextSession.split(": ")[1] || nextSession}
                             </Badge>
                           </div>
                         )}
