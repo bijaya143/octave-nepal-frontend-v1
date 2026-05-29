@@ -10,16 +10,31 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
 const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || "";
 
 export const metadata: Metadata = {
-  title: "Courses",
-  description: `Browse all online courses offered by ${SITE_NAME}. Learn in-demand skills in technology, business, creative arts, and more with expert instructors.`,
+  title: "Online Courses & Professional Training",
+  description: `Browse all online courses and live classes offered by ${SITE_NAME}. Learn technology, business, creative arts, and professional skills from industry experts in Nepal.`,
+  keywords: [
+    "online courses nepal",
+    "online class nepal",
+    "best online training kathmandu",
+    "professional certification nepal",
+    "it courses nepal",
+    "business training nepal",
+    "creative arts learning nepal",
+    "octave nepal courses",
+  ],
   alternates: {
     canonical: `${SITE_URL}/courses`,
   },
   openGraph: {
-    title: `Courses - ${SITE_NAME}`,
-    description: `Browse all online courses offered by ${SITE_NAME}. Learn in-demand skills with expert instructors.`,
+    title: `Online Courses & Professional Training - ${SITE_NAME}`,
+    description: `Browse all online courses and live classes offered by ${SITE_NAME}. Learn technology, business, creative arts, and professional skills in Nepal.`,
     url: `${SITE_URL}/courses`,
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Online Courses & Professional Training - ${SITE_NAME}`,
+    description: `Browse all online courses and live classes offered by ${SITE_NAME}. Learn technology, business, creative arts, and professional skills in Nepal.`,
   },
 };
 

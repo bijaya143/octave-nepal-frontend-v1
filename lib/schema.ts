@@ -16,7 +16,7 @@ const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Octave Nepal";
 export function buildOrganizationSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "EducationalOrganization", // CRITICAL: Changes category from a generic company to an education entity
     "@id": `${SITE_URL}/#organization`,
     name: SITE_NAME,
     url: SITE_URL,
@@ -27,7 +27,7 @@ export function buildOrganizationSchema() {
       height: 512,
     },
     description:
-      "AI-powered online learning platform in Nepal offering practical, project-based and cohort-based courses taught by industry experts.",
+      "The leading AI-powered educational organization and online learning platform based in Kathmandu, Nepal. Explore expert-led professional courses, live classes, and e-learning certifications.",
     address: {
       "@type": "PostalAddress",
       addressCountry: "NP",
@@ -39,6 +39,8 @@ export function buildOrganizationSchema() {
       url: `${SITE_URL}/contact-us`,
       availableLanguage: ["English", "Nepali"],
     },
+    // CRITICAL: Tells Google bots "This domain owns these channels". 
+    // It creates an entity cluster separating you from the restaurant's social pages.
     sameAs: [
       "https://facebook.com/profile.php?id=61583347305419",
       "https://instagram.com/octavenepal",
@@ -46,6 +48,17 @@ export function buildOrganizationSchema() {
       "https://x.com/octave_nepal",
       "https://youtube.com/@octavenepal",
     ],
+    // ADDED: Explicitly states what sector you operate within to semantic crawlers
+    knowsAbout: [
+        "Artificial Intelligence",
+        "E-learning",
+        "Online Education",
+        "Software Development",
+        "Professional Training",
+        "Live Class",
+        "Online Class",
+        "Professional Courses"
+    ]
   };
 }
 
@@ -61,9 +74,9 @@ export function buildWebSiteSchema() {
     name: SITE_NAME,
     url: SITE_URL,
     description:
-      "AI-powered online courses with a modern learning experience for Nepalese students.",
+      `Learn high-demand skills with the best online courses in Nepal. ${SITE_NAME} provides interactive live classes, expert-led professional training, and cohort-based e-learning across Nepal.`,
     publisher: {
-      "@id": `${SITE_URL}/#organization`,
+      "@id": `${SITE_URL}/#organization`, // Inherits the "EducationalOrganization" type automatically
     },
     potentialAction: {
       "@type": "SearchAction",
@@ -134,7 +147,7 @@ export function buildCourseSchema(course: CourseSchemaInput) {
     description: course.description,
     url: courseUrl,
     provider: {
-      "@type": "Organization",
+      "@type": "EducationalOrganization",
       "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
       url: SITE_URL,
@@ -155,7 +168,7 @@ export function buildCourseSchema(course: CourseSchemaInput) {
         : "https://schema.org/SoldOut",
       url: courseUrl,
       seller: {
-        "@type": "Organization",
+        "@type": "EducationalOrganization",
         "@id": `${SITE_URL}/#organization`,
         name: SITE_NAME,
       },
@@ -217,15 +230,15 @@ export function buildCourseListSchema(
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "@id": `${SITE_URL}/courses#collection`,
-    name: `Online Courses - ${SITE_NAME}`,
-    description: `Browse all online courses offered by ${SITE_NAME}. Learn in-demand skills with expert instructors.`,
+    name: `Online Courses in Nepal - ${SITE_NAME} Catalog`,
+    description: `Explore the best online courses in Nepal at ${SITE_NAME}. Browse our AI-powered educational catalog featuring live classes, professional training, and cohort-based certifications.`,
     url: `${SITE_URL}/courses`,
     publisher: {
       "@id": `${SITE_URL}/#organization`,
     },
     mainEntity: {
       "@type": "ItemList",
-      name: `${SITE_NAME} Course Catalog`,
+      name: `${SITE_NAME} Professional Course Catalog`,
       itemListElement: courses.map((course, index) => ({
         "@type": "ListItem",
         position: index + 1,
@@ -242,7 +255,7 @@ export function buildCourseListSchema(
             },
           }),
           provider: {
-            "@type": "Organization",
+            "@type": "EducationalOrganization",
             "@id": `${SITE_URL}/#organization`,
             name: SITE_NAME,
           },
@@ -252,6 +265,7 @@ export function buildCourseListSchema(
               price: course.price,
               priceCurrency: "NPR",
               url: `${SITE_URL}/courses/${course.slug}`,
+              availability: "https://schema.org",
             },
           }),
         },
