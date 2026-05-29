@@ -74,10 +74,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: `${SITE_URL}/android-chrome-512x512.png`,
-        width: 512,
-        height: 512,
-        alt: `${SITE_NAME} logo`,
+        url: `${SITE_URL}/images/og/og-v1.png`,
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} - AI-Powered Online Learning Platform`,
       },
     ],
   },
@@ -85,6 +85,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${SITE_NAME} - AI-Powered Online Learning Platform in Nepal`,
     description: SITE_DESCRIPTION,
+    images: [`${SITE_URL}/images/og/og-v1.png`],
     creator: "@octavenepal",
     site: "@octavenepal",
   },
