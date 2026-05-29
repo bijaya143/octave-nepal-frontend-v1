@@ -30,27 +30,30 @@ const headingSans = Plus_Jakarta_Sans({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
 const SITE_DESCRIPTION =
-  "AI-powered online courses with a modern learning experience for Nepalese students. Learn in-demand skills with industry experts.";
+  "The leading AI-powered educational organization and online learning platform based in Kathmandu, Nepal. Explore expert-led professional courses, live classes, and e-learning certifications.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} - First AI-Powered Online Learning Platform in Nepal`,
+    default: `${SITE_NAME} - AI-Powered Online Learning Platform in Nepal`,
     template: `%s - ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "online courses Nepal",
-    "e-learning Nepal",
-    "AI learning platform",
-    "online education Nepal",
-    "professional courses Nepal",
-    "cohort based courses",
+    "Online Courses in Nepal",
+    "Online Class Nepal",
+    "E-learning Nepal",
+    "AI Learning Platform",
+    "Online Education Nepal",
+    "Professional Courses Nepal",
+    "Cohort Based Courses",
     "Octave Nepal",
+    "Octave Nepal courses"
   ],
   authors: [{ name: SITE_NAME, url: SITE_URL }],
   creator: SITE_NAME,
   publisher: SITE_NAME,
+  category: "education",
   robots: {
     index: true,
     follow: true,
@@ -67,7 +70,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} - First AI-Powered Online Learning Platform in Nepal`,
+    title: `${SITE_NAME} - AI-Powered Online Learning Platform in Nepal`,
     description: SITE_DESCRIPTION,
     images: [
       {
@@ -80,7 +83,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} - First AI-Powered Online Learning Platform in Nepal`,
+    title: `${SITE_NAME} - AI-Powered Online Learning Platform in Nepal`,
     description: SITE_DESCRIPTION,
     creator: "@octavenepal",
     site: "@octavenepal",

@@ -7,10 +7,37 @@ import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/constant";
 import Container from "@/components/Container";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
+
 export const metadata: Metadata = {
-  title: "Careers",
-  description:
-    "Join our team and help us build a better future for " + SITE_NAME + ".",
+  title: "Careers & Job Opportunities",
+  description: `Join ${SITE_NAME} and help shape the future of education in Nepal. We're hiring for remote and in-office roles in technology, content, marketing, and operations.`,
+  keywords: [
+    "careers nepal",
+    "octave nepal jobs",
+    "online class nepal",
+    "online education jobs nepal",
+    "tech jobs kathmandu",
+    "marketing jobs nepal",
+    "content writer jobs nepal",
+    "remote jobs nepal",
+    "education technology careers",
+    "join startup nepal",
+  ],
+  alternates: {
+    canonical: `${SITE_URL}/careers`,
+  },
+  openGraph: {
+    title: `Careers & Job Opportunities - ${SITE_NAME}`,
+    description: `Join ${SITE_NAME} and help shape the future of education in Nepal. We're hiring for remote and in-office roles in technology, content, marketing, and operations.`,
+    url: `${SITE_URL}/careers`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Careers & Job Opportunities - ${SITE_NAME}`,
+    description: `Join ${SITE_NAME} and help shape the future of education in Nepal.`,
+  },
 };
 
 export default function CareersPage() {

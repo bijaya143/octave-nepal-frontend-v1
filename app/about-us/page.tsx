@@ -15,9 +15,41 @@ import { SITE_NAME } from "@/lib/constant";
 import type { Metadata } from "next";
 import Container from "@/components/Container";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
+
 export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn more about " + SITE_NAME + " and our mission.",
+  title: "About Us & Our Online Courses in Nepal",
+  description: `Learn about ${SITE_NAME}, Nepal's best online learning platform. We offer expert-led courses, cohort-based live classes, and AI guidance across technology, business, creative arts, and professional skills.`,
+  keywords: [
+    "about octave nepal",
+    "octave nepal mission",
+    "who is octave nepal",
+    "online learning nepal",
+    "online class nepal",
+    "professional courses nepal",
+    "business courses nepal",
+    "creative arts training nepal",
+    "it training center nepal",
+    "software engineering courses nepal",
+    "e-learning platform nepal",
+    "career growth kathmandu",
+    "skills development nepal",
+    "verified certificates nepal",
+  ],
+  alternates: {
+    canonical: `${SITE_URL}/about-us`,
+  },
+  openGraph: {
+    title: `About Us - ${SITE_NAME}`,
+    description: `Learn about ${SITE_NAME}, Nepal's best online learning platform. We offer expert-led courses, cohort-based live classes, and AI guidance across technology, business, creative arts, and professional skills.`,
+    url: `${SITE_URL}/about-us`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `About Us - ${SITE_NAME}`,
+    description: `Learn about ${SITE_NAME}, Nepal's best online learning platform. We offer expert-led courses, cohort-based live classes, and AI guidance across technology, business, creative arts, and professional skills.`,
+  },
 };
 
 export default function AboutPage() {

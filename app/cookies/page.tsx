@@ -3,12 +3,33 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/Container";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
+
 export const metadata: Metadata = {
   title: "Cookie Policy",
-  description:
-    "Understand how " +
-    SITE_NAME +
-    " uses cookies and how you can manage your settings under prevailing privacy guidelines in Nepal.",
+  description: `Understand how ${SITE_NAME} uses cookies and tracking technologies to improve your e-learning experience, and learn how to manage your cookie preferences in Nepal.`,
+  keywords: [
+    "cookie policy octave nepal",
+    "online course cookies nepal",
+    "online class nepal",
+    "data tracking e-learning",
+    "privacy settings nepal",
+    "manage cookies online courses",
+  ],
+  alternates: {
+    canonical: `${SITE_URL}/cookies`,
+  },
+  openGraph: {
+    title: `Cookie Policy - ${SITE_NAME}`,
+    description: `Understand how ${SITE_NAME} uses cookies and tracking technologies to improve your e-learning experience in Nepal.`,
+    url: `${SITE_URL}/cookies`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Cookie Policy - ${SITE_NAME}`,
+    description: `Understand how ${SITE_NAME} uses cookies to customize and support your online classes.`,
+  },
 };
 
 export default function CookiesPage() {

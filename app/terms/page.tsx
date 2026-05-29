@@ -3,12 +3,35 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/Container";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
+
 export const metadata: Metadata = {
   title: "Terms & Conditions",
-  description:
-    "Read the Terms & Conditions for using " +
-    SITE_NAME +
-    "'s website and services.",
+  description: `Read the complete Terms & Conditions for using ${SITE_NAME}'s online learning platform. Understand the rules, policies, and guidelines for accessing courses, payments, refunds, and all services in compliance with Nepalese law.`,
+  keywords: [
+    "online course nepal terms",
+    "octave nepal terms and conditions",
+    "online class nepal",
+    "online education nepal legal",
+    "payment terms nepal",
+    "refund policy nepal",
+    "copyright nepal",
+    "user agreement nepal",
+  ],
+  alternates: {
+    canonical: `${SITE_URL}/terms`,
+  },
+  openGraph: {
+    title: `Terms & Conditions - ${SITE_NAME}`,
+    description: `Read the Terms & Conditions for using ${SITE_NAME}'s website and services in Nepal.`,
+    url: `${SITE_URL}/terms`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Terms & Conditions - ${SITE_NAME}`,
+    description: `Understand the legal terms and policies for online learning with ${SITE_NAME}.`,
+  },
 };
 
 export default function TermsPage() {

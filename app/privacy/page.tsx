@@ -3,12 +3,36 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/Container";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
+
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description:
-    "Learn how " +
-    SITE_NAME +
-    " collects, uses, and protects your personal data under the Individual Privacy Act, 2075 of Nepal.",
+  description: `Learn how ${SITE_NAME} collects, uses, and protects your personal data under the Individual Privacy Act, 2075 of Nepal. Your privacy matters to us.`,
+  keywords: [
+    "online course nepal privacy policy",
+    "octave nepal privacy",
+    "online class nepal",
+    "data protection nepal",
+    "individual privacy act nepal",
+    "online education privacy",
+    "student data privacy nepal",
+    "cybersecurity nepal",
+    "electronic transactions act",
+  ],
+  alternates: {
+    canonical: `${SITE_URL}/privacy`,
+  },
+  openGraph: {
+    title: `Privacy Policy - ${SITE_NAME}`,
+    description: `Learn how ${SITE_NAME} protects your personal data under Nepalese law.`,
+    url: `${SITE_URL}/privacy`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Privacy Policy - ${SITE_NAME}`,
+    description: `Your privacy is protected with ${SITE_NAME}. Read our policy.`,
+  },
 };
 
 export default function PrivacyPage() {
