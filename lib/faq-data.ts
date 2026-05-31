@@ -3,13 +3,13 @@
  * and the interactive client component (for the accordion UI).
  */
 
+import { SITE_NAME } from "@/lib/constant";
+
 export type FaqItem = {
   question: string;
   answer: string;
   category?: string;
 };
-
-const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Octave Nepal";
 
 export const faqs: FaqItem[] = [
   {

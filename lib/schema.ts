@@ -5,9 +5,9 @@
  * All schema types follow schema.org specifications.
  */
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
-const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Octave Nepal";
+import { SITE_NAME } from "@/lib/constant";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://octavenepal.com";
 
 // ---------------------------------------------------------------------------
 // Organization Schema
@@ -19,6 +19,7 @@ export function buildOrganizationSchema() {
     "@type": "EducationalOrganization", // CRITICAL: Changes category from a generic company to an education entity
     "@id": `${SITE_URL}/#organization`,
     name: SITE_NAME,
+    alternateName: ["Octave", "OctaveNepal"],
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
@@ -39,7 +40,7 @@ export function buildOrganizationSchema() {
       url: `${SITE_URL}/contact-us`,
       availableLanguage: ["English", "Nepali"],
     },
-    // CRITICAL: Tells Google bots "This domain owns these channels". 
+    // CRITICAL: Tells Google bots "This domain owns these channels".
     // It creates an entity cluster separating you from the restaurant's social pages.
     sameAs: [
       "https://facebook.com/profile.php?id=61583347305419",
@@ -50,15 +51,15 @@ export function buildOrganizationSchema() {
     ],
     // ADDED: Explicitly states what sector you operate within to semantic crawlers
     knowsAbout: [
-        "Artificial Intelligence",
-        "E-learning",
-        "Online Education",
-        "Software Development",
-        "Professional Training",
-        "Live Class",
-        "Online Class",
-        "Professional Courses"
-    ]
+      "Artificial Intelligence",
+      "E-learning",
+      "Online Education",
+      "Software Development",
+      "Professional Training",
+      "Live Class",
+      "Online Class",
+      "Professional Courses",
+    ],
   };
 }
 
@@ -72,9 +73,9 @@ export function buildWebSiteSchema() {
     "@type": "WebSite",
     "@id": `${SITE_URL}/#website`,
     name: SITE_NAME,
+    alternateName: ["Octave", "OctaveNepal"],
     url: SITE_URL,
-    description:
-      `Learn high-demand skills with the best online courses in Nepal. ${SITE_NAME} provides interactive live classes, expert-led professional training, and cohort-based e-learning across Nepal.`,
+    description: `Learn high-demand skills with the best online courses in Nepal. ${SITE_NAME} provides interactive live classes, expert-led professional training, and cohort-based e-learning across Nepal.`,
     publisher: {
       "@id": `${SITE_URL}/#organization`, // Inherits the "EducationalOrganization" type automatically
     },
@@ -94,7 +95,7 @@ export function buildWebSiteSchema() {
 // ---------------------------------------------------------------------------
 
 export function buildFaqSchema(
-  faqs: Array<{ question: string; answer: string }>
+  faqs: Array<{ question: string; answer: string }>,
 ) {
   return {
     "@context": "https://schema.org",
@@ -224,7 +225,7 @@ export function buildCourseListSchema(
     thumbnailUrl?: string;
     price?: number;
     instructorName?: string;
-  }>
+  }>,
 ) {
   return {
     "@context": "https://schema.org",
