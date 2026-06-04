@@ -406,7 +406,7 @@ export default function CourseDetailPage() {
 
                 {/* Syllabus */}
                 {course.syllabus &&
-                  course.syllabus.sections &&
+                  Array.isArray(course.syllabus.sections) &&
                   course.syllabus.sections.length > 0 && (
                     <Card>
                       <CardContent className="p-6">
@@ -535,7 +535,9 @@ export default function CourseDetailPage() {
                 </Card>
 
                 {/* Meeting Links */}
-                {course.meetingLinks && course.meetingLinks.length > 0 && (
+                {course.meetingLinks &&
+                  Array.isArray(course.meetingLinks) &&
+                  course.meetingLinks.length > 0 && (
                   <Card>
                     <CardContent className="p-6 space-y-4">
                       <h3 className="text-sm font-medium text-[color:var(--color-neutral-900)]">

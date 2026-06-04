@@ -439,7 +439,7 @@ export default function CourseDetailPage() {
               </section>
             )}
 
-            {course.syllabus && course.syllabus.sections.length > 0 && (
+            {course.syllabus && Array.isArray(course.syllabus.sections) && course.syllabus.sections.length > 0 && (
               <section className="space-y-4 mb-10">
                 <h2
                   className="text-xl font-bold border-b border-[color:var(--color-neutral-200)] pb-2 flex items-center gap-2"
@@ -485,7 +485,7 @@ export default function CourseDetailPage() {
                         >
                           <div className="overflow-hidden">
                             <div className="divide-y divide-[color:var(--color-neutral-200)] bg-white">
-                              {section.items.map((item, iIdx) => (
+                              {section.items && Array.isArray(section.items) && section.items.map((item, iIdx) => (
                                 <div
                                   key={iIdx}
                                   className="px-4 py-3 flex items-center justify-between gap-4"
@@ -585,6 +585,7 @@ export default function CourseDetailPage() {
             )}
 
             {course.additionalResourceLinks &&
+              Array.isArray(course.additionalResourceLinks) &&
               course.additionalResourceLinks.length > 0 && (
                 <section className="space-y-4 mb-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <h2
