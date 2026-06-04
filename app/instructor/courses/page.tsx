@@ -353,8 +353,8 @@ export default function InstructorCoursesPage() {
                           <div className="flex items-center gap-2">
                             {(() => {
                               const meetingLink =
-                                c.meetingLinks.find((l) => l.isPrimary)?.link ||
-                                c.meetingLinks[0]?.link;
+                                c.meetingLinks?.find((l) => l.isPrimary)?.link ||
+                                c.meetingLinks?.[0]?.link;
 
                               if (
                                 isCourseOngoing(c.startDate, c.endDate) &&
@@ -465,8 +465,8 @@ export default function InstructorCoursesPage() {
                           <div className="flex items-center gap-2">
                             {(() => {
                               const meetingLink =
-                                c.meetingLinks.find((l) => l.isPrimary)?.link ||
-                                c.meetingLinks[0]?.link;
+                                c.meetingLinks?.find((l) => l.isPrimary)?.link ||
+                                c.meetingLinks?.[0]?.link;
                               if (
                                 isCourseOngoing(c.startDate, c.endDate) &&
                                 meetingLink
