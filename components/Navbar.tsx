@@ -160,12 +160,12 @@ export default function Navbar() {
                   priority
                 />
               </div>
-              <span
+              <h1
                 className="font-semibold text-lg tracking-tight"
                 style={{ fontFamily: "var(--font-heading-sans)" }}
               >
                 {SITE_NAME}
-              </span>
+              </h1>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm">
               {navItems.map((item) => (

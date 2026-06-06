@@ -10,6 +10,9 @@ import Newsletter from "@/app/homepage/Newsletter";
 export default function Home() {
   return (
     <main className="overflow-x-hidden">
+      {/* Visually hidden H1 for SEO site name alignment */}
+      <h1 className="sr-only">Octave Nepal</h1>
+
       {/* Hero */}
       <Hero />
 
