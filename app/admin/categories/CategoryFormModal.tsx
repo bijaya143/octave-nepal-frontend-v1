@@ -7,6 +7,7 @@ import Select from "@/components/ui/Select";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import { adminTagService } from "@/lib/services/admin/tag";
+import { toast } from "sonner";
 
 function slugify(input: string): string {
   return input
@@ -76,10 +77,10 @@ export default function CategoryFormModal({
     ...initialValues,
   });
   const [previewUrl, setPreviewUrl] = React.useState<string>(
-    initialImageUrl || ""
+    initialImageUrl || "",
   );
   const [previewIconUrl, setPreviewIconUrl] = React.useState<string>(
-    initialIconUrl || ""
+    initialIconUrl || "",
   );
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const iconInputRef = React.useRef<HTMLInputElement>(null);
@@ -95,7 +96,7 @@ export default function CategoryFormModal({
         { key: "media", label: "Media" },
         { key: "visibility", label: "Visibility" },
       ] as const,
-    []
+    [],
   );
 
   // Tag states
@@ -154,7 +155,7 @@ export default function CategoryFormModal({
           }));
           setTagList((prev) => (reset ? newTags : [...prev, ...newTags]));
           const totalPages = Math.ceil(
-            response.data.meta.total / response.data.meta.limit
+            response.data.meta.total / response.data.meta.limit,
           );
           setHasMoreTags(response.data.meta.page < totalPages);
         }
@@ -164,7 +165,7 @@ export default function CategoryFormModal({
         setIsLoadingTags(false);
       }
     },
-    []
+    [],
   );
 
   // Initial fetch and search effect
@@ -217,7 +218,7 @@ export default function CategoryFormModal({
 
   function handleChange<K extends keyof CategoryFormValues>(
     key: K,
-    value: CategoryFormValues[K]
+    value: CategoryFormValues[K],
   ) {
     setValues((prev) => ({ ...prev, [key]: value }));
   }
@@ -254,7 +255,7 @@ export default function CategoryFormModal({
       "tags",
       isTagSelected(tag.id)
         ? values.tags.filter((t) => t.id !== tag.id)
-        : [...values.tags, tag]
+        : [...values.tags, tag],
     );
   }
 
@@ -276,8 +277,6 @@ export default function CategoryFormModal({
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
   }
-
-  const disabled = !values.name || !values.slug;
 
   const currentTabIndexRaw = tabs.findIndex((t) => t.key === activeTab);
   const currentTabIndex = currentTabIndexRaw < 0 ? 0 : currentTabIndexRaw;
@@ -350,8 +349,11 @@ export default function CategoryFormModal({
               </div>
             </div>
             <div className="space-y-3">
-              <div className="text-xs font-medium text-[color:var(--color-neutral-700)]">
-                Tags
+              <div className="text-sm font-medium text-[color:var(--foreground)] flex items-center gap-1">
+                <span>Tags</span>
+                <span className="text-red-600 font-bold" aria-hidden>
+                  *
+                </span>
               </div>
               {values.tags.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
@@ -362,8 +364,8 @@ export default function CategoryFormModal({
                   ))}
                 </div>
               ) : (
-                <p className="text-[11px] text-[color:var(--color-neutral-500)]">
-                  No tags selected
+                <p className="text-[11px] text-red-500 font-medium">
+                  At least one tag is required
                 </p>
               )}
               <div className="relative" ref={tagMenuRef}>
@@ -626,21 +628,37 @@ export default function CategoryFormModal({
             <Button
               type="button"
               onClick={() => {
+                if (!values.name) {
+                  toast.error("Name is required");
+                  setActiveTab("details");
+                  return;
+                }
+                if (!values.slug) {
+                  toast.error("Slug is required");
+                  setActiveTab("details");
+                  return;
+                }
+                if (values.tags.length === 0) {
+                  toast.error("At least one tag is required");
+                  setActiveTab("details");
+                  setIsTagMenuOpen(true);
+                  return;
+                }
                 const cleaned: CategoryFormValues = {
                   ...values,
                   slug: values.slug || slugify(values.name),
                 };
                 onSubmit(cleaned);
               }}
-              disabled={disabled || isLoading}
+              disabled={isLoading}
             >
               {isLoading
                 ? mode === "edit"
                   ? "Saving..."
                   : "Creating..."
                 : mode === "edit"
-                ? "Save changes"
-                : "Create"}
+                  ? "Save changes"
+                  : "Create"}
             </Button>
           )}
         </div>

@@ -107,6 +107,10 @@ export default function AdminCategoriesPage() {
 			toast.error("Image is required");
 			return;
 		}
+		if (!values.tags || values.tags.length === 0) {
+			toast.error("At least one tag is required");
+			return;
+		}
 
 		try {
 			setIsSubmitting(true);
@@ -133,6 +137,11 @@ export default function AdminCategoriesPage() {
 
 	const handleEdit = async (values: CategoryFormValues) => {
 		if (!editing) return;
+
+		if (!values.tags || values.tags.length === 0) {
+			toast.error("At least one tag is required");
+			return;
+		}
 
 		try {
 			setIsSubmitting(true);

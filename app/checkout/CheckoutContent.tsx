@@ -71,11 +71,16 @@ export default function CheckoutContent() {
   );
   const [receipts, setReceipts] = useState<File[]>([]);
   const [transactionId, setTransactionId] = useState("");
-  type CheckoutFieldError = "firstName" | "lastName" | "email" | "phone" | "receipts";
+  type CheckoutFieldError =
+    | "firstName"
+    | "lastName"
+    | "email"
+    | "phone"
+    | "receipts";
 
-  const [errors, setErrors] = useState<Partial<Record<CheckoutFieldError, string>>>(
-    {},
-  );
+  const [errors, setErrors] = useState<
+    Partial<Record<CheckoutFieldError, string>>
+  >({});
 
   const fieldRefs: Record<
     CheckoutFieldError,
@@ -88,7 +93,9 @@ export default function CheckoutContent() {
     receipts: React.useRef<HTMLDivElement>(null),
   };
 
-  function scrollToFirstError(errorMap: Partial<Record<CheckoutFieldError, string>>) {
+  function scrollToFirstError(
+    errorMap: Partial<Record<CheckoutFieldError, string>>,
+  ) {
     const firstKey = Object.keys(errorMap)[0] as CheckoutFieldError | undefined;
     if (!firstKey) return;
 
@@ -224,7 +231,8 @@ export default function CheckoutContent() {
     if (!course) return;
 
     const newErrors: typeof errors = {};
-    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First name is required";
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -436,52 +444,52 @@ export default function CheckoutContent() {
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div ref={fieldRefs.firstName}>
-                  <Input
-                    label="First name"
-                    placeholder="Octave"
-                    required
-                    disabled={isStudentAuthenticated}
-                    value={formData.firstName}
-                    error={errors.firstName}
-                    onChange={(e) => {
-                      setFormData({ ...formData, firstName: e.target.value });
-                      if (errors.firstName)
-                        setErrors((prev) => ({ ...prev, firstName: "" }));
-                    }}
-                  />
+                    <Input
+                      label="First name"
+                      placeholder="Saugat"
+                      required
+                      disabled={isStudentAuthenticated}
+                      value={formData.firstName}
+                      error={errors.firstName}
+                      onChange={(e) => {
+                        setFormData({ ...formData, firstName: e.target.value });
+                        if (errors.firstName)
+                          setErrors((prev) => ({ ...prev, firstName: "" }));
+                      }}
+                    />
                   </div>
                   <div ref={fieldRefs.lastName}>
-                  <Input
-                    label="Last name"
-                    placeholder="Nepal"
-                    required
-                    disabled={isStudentAuthenticated}
-                    value={formData.lastName}
-                    error={errors.lastName}
-                    onChange={(e) => {
-                      setFormData({ ...formData, lastName: e.target.value });
-                      if (errors.lastName)
-                        setErrors((prev) => ({ ...prev, lastName: "" }));
-                    }}
-                  />
+                    <Input
+                      label="Last name"
+                      placeholder="Paudel"
+                      required
+                      disabled={isStudentAuthenticated}
+                      value={formData.lastName}
+                      error={errors.lastName}
+                      onChange={(e) => {
+                        setFormData({ ...formData, lastName: e.target.value });
+                        if (errors.lastName)
+                          setErrors((prev) => ({ ...prev, lastName: "" }));
+                      }}
+                    />
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4 mt-4 text-left">
                   <div ref={fieldRefs.email}>
-                  <Input
-                    label="Email"
-                    type="email"
-                    placeholder="info@octavenepal.com"
-                    required
-                    disabled={isStudentAuthenticated}
-                    value={formData.email}
-                    error={errors.email}
-                    onChange={(e) => {
-                      setFormData({ ...formData, email: e.target.value });
-                      if (errors.email)
-                        setErrors((prev) => ({ ...prev, email: "" }));
-                    }}
-                  />
+                    <Input
+                      label="Email"
+                      type="email"
+                      placeholder="info@octavenepal.com"
+                      required
+                      disabled={isStudentAuthenticated}
+                      value={formData.email}
+                      error={errors.email}
+                      onChange={(e) => {
+                        setFormData({ ...formData, email: e.target.value });
+                        if (errors.email)
+                          setErrors((prev) => ({ ...prev, email: "" }));
+                      }}
+                    />
                   </div>
                   <div ref={fieldRefs.phone} className="flex flex-col gap-2">
                     <label className="text-sm font-medium text-[color:var(--foreground)]">
