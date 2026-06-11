@@ -833,6 +833,13 @@ export default function StudentDashboardPage() {
                   size="sm"
                   variant="secondary"
                   className="inline-flex items-center gap-2 w-full"
+                  onClick={() =>
+                    window.open(
+                      "https://wa.me/9779810331689",
+                      "_blank",
+                      "noopener,noreferrer",
+                    )
+                  }
                 >
                   <Image
                     src="/images/social-medias/whatsapp.png"

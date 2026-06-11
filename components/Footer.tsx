@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SITE_NAME } from "@/lib/constant";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Building2, FileText } from "lucide-react";
 import Container from "./Container";
 import CookieSettingsLink from "./CookieSettingsLink";
 
@@ -63,9 +63,9 @@ export default function Footer() {
 
       <Container className="relative pt-10 pb-6">
         {/* Main link grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-6 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-[1.2fr_1fr_1fr_1.3fr] gap-6 md:gap-10">
           {/* ── Brand column ── */}
-          <div className="md:col-span-3 lg:col-span-1">
+          <div className="md:col-span-4 lg:col-span-1">
             <Link
               href="/"
               className="inline-flex items-center gap-2.5 mb-3 group"
@@ -140,44 +140,58 @@ export default function Footer() {
           ))}
 
           {/* ── Contact column ── */}
-          <div>
+          <div className="md:col-span-2 lg:col-span-1">
             <p
               className="text-[11px] font-semibold uppercase tracking-widest text-[color:var(--color-neutral-400)] mb-3"
               style={{ fontFamily: "var(--font-heading-sans)" }}
             >
-              Contact
+              Contact & Legal
             </p>
             <ul className="space-y-2.5 text-sm">
               <li>
                 <a
-                  href="mailto:hello@octavenepal.com"
-                  className="inline-flex items-center gap-2 text-[color:var(--color-neutral-700)] hover:text-[color:var(--color-primary-700)] transition-colors break-all"
+                  href="mailto:octavenepalofficial@gmail.com"
+                  className="inline-flex items-center gap-2 text-[color:var(--color-neutral-700)] hover:text-[color:var(--color-primary-700)] transition-colors break-words"
                 >
                   <Mail
                     className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]"
                     aria-hidden
                   />
-                  hello@octavenepal.com
+                  octavenepalofficial@gmail.com
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:+9779800000000"
+                  href="tel:+9779810331689"
                   className="inline-flex items-center gap-2 text-[color:var(--color-neutral-700)] hover:text-[color:var(--color-primary-700)] transition-colors"
                 >
                   <Phone
                     className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]"
                     aria-hidden
                   />
-                  +977 980-0000000
+                  +977 981-0331689
                 </a>
               </li>
-              <li className="inline-flex items-center gap-2 text-[color:var(--color-neutral-500)]">
+              <li className="flex items-center gap-2 text-[color:var(--color-neutral-500)]">
                 <MapPin
                   className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]"
                   aria-hidden
                 />
-                Jawalakhel, Lalitpur
+                Nagarjun, Kathmandu, Nepal
+              </li>
+              <li className="flex items-center gap-2 text-[color:var(--color-neutral-500)]">
+                <Building2
+                  className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]"
+                  aria-hidden
+                />
+                Reg No: 392811/82/83
+              </li>
+              <li className="flex items-center gap-2 text-[color:var(--color-neutral-500)]">
+                <FileText
+                  className="h-3.5 w-3.5 shrink-0 text-[color:var(--color-neutral-400)]"
+                  aria-hidden
+                />
+                PAN: 623621264
               </li>
             </ul>
           </div>
