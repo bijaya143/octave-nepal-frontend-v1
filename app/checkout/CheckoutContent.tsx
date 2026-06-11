@@ -17,7 +17,7 @@ import {
 } from "@/lib/services/admin";
 import { guestEnrollmentService } from "@/lib/services/guest/enrollment";
 import { toast } from "sonner";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, User } from "lucide-react";
 import { SITE_NAME } from "@/lib/constant";
 import { useStudentAuth } from "@/lib/hooks/useStudentAuth";
 
@@ -442,6 +442,22 @@ export default function CheckoutContent() {
                 <h2 className="text-base font-semibold mb-4">
                   Student information
                 </h2>
+                {isStudentAuthenticated && (
+                  <div className="mb-6 p-4 rounded-xl border border-[color:var(--color-primary-200)] bg-[color:var(--color-primary-50)]/50 flex items-start gap-3 text-left">
+                    <div className="hidden sm:flex h-9 w-9 shrink-0 rounded-lg bg-[color:var(--color-primary-100)] items-center justify-center text-[color:var(--color-primary-600)]">
+                      <User size={18} />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-semibold text-[color:var(--color-primary-900)] leading-snug break-words">
+                        Logged in as {studentUser?.email}
+                      </h3>
+                      <p className="text-xs text-[color:var(--color-primary-700)] leading-relaxed">
+                        Your details have been pre-filled from your profile. If
+                        you want to use different details, please log out first.
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div ref={fieldRefs.firstName}>
                     <Input

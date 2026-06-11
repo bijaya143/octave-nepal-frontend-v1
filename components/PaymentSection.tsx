@@ -18,16 +18,16 @@ interface PaymentSectionProps {
 }
 
 const qrOptions = [
-  { id: "esewa", name: "eSewa", src: "/images/payments/qrs/qr2.jpg" },
-  { id: "fonepay", name: "FonePay", src: "/images/payments/qrs/qr1.jpg" },
+  // { id: "esewa", name: "eSewa", src: "/images/payments/qrs/qr2.jpg" },
+  { id: "fonepay", name: "FonePay", src: "/images/payments/qrs/qr1.png" },
 ];
 
 const bankDetails = {
-  accountName: "Octave Nepal Pvt. Ltd.",
-  accountNumber: "00123456789012",
-  bankName: "Nabil Bank Limited",
-  branch: "Jawalakhel, Lalitpur",
-  swiftCode: "NARBNPKA",
+  accountName: "Avenqube Technologies Pvt. Ltd.",
+  accountNumber: "30401040251426",
+  bankName: "Nepal Investment Mega Bank Ltd",
+  branch: "Satdobato, Lalitpur",
+  swiftCode: "NIBLNPKT",
 };
 
 export default function PaymentSection({

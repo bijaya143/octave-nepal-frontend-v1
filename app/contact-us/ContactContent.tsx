@@ -223,7 +223,7 @@ export default function ContactContent() {
                 </h2>
                 <div className="mt-3 space-y-3 text-sm">
                   <a
-                    href="mailto:hello@octavenepal.com"
+                    href="mailto:octavenepalofficial@gmail.com"
                     className="group flex items-center gap-3 rounded-lg border border-[color:var(--color-neutral-200)] bg-white/95 backdrop-blur px-3 py-3"
                   >
                     <div className="shrink-0 h-10 w-10 rounded-full ring-1 ring-black/5 flex items-center justify-center">
@@ -234,13 +234,13 @@ export default function ContactContent() {
                         Email
                       </div>
                       <div className="text-[color:var(--color-neutral-700)] group-hover:text-[color:var(--color-primary-700)]">
-                        hello@octavenepal.com
+                        octavenepalofficial@gmail.com
                       </div>
                     </div>
                   </a>
 
                   <a
-                    href="tel:+9779800000000"
+                    href="tel:+9779810331689"
                     className="group flex items-center gap-3 rounded-lg border border-[color:var(--color-neutral-200)] bg-white/95 backdrop-blur px-3 py-3"
                   >
                     <div className="shrink-0 h-10 w-10 rounded-full ring-1 ring-black/5 flex items-center justify-center">
@@ -251,7 +251,7 @@ export default function ContactContent() {
                         Phone
                       </div>
                       <div className="text-[color:var(--color-neutral-700)] group-hover:text-[color:var(--color-primary-700)]">
-                        +977 980-0000000
+                        +977 981-0331689
                       </div>
                     </div>
                   </a>
